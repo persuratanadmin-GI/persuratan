@@ -1,0 +1,13 @@
+{
+  "name": "aplikasi-surat-lembur",
+  "version": "1.0.0",
+  "description": "Aplikasi web admin surat lembur (SPK PLN + SPK Lembur PLN Nusa Daya), statis, tanpa backend.",
+  "private": true,
+  "scripts": {
+    "start": "python3 -m http.server 8080",
+    "test": "node tests/test.js"
+  },
+  "devDependencies": {
+    "jsdom": "^30.1.2"
+  }
+}

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="id"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin Surat Lembur</title>
+<link rel="stylesheet" href="css/style.css">
+</head><body>
+<header><h1>Admin Surat Lembur</h1>
+<small id="st">Data tersimpan di browser ini</small></header>
+<main>
+<section id="left" class="card">
+<div class="tabs" id="tabs"><button data-t="in" class="on">Input</button><button data-t="pe">Personel</button><button data-t="ri">Riwayat</button><button data-t="tt">Tanda Tangan</button><button data-t="se">Pengaturan</button></div>
+
+<div id="tab-in">
+ <div class="tabs"><button id="m-man" class="on">Input manual</button><button id="m-wa">Dari WhatsApp</button></div>
+ <div id="wa" hidden>
+  <label>Tempel pesan WhatsApp</label>
+  <textarea id="waText" style="min-height:130px" placeholder="Nama: ...&#10;ID Operator: ...&#10;Tanggal Lembur: 12/10/2026&#10;Jam Mulai: 18:00&#10;Jam Selesai: 22:00&#10;Pekerjaan: ...&#10;Pemberi Perintah: ..."></textarea>
+  <div class="acts"><button class="b" id="parse">Proses Pesan</button></div>
+  <div id="parseOut"></div>
+ </div>
+ <p class="hint lgd"><span class="rq">*</span> Wajib <i style="background:#eaf3ff;border-color:#1d5fd1"></i>Diisi <i style="background:#ffe9ec;border-color:#dc2626"></i>Kosong <i style="background:#fff3d6;border-color:#d97706"></i>Periksa</p>
+ <div id="form"></div>
+ <div class="hint" id="durHint"></div>
+ <div class="acts">
+  <button class="g" id="bNew">Surat baru</button><button class="b" id="bDraft">Simpan draft</button><button class="b" id="bDone">Tandai selesai</button>
+  <button class="b" id="bPdf">Unduh PDF semua surat</button><button class="g" id="bPrint">Cetak semua</button><button class="d" id="bClear">Kosongkan</button><button class="g" id="bSample">Muat contoh PDF</button>
+ </div>
+</div>
+
+<div id="tab-pe" hidden>
+ <input id="peQ" placeholder="Cari nama / NIP / jabatan">
+ <div id="peList"></div>
+ <h4 id="peT" style="margin:12px 0 0">Tambah personel</h4>
+ <label>Nama lengkap</label><input id="pn"><label>ID / NIP</label><input id="pi">
+ <div class="row"><div><label>Jabatan</label><input id="pj"></div><div><label>Unit kerja</label><input id="pu"></div></div>
+ <label>Gambar tanda tangan (PNG/JPG/WEBP, maks 1 MB)</label><input type="file" id="pf" accept="image/png,image/jpeg,image/webp">
+ <img id="ps" class="sg-prev" alt=""><label><input type="checkbox" id="pa" style="width:auto" checked> Aktif</label>
+ <div class="acts"><button class="b" id="peSave">Simpan personel</button><button class="g" id="peReset">Batal</button></div>
+</div>
+
+<div id="tab-ri" hidden>
+ <div class="acts" style="margin:0 0 8px"><button class="g" id="rPdf">Unduh PDF yang tampil</button><button class="g" id="rExp">Ekspor cadangan</button><button class="d" id="rDelAll">Hapus semua riwayat</button></div>
+ <input id="rQ" placeholder="Cari nama / ID / nomor">
+ <div class="row"><div><label>Dari</label><input type="date" id="rA"></div><div><label>Sampai</label><input type="date" id="rB"></div></div>
+ <div id="rList" style="margin-top:8px"></div>
+</div>
+
+<div id="tab-tt" hidden>
+ 
+ <div id="ttList"></div>
+ <h4 id="ttT" style="margin:12px 0 0">Tambah tanda tangan</h4>
+ <label>Nama (sama dengan nama di surat)</label><input id="tn">
+ <label>Jabatan (opsional)</label><input id="tj">
+ <label>Gambar tanda tangan (PNG/JPG/WEBP, maks 1 MB)</label><input type="file" id="tf" accept="image/png,image/jpeg,image/webp">
+ <img id="ts" class="sg-prev" alt="">
+ <div class="acts"><button class="b" id="ttSave">Simpan tanda tangan</button><button class="g" id="ttReset">Batal</button></div>
+</div>
+
+<div id="tab-se" hidden>
+ <div id="seForm"></div>
+ <div class="acts"><button class="b" id="seSave">Simpan pengaturan</button><button class="g" id="selfTest">Jalankan uji parser &amp; durasi</button></div>
+ <pre id="testOut" class="hint"></pre>
+ <h4>Cadangan data</h4>
+ <div class="acts"><button class="g" id="exp">Ekspor JSON</button><label class="g" style="margin:0;cursor:pointer;display:inline-block">Impor JSON<input type="file" id="imp" accept=".json" hidden></label></div>
+ 
+</div>
+</section>
+
+<section id="pane" class="card">
+ <div id="hint" class="hint"></div>
+ <div id="sgbar" class="hint" hidden>
+  <span id="sgctl" hidden><b id="sgName"></b> · Ukuran <input type="range" id="sgSize" min="20" max="400" step="5" style="width:110px;display:inline;padding:0"> <span id="sgPct"></span>
+  <button class="g" data-n="l">←</button><button class="g" data-n="r">→</button><button class="g" data-n="u">↑</button><button class="g" data-n="d">↓</button> <button class="g" id="sgReset">Reset</button></span></div>
+ <div id="batchbar" class="hint" hidden></div>
+ <div id="sheets"></div>
+</section>
+</main>
+<script src="vendor/jspdf.umd.min.js"></script>
+<script src="js/logo.js"></script>
+<script src="js/config.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/logic.js"></script>
+<script src="js/state.js"></script>
+<script src="js/preview.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/multi.js"></script>
+<script src="js/pdf.js"></script>
+<script src="js/manage.js"></script>
+<script src="js/main.js"></script>
+</body></html>
