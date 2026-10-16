@@ -54,6 +54,7 @@ Lalu aktifkan Pages seperti langkah 6 di atas.
 - Tab **Pengaturan**, tombol **Jalankan uji parser & durasi**: semua harus LULUS.
 - Tab **Tanda Tangan**: daftarkan tanda tangan, buat satu surat, lalu **Unduh PDF** dan bandingkan dengan dokumen asli.
 - Tekan **Ekspor cadangan** sekali untuk memastikan berkas cadangan terunduh.
+- Buat satu surat, klik **Simpan ke Excel**, pilih salinan file daftar lembur Anda (cadangkan file aslinya dulu), lalu periksa hasilnya.
 
 ## Memperbarui aplikasi
 

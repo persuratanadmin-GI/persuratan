@@ -35,9 +35,11 @@ js/preview.js         pratinjau surat A4 dan penggeseran/ubah ukuran tanda tanga
 js/ui.js              tab, input WhatsApp, simpan, cetak
 js/multi.js           banyak surat dari satu pesan, daftar surat
 js/pdf.js             ekspor PDF vektor (jsPDF) dan hapus semua riwayat
+js/excel.js           inti integrasi Excel (ExcelJS): baca/tulis daftar lembur bulanan, total jam, terbilang
+js/excel-ui.js        dialog "Simpan ke Excel": pilih file, cocokkan nama, rencana, simpan
 js/manage.js          personel, tanda tangan per nama, riwayat, pengaturan, cadangan, uji bawaan
 js/main.js            inisialisasi
-vendor/               jsPDF 2.5.1 (lisensi MIT, lihat LICENSE-jspdf.txt)
+vendor/               jsPDF 2.5.1 dan ExcelJS 4.4.0 (lisensi MIT, lihat LICENSE-*.txt)
 tests/                uji otomatis dan uji visual terhadap dokumen referensi
 ```
 
@@ -75,6 +77,42 @@ TL: Hasan
 
 Label yang dikenali ada di `ALIAS` pada `js/logic.js` (misalnya `TL`, `Team Leader`, `Pemberi Perintah` untuk pemberi perintah).
 Urutan baris bebas, salah ketik ringan dimaklumi, dan hasil tebakan selalu ditandai kuning agar diperiksa.
+
+## Simpan ke Excel (daftar lembur bulanan)
+
+Surat yang dibuat bisa dicatat ke file Excel daftar lembur, dengan format seperti contoh (per orang: tanggal, jam masuk,
+jam pulang, lembur, keterangan, lalu **Jumlah Jam Lembur** dan terbilangnya).
+
+1. Buat surat (satu atau banyak), lalu klik **Simpan ke Excel** (di bawah formulir, di bar daftar surat, atau di tab Riwayat
+   untuk surat yang tampil).
+2. **Pilih file Excel...** untuk menambahkan ke file yang sudah ada, atau lewati untuk membuat file baru.
+3. Periksa kolom **Nama di Excel**. Nama surat dicocokkan otomatis dengan nama di file (misalnya `Budi Santoso` dengan
+   `MUH. BUDI SANTOSO`); ubah jika perlu. Pilihan Anda diingat untuk lain kali.
+4. Periksa **Rencana** (berapa baris ditambah, berapa sudah ada, total jam per orang), lalu **Simpan Excel**.
+
+Aturan yang dipakai:
+
+- Satu sheet per bulan. Sheet bulan yang sama (dikenali dari tulisan `BULAN JULI 2026`) diperbarui; bulan baru membuat sheet baru
+  yang meniru sheet terdekat (judul, lebar kolom, blok pengesahan lengkap dengan gambar tanda tangannya).
+- Baris yang sama (orang, tanggal, jam masuk, jam pulang) tidak dimasukkan dua kali, jadi aman menyimpan berulang.
+- Baris diurutkan menurut tanggal dan dinomori ulang; orang baru ditambahkan di bagian bawah.
+- Jam lembur dihitung dari jam masuk dan pulang (lewat tengah malam ditangani). Total ditulis dengan kebiasaan di contoh:
+  jam.menit (4 jam 45 menit = `4.45`) beserta teks terbilang. Teks terbilang berupa tulisan biasa, bukan rumus.
+- Sheet bulan yang diperbarui ditulis ulang dengan gaya yang sama; sheet bulan lain tidak diubah.
+- Penyimpanan: di Chrome atau Edge (lewat `http://localhost` atau GitHub Pages) file yang dipilih ditimpa langsung setelah
+  Anda memberi izin. Jika tidak memungkinkan (misalnya file sedang terbuka di Excel, atau browser lain), salinan
+  `...-diperbarui.xlsx` diunduh dan Anda tinggal menggantinya.
+- **Tutup file di Excel sebelum menyimpan**, dan simpan cadangan file asli pada pemakaian pertama.
+
+Blok pengesahan (Mengetahui, jabatan, gambar tanda tangan, nama) untuk sheet baru terisi otomatis dari Pengaturan dan dari
+sheet bulan terdekat, dan bisa diubah di dialog Simpan ke Excel (jabatan, nama, tanggal pengesahan). Jika nama sebuah kolom
+diganti, gambar tanda tangan lamanya dibuang dan diganti gambar terdaftar atas nama baru (tab Tanda Tangan) bila ada.
+Sheet bulan yang sudah ada tetap memakai blok pengesahannya sendiri. Nama pengesah bawaan ada di `js/config.js`
+(`xlNama1`-`xlNama4`); kosongkan di sana jika repositori publik.
+
+Batasan: format yang dibaca adalah format contoh (baris `NO` di kolom A, nama orang pada baris sendiri, baris `Jumlah Jam Lembur`).
+Jam yang tertulis sebagai teks (misalnya `12.00.`) dibaca sebagai 12:00 pada sheet yang diperbarui. Gambar, bagan, atau
+objek lain di luar blok pengesahan pada sheet yang diperbarui tidak ikut dipertahankan.
 
 ## Nilai bawaan dan pengaturan
 
@@ -123,7 +161,7 @@ dan kuota serta ketentuan layanan gratis bisa berubah. Jangan mengunggah data pe
 
 ```
 npm install
-npm test                                  # uji otomatis (jsdom): parser, nama via NIP, durasi, nomor surat, ukuran A4
+npm test                                  # uji otomatis: parser, nama via NIP, durasi, nomor surat, ukuran A4, integrasi Excel
 python tests/compare_template.py Bahan_Proyek.pdf hasil.pdf   # uji visual terhadap dokumen referensi (pip install pymupdf)
 ```
 
