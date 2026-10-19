@@ -64,6 +64,12 @@ async function pdfLetter(pdf,c){
   const k=Math.min(1,105/(im.naturalWidth*.75),56/(im.naturalHeight*.75)),w=im.naturalWidth*.75*k*(o.s||1),h=im.naturalHeight*.75*k*(o.s||1);
   pdf.addImage(g.src,"PNG",X(g.cx+(o.x||0)*PX-w/2),Y(g.cy+(o.y||0)*PX-h/2),w*S,h*S)}
 }
+/* Nama berkas PDF: satu surat -> "LEMBUR NAMA DD BULAN YYYY"; beberapa surat -> "DAFTAR FILE LEMBUR NAMA". */
+function namaAman(t){return String(t||"").replace(/[\\/:*?"<>|\u0000-\u001f]+/g," ").replace(/\s+/g," ").trim().toUpperCase()}
+function namaBerkasPdf(list){
+ if(list.length===1){const c=list[0];return "LEMBUR "+(namaAman(c.name)||"TANPA NAMA")+" "+(c.tanggal?namaAman(fmtDate(c.tanggal)):"TANPA TANGGAL")+".pdf"}
+ const n=[...new Set(list.map(c=>namaAman(c.name)).filter(Boolean))];
+ return ("DAFTAR FILE LEMBUR "+(n.length<=1?(n[0]||""):n.length<=3?n.join(" & "):n[0]+" DKK")).trim()+".pdf"}
 async function exportPdf(list){
  if(pdfBusy)return;if(!list.length){toast("Tidak ada surat.");return}
  const bad=list.map((c,i)=>missing(c).length?"surat "+(i+1)+": "+missing(c).join(", "):"").filter(Boolean);
@@ -72,7 +78,7 @@ async function exportPdf(list){
  pdfBusy=true;
  try{const pdf=new window.jspdf.jsPDF({unit:"pt",format:"a4",orientation:"portrait",compress:true});
   for(let i=0;i<list.length;i++){toast("Membuat PDF: surat "+(i+1)+" dari "+list.length+"...");if(i)pdf.addPage("a4","portrait");await pdfLetter(pdf,list[i])}
-  const name="surat-lembur-"+list.length+"-surat-"+new Date().toISOString().slice(0,10)+".pdf",blob=pdf.output("blob");
+  const name=namaBerkasPdf(list),blob=pdf.output("blob");
   let dl=null;try{dl=window.claude&&await window.claude.use("downloads")}catch(e){}
   if(dl){try{await dl.save({filename:name,data:blob});toast("PDF disimpan: "+list.length+" surat.")}catch(e){toast(e&&e.code==="declined"?"Unduhan dibatalkan.":"Unduhan gagal ("+(e&&e.code||"error")+").")}}
   else{pdf.save(name);toast("PDF dibuat: "+list.length+" surat.")}
@@ -80,7 +86,6 @@ async function exportPdf(list){
  finally{pdfBusy=false}}
 $("bPdf").onclick=()=>exportPdf(batch);
 $("rPdf").onclick=()=>exportPdf(riwayatShown);
-$("rExp").onclick=()=>$("exp").click();
 $("rDelAll").onclick=async()=>{const n=DB.records.length;if(!n){toast("Riwayat sudah kosong.");return}
  if(!await ask("Hapus SEMUA "+n+" catatan riwayat secara permanen?\nTindakan ini tidak bisa dibatalkan. Ekspor cadangan dulu jika perlu. (Nomor urut surat tidak direset; atur di tab Pengaturan.)"))return;
  DB.records=[];save();renderRiwayat();toast(n+" catatan riwayat dihapus.")};

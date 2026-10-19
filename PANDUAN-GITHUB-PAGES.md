@@ -11,7 +11,7 @@ Tidak ada server yang perlu dijalankan, karena aplikasinya statis.
 2. **Situs publik:** siapa pun yang tahu alamatnya bisa membuka aplikasinya. Yang terlihat hanya aplikasi kosong, karena
    data personel, tanda tangan, dan riwayat **tidak** ada di GitHub, melainkan tersimpan di browser masing-masing pengguna.
 3. **Data per browser dan per perangkat.** Dua admin atau dua komputer = dua data terpisah dan nomor urut terpisah.
-   Satu admin sebaiknya selalu memakai browser yang sama, dan rutin menekan **Ekspor cadangan**.
+   Satu admin sebaiknya selalu memakai browser yang sama, dan rutin menekan **Ekspor JSON** (tab Pengaturan).
 4. Semua situs di `USERNAME.github.io` berbagi satu "tempat penyimpanan" browser yang sama. Jangan menayangkan situs lain
    yang tidak Anda percaya di akun GitHub yang sama, karena situs itu secara teknis bisa membaca data aplikasi ini.
 5. Penomoran surat otomatis hanya unik di satu browser. Untuk beberapa admin sekaligus dibutuhkan database bersama dan login.
@@ -53,7 +53,7 @@ Lalu aktifkan Pages seperti langkah 6 di atas.
 - Tab **Pengaturan**: isi nama koordinator, periksa kop dan pola nomor, lalu **Simpan pengaturan**.
 - Tab **Pengaturan**, tombol **Jalankan uji parser & durasi**: semua harus LULUS.
 - Tab **Tanda Tangan**: daftarkan tanda tangan, buat satu surat, lalu **Unduh PDF** dan bandingkan dengan dokumen asli.
-- Tekan **Ekspor cadangan** sekali untuk memastikan berkas cadangan terunduh.
+- Tekan **Ekspor JSON** (tab Pengaturan) sekali untuk memastikan berkas cadangan terunduh.
 - Buat satu surat, klik **Simpan ke Excel**, pilih salinan file daftar lembur Anda (cadangkan file aslinya dulu), lalu periksa hasilnya.
 
 ## Memperbarui aplikasi

@@ -50,6 +50,17 @@ const cek = (nama, ok, info = "") => { console.log((ok ? "LULUS  " : "GAGAL  ") 
   cek("durasi lewat tengah malam = 4 jam", w.eval(`calcDur("22:00","02:00").min`) === 240);
   cek("durasi 16:30-21:00 = 4.5 Jam", w.eval(`durLabel(calcDur("16:30","21:00").min)`) === "4.5 Jam");
 
+  // 2b. pesan tanpa tanda ":" tetap terbaca
+  const tanpa = w.eval(`parseWA(${JSON.stringify("Nama Budi Santoso\nNIP 123456789XYZ\nPekerjaan: Pemantauan CUI GI Ballusu\nTgl 10 Oktober 2026\nJam 16:30-21:30\nTL: Rahmat Hidayat")})`);
+  cek("tanpa ':' : nama & NIP", tanpa.f.nama === "Budi Santoso" && tanpa.f.nip === "123456789XYZ");
+  cek("tanpa ':' : 'Tgl' dan 'Jam 16:30-21:30'", tanpa.f.tanggal === "2026-10-10" && tanpa.f.mulai === "16:30" && tanpa.f.selesai === "21:30");
+  cek("tanpa ':' : semua kolom wajib terisi tanpa tanda periksa", ["nama","nip","tanggal","mulai","selesai","uraian","pemberi"].every(k => tanpa.st[k].s === "ok"));
+
+  // 2c. nama berkas PDF otomatis
+  cek("nama PDF satu surat: LEMBUR NAMA DD BULAN YYYY", w.eval(`namaBerkasPdf([{name:"Budi Santoso",tanggal:"2026-08-07"}])`) === "LEMBUR BUDI SANTOSO 07 AGUSTUS 2026.pdf");
+  cek("nama PDF daftar: DAFTAR FILE LEMBUR NAMA", w.eval(`namaBerkasPdf([{name:"Budi Santoso"},{name:"Budi Santoso"},{name:"Budi Santoso"}])`) === "DAFTAR FILE LEMBUR BUDI SANTOSO.pdf");
+  cek("nama PDF daftar beberapa orang", w.eval(`namaBerkasPdf([{name:"Andi"},{name:"Budi"}])`) === "DAFTAR FILE LEMBUR ANDI & BUDI.pdf");
+
   // 3. buat surat + nomor otomatis berurutan
   d.getElementById("waText").value = pesan3; d.getElementById("parse").click(); d.getElementById("applyMulti").click();
   await new Promise(r => setTimeout(r, 50));

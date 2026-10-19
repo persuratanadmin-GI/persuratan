@@ -54,8 +54,13 @@ jadi urutannya penting.
 3. Satu pesan boleh berisi banyak blok. Blok dipisah baris kosong, atau oleh label yang berulang.
    Setiap blok menjadi satu surat. Blok tanpa nama memakai nama dari ID/NIP yang sama.
 4. Tanda tangan di pratinjau bisa digeser (seret) dan diubah ukurannya (kotak biru di sudut, atau roda mouse).
-5. **Unduh PDF semua surat** (satu halaman A4 per surat) atau **Cetak semua**.
-6. **Simpan draft** / **Simpan semua draft** menyimpan ke tab **Riwayat** (cari, filter tanggal, buka, duplikat, hapus, hapus semua).
+5. Semua aksi ada di bar tombol di bawah formulir. Jika ada beberapa surat, angkanya tampil di label (misalnya **Simpan draft (8)**)
+   dan aksinya berlaku untuk semua surat dalam daftar: **Simpan draft**, **Tandai selesai**, **Simpan ke Excel**, **Unduh PDF**
+   (satu halaman A4 per surat), dan **Cetak**. Nama berkas PDF otomatis: beberapa surat menjadi
+   `DAFTAR FILE LEMBUR NAMA PERSONEL.pdf`, satu surat menjadi `LEMBUR NAMA PERSONEL DD BULAN YYYY.pdf`. **Surat baru** memulai surat kosong.
+6. Surat tersimpan ada di tab **Riwayat** (cari, filter tanggal, buka, duplikat, hapus, hapus semua). Di panel pratinjau,
+   tombol nomor meloncat ke surat tertentu, **PDF surat ini** mengunduh PDF hanya untuk surat yang dibuka, dan **Hapus surat ini**
+   mengeluarkannya dari daftar. Di tab Riwayat, tombol **PDF** pada tiap baris mengunduh PDF surat itu.
 
 Contoh pesan:
 
@@ -76,7 +81,8 @@ TL: Hasan
 ```
 
 Label yang dikenali ada di `ALIAS` pada `js/logic.js` (misalnya `TL`, `Team Leader`, `Pemberi Perintah` untuk pemberi perintah).
-Urutan baris bebas, salah ketik ringan dimaklumi, dan hasil tebakan selalu ditandai kuning agar diperiksa.
+Urutan baris bebas dan tanda ":" tidak wajib: `Nama: Budi`, `Nama = Budi`, `Nama - Budi`, dan `Nama Budi` semuanya terbaca,
+termasuk `Tgl 10 Oktober 2026` dan `Jam 16:30-21:30`. Salah ketik ringan dimaklumi, dan hasil tebakan selalu ditandai kuning agar diperiksa.
 
 ## Simpan ke Excel (daftar lembur bulanan)
 
@@ -135,7 +141,7 @@ Nama koordinator sengaja dikosongkan di `js/config.js` agar tidak ikut terunggah
 ## Penyimpanan, keamanan, dan batasan
 
 - Data (personel, tanda tangan, riwayat, pengaturan) tersimpan di `localStorage` browser: **tidak dienkripsi**, hanya ada di
-  browser dan perangkat itu, dan tidak dibagi antar admin. Gunakan **Ekspor cadangan** (tab Pengaturan atau Riwayat) secara berkala.
+  browser dan perangkat itu, dan tidak dibagi antar admin. Gunakan **Ekspor JSON** (tab Pengaturan) secara berkala.
 - Menghapus data situs di browser akan menghapus semuanya.
 - Gambar tanda tangan hanya gambar, bukan tanda tangan elektronik tersertifikasi.
 - Nomor urut hanya unik di satu browser. Untuk beberapa admin sekaligus diperlukan database bersama, login, dan

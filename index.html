@@ -22,9 +22,8 @@
  <div id="form"></div>
  <div class="hint" id="durHint"></div>
  <div class="actbar">
-  <div class="grp"><span class="gl">Simpan</span><button class="b" id="bDraft">Simpan draft</button><button class="g" id="bDone">Tandai selesai</button><button class="b xl" id="bXl">Simpan ke Excel</button></div>
-  <div class="grp"><span class="gl">Cetak</span><button class="b nv" id="bPdf">Unduh PDF semua surat</button><button class="g" id="bPrint">Cetak semua</button></div>
-  <div class="grp"><span class="gl">Lainnya</span><button class="g" id="bNew">Surat baru</button><button class="g" id="bSample">Muat contoh</button><button class="d" id="bClear">Kosongkan</button></div>
+  <div class="grp"><span class="gl">Surat</span><button class="b new" id="bNew">+ Surat baru</button><button class="b" id="bDraft">Simpan draft</button><button class="g" id="bDone">Tandai selesai</button></div>
+  <div class="grp"><span class="gl">Keluaran</span><button class="b nv" id="bPdf">Unduh PDF</button><button class="g" id="bPrint">Cetak</button><button class="b xl" id="bXl">Simpan ke Excel</button></div>
  </div>
 </div>
 
@@ -40,7 +39,7 @@
 </div>
 
 <div id="tab-ri" hidden>
- <div class="acts" style="margin:0 0 8px"><button class="b nv" id="rPdf">Unduh PDF yang tampil</button><button class="b xl" id="rXl">Simpan ke Excel</button><button class="g" id="rExp">Ekspor cadangan</button><button class="d" id="rDelAll">Hapus semua riwayat</button></div>
+ <div class="acts rbar"><button class="b nv" id="rPdf">Unduh PDF</button><button class="b xl" id="rXl">Simpan ke Excel</button><button class="d" id="rDelAll" title="Hapus semua riwayat">Hapus semua</button></div>
  <input id="rQ" placeholder="Cari nama / ID / nomor">
  <div class="row"><div><label>Dari</label><input type="date" id="rA"></div><div><label>Sampai</label><input type="date" id="rB"></div></div>
  <div id="rList" style="margin-top:8px"></div>
@@ -59,11 +58,11 @@
 
 <div id="tab-se" hidden>
  <div id="seForm"></div>
- <div class="acts"><button class="b" id="seSave">Simpan pengaturan</button><button class="g" id="selfTest">Jalankan uji parser &amp; durasi</button></div>
  <pre id="testOut" class="hint"></pre>
- <h4>Cadangan data</h4>
- <div class="acts"><button class="g" id="exp">Ekspor JSON</button><label class="g" style="margin:0;cursor:pointer;display:inline-block">Impor JSON<input type="file" id="imp" accept=".json" hidden></label></div>
- 
+ <div class="actbar">
+  <div class="grp"><span class="gl">Pengaturan</span><button class="b" id="seSave">Simpan pengaturan</button><button class="g" id="selfTest">Uji parser &amp; durasi</button></div>
+  <div class="grp"><span class="gl">Cadangan</span><button class="g" id="exp">Ekspor JSON</button><label class="g" style="margin:0;cursor:pointer;display:inline-block">Impor JSON<input type="file" id="imp" accept=".json" hidden></label></div>
+ </div>
 </div>
 </section>
 

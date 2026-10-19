@@ -33,7 +33,7 @@ function renderSheet(r){
 function update(){
  if(cur!==batch[idx]){batch=[cur];idx=0}
  if($("sheets").children.length!==batch.length)buildSheets();else if(!SKIP){const lw=$("sheets").children[idx];lw.querySelector(".sheet").innerHTML=renderSheet(cur);lw.querySelector(".lt").textContent=letterTitle(idx)}
- persistCur();if(selSig&&!document.querySelector('#sheets .lw.act .sgb[data-p="'+selSig+'"]'))sgSelect(null);
+ persistCur();segarTombol();if(selSig&&!document.querySelector('#sheets .lw.act .sgb[data-p="'+selSig+'"]'))sgSelect(null);
  const d=calcDur(cur.mulai,cur.selesai);
  $("durHint").className="hint"+(d&&(d.over||d.same)?" w":"");
  $("durHint").textContent=d?`Durasi: ${durLabel(d.min)} (${durHuman(d.min)})${d.over?" · lewat tengah malam":""}${d.same?" · 24 jam":""}`:"";

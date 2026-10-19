@@ -21,14 +21,12 @@ function applyParse(){const{f,st}=lastParse;const map={nama:"name",nip:"nip",uni
  else if(f.pemberi){cur.flags.pemberiName="Nama belum terdaftar di tab Tanda Tangan - tanda tangan tidak terpasang otomatis"}
  if(!cur.jabatan)cur.jabatan=DB.settings.jabPers;if(!cur.pemberiJab)cur.pemberiJab=DB.settings.jabPemberi;if(!cur.koorName){cur.koorName=DB.settings.koorName;cur.koorJab=cur.koorJab||DB.settings.kepada}autoAll();if(QUIET)return;buildForm();update();$("m-man").click()}
 function resetNo(){if(!cur.spk)cur.spk=nextNo("spk");if(!cur.lemburNo)cur.lemburNo=nextNo("lem")}
-$("bNew").onclick=async()=>{if(batch.length>1&&!await ask("Daftar "+batch.length+" surat yang belum disimpan akan ditutup. Lanjutkan?"))return;cur=blank();resetNo();buildForm();update()};
-$("bClear").onclick=async()=>{if(await ask("Kosongkan seluruh formulir? Perubahan yang belum disimpan akan hilang.")){cur=blank();batch[idx]=cur;buildForm();update()}};
+$("bNew").onclick=async()=>{if((batch.length>1||((cur.name||cur.uraian)&&!cur.id))&&!await ask(batch.length>1?"Daftar "+batch.length+" surat akan ditutup (yang belum disimpan hilang). Lanjutkan?":"Isi formulir saat ini yang belum disimpan akan hilang. Lanjutkan?"))return;cur=blank();resetNo();buildForm();update()};
 function saveRec(status){
  cur.status=status;cur.updatedAt=Date.now();const rec=JSON.parse(JSON.stringify(cur));
  if(!rec.id){rec.id=uid();cur.id=rec.id;rec.createdAt=Date.now()}
  const i=DB.records.findIndex(x=>x.id===rec.id);if(i>=0)DB.records[i]=rec;else DB.records.push(rec);
  bumpSeq();save();return true}
-$("bDraft").onclick=()=>{if(saveRec("draft"))alert("Draft tersimpan.")};
-$("bDone").onclick=async()=>{const m=missing();if(m.length&&!await ask("Data belum lengkap ("+m.join(", ")+"). Tetap tandai selesai?"))return;if(saveRec("selesai"))alert("Ditandai selesai & tersimpan.")};
+$("bDraft").onclick=()=>simpanBatch("draft");
+$("bDone").onclick=()=>simpanBatch("selesai");
 $("bPrint").onclick=async()=>{const bad=batch.map((c,i)=>missing(c).length?"surat "+(i+1)+": "+missing(c).join(", "):"").filter(Boolean);if(bad.length&&!await ask("Data belum lengkap -> "+bad.join(" | ")+". Tetap cetak?"))return;window.print()};
-$("bSample").onclick=async()=>{if(!await ask("Isi formulir dengan data contoh fiktif (untuk uji tampilan, tanpa tanda tangan)? Isi formulir saat ini diganti."))return;cur=Object.assign(blank(),APP_CONFIG.sample);batch[idx]=cur;autoAll();buildForm();update()};

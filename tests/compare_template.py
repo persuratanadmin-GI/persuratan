@@ -8,8 +8,8 @@ Pemakaian:
 Yang dibandingkan: garis dasar teks, titik tengah teks, gaya huruf (tebal/miring) dan ketebalan garis.
 Dokumen referensi berukuran Letter; aplikasi menskalakannya seragam setinggi A4 lalu menengahkannya
 secara horizontal, jadi koordinat referensi dikonversi dengan nilai yang sama (PS dan DX di bawah).
-Data contoh bawaan fiktif, jadi nama dan NIP tidak akan terpasangkan dengan referensi (itu normal).
-Untuk perbandingan penuh, ubah sementara `sample` di js/config.js sesuai isi Bahan_Proyek.pdf (jangan diunggah).
+Buat surat dengan isi yang sama seperti Bahan_Proyek.pdf (nomor, nama, tanggal, jam, uraian) agar teks bisa dipasangkan.
+Nama dan NIP yang berbeda tidak akan terpasangkan dengan referensi (itu normal).
 """
 import statistics
 import sys

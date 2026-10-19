@@ -39,18 +39,36 @@ function lev(a,b){const d=[];for(let i=0;i<=a.length;i++)d[i]=[i];for(let j=1;j<
 function matchLabel(raw){const l=raw.toLowerCase().replace(/[^a-z\/ ]/g," ").replace(/\s+/g," ").trim();if(!l)return null;if(LOOKUP[l])return{k:LOOKUP[l]};
  if(l.length<5)return null;let best=null,bd=9,tie=false;for(const a in LOOKUP){if(a.length<5)continue;const x=lev(l,a);if(x<bd){bd=x;best=LOOKUP[a];tie=false}else if(x===bd&&LOOKUP[a]!==best)tie=true}
  return best&&!tie&&bd<=(l.length>8?2:1)?{k:best,fuzzy:true}:null}
+/* Bersihkan awalan salinan WhatsApp ("[12/10/26 18.00] Nama:"), tanda tebal, dan butir daftar. */
+function cleanLine(line){return line.replace(/^\s*\[?\d{1,2}[\/.]\d{1,2}[\/.]\d{2,4},?\s+\d{1,2}[:.]\d{2}(?::\d{2})?\]?\s*-?\s*[^:]{1,40}:\s+(?=\S)/,"").replace(/[*~`]/g,"").replace(/^\s*(?:[-•]|\d+[.)])\s+/,"")}
+/* Label "lemah" boleh dipakai tanpa titik dua hanya jika ada tanda ":" atau "="; label lain boleh ditulis langsung diikuti nilai. */
+const LABEL_LEMAH=new Set(["tempat","tugas","kegiatan","deskripsi","bagian","posisi","operator","personel","personil","ultg","unit","atasan"]);
+const ALIAS_URUT=Object.keys(LOOKUP).sort((a,b)=>b.length-a.length).map(a=>({a,re:new RegExp("^"+a.split("/").map(p=>p.trim().split(" ").map(x=>x.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")).join("\\s+")).join("\\s*\\/\\s*")+"(?=[\\s:=]|$)","i")}));
+/* Membaca satu baris menjadi {k: kolom, v: nilai}. Mendukung "Nama: x", "Nama = x", "Nama - x", dan "Nama x" (tanpa tanda baca),
+   termasuk nilai yang memuat titik dua seperti "Jam 16:30-21:30". Salah ketik ringan pada label juga dimaklumi. */
+function bacaBaris(baris){
+ const t=cleanLine(baris).trim();if(!t)return null;
+ for(const {a,re} of ALIAS_URUT){const m=re.exec(t);if(!m)continue;const sisa=t.slice(m[0].length);
+  const sep=/^\s*[:=]\s*/.exec(sisa);if(sep)return{k:LOOKUP[a],v:sisa.slice(sep[0].length).trim()};
+  if(LABEL_LEMAH.has(a))continue;
+  if(!sisa.trim())return{k:LOOKUP[a],v:""};
+  const s2=/^\s*[-–—]\s+|^\s+/.exec(sisa);if(s2){const v=sisa.slice(s2[0].length).trim();if(v)return{k:LOOKUP[a],v}}}
+ const m=/^\s*([^:=\n]{2,30}?)\s*[:=]\s*(.*)$/.exec(t);
+ if(m){const lm=matchLabel(m[1]);if(lm)return{k:lm.k,v:m[2].trim(),fuzzy:m[1].trim()}}
+ const w=t.split(/\s+/);let huruf=0;while(huruf<w.length&&huruf<3&&/^[A-Za-z\/.]+$/.test(w[huruf]))huruf++;
+ for(let n=Math.min(huruf,w.length-1);n>=1;n--){const lm=matchLabel(w.slice(0,n).join(" "));if(lm&&lm.fuzzy)return{k:lm.k,v:w.slice(n).join(" ").trim(),fuzzy:w.slice(0,n).join(" ")}}
+ return null}
 function normDate(s){let w="";s=s.trim().replace(/^(\d{1,2}[\/\-.]\d{1,2}[\/\-.])(\d{2})$/,(_,a,b)=>{w="Tahun 2 digit dibaca 20"+b;return a+"20"+b});
  s=s.replace(/[A-Za-z]{3,}/g,x=>{const i=BLN.findIndex(b=>b.toLowerCase().startsWith(x.toLowerCase()));return i>=0?BLN[i]:x});
  const r=parseDate(s);if(w&&!r.err)r.warn=(r.warn?r.warn+"; ":"")+w;return r}
 function parseWA(text){
  const raw={},cnt={},fz={},unk=[];let cur=null;
- for(let line of text.split(/\r?\n/)){
-  line=line.replace(/^\s*\[?\d{1,2}[\/.]\d{1,2}[\/.]\d{2,4},?\s+\d{1,2}[:.]\d{2}(?::\d{2})?\]?\s*-?\s*[^:]{1,40}:\s+(?=\S)/,"").replace(/[*~`]/g,"").replace(/^\s*(?:[-•]|\d+[.)])\s+/,"");
-  if(!line.trim())continue;
-  const m=/^\s*([^:=\n]{2,30}?)\s*[:=]\s*(.*)$/.exec(line),lm=m&&matchLabel(m[1]);
-  if(lm){const k=lm.k;cnt[k]=(cnt[k]||0)+1;if(cnt[k]===1){raw[k]=m[2].trim();cur=k;if(lm.fuzzy)fz[k]=m[1].trim()}else cur=null}
+ for(const baris of text.split(/\r?\n/)){
+  const line=cleanLine(baris);if(!line.trim())continue;
+  const b=bacaBaris(line);
+  if(b){const k=b.k;cnt[k]=(cnt[k]||0)+1;if(cnt[k]===1){raw[k]=b.v;cur=k;if(b.fuzzy)fz[k]=b.fuzzy}else cur=null}
   else if(cur==="uraian"&&!RANGE.test(line)&&!/^\s*\d{1,2}[\/.\-]\d{1,2}[\/.\-]\d{2,4}\s*$/.test(line))raw.uraian+="\n"+line.trim();
-  else if(m)unk.push(line.trim().slice(0,60));
+  else if(/[:=]/.test(line))unk.push(line.trim().slice(0,60));
  }
  const f={},st={};
  const set=(k,v,w)=>{f[k]=v;st[k]={s:w?"warn":"ok",m:w||""}};

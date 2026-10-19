@@ -2,8 +2,7 @@
 /* Banyak surat dari satu pesan WhatsApp, daftar surat, simpan semua. */
 /* ===== Banyak surat dari satu pesan WhatsApp ===== */
 let QUIET=false,SKIP=false,lastMulti=[];
-function cleanLine(line){return line.replace(/^\s*\[?\d{1,2}[\/.]\d{1,2}[\/.]\d{2,4},?\s+\d{1,2}[:.]\d{2}(?::\d{2})?\]?\s*-?\s*[^:]{1,40}:\s+(?=\S)/,"").replace(/[*~`]/g,"").replace(/^\s*(?:[-•]|\d+[.)])\s+/,"")}
-function lineKey(line){const m=/^\s*([^:=\n]{2,30}?)\s*[:=]\s*(.*)$/.exec(cleanLine(line));const lm=m&&matchLabel(m[1]);return lm?lm.k:null}
+function lineKey(line){const b=bacaBaris(line);return b?b.k:null}
 /* Pisah blok: baris kosong, atau label yang berulang (= awal surat baru). Blok tanpa label digabung ke blok sebelumnya. */
 function splitBlocks(text){const out=[];let b=[],seen={};const flush=()=>{if(b.length)out.push(b);b=[];seen={}};
  for(const line of text.split(/\r?\n/)){if(!line.trim()){flush();continue}const k=lineKey(line);if(k){if(seen[k])flush();seen[k]=1}b.push(line)}
@@ -21,17 +20,20 @@ function fillNames(res){const map={};
 function parseMulti(text){return fillNames(splitBlocks(text).map(b=>parseWA(b)))}
 function makeLetter(pr){const sc=cur,sl=lastParse;cur=blank();lastParse=pr;QUIET=true;try{applyParse()}finally{QUIET=false;lastParse=sl}const c=cur;cur=sc;return c}
 function letterTitle(i){const c=batch[i];return "Surat "+(i+1)+" dari "+batch.length+" · "+(c.name||"(belum ada nama)")+" · "+(c.tanggal?fmtDate(c.tanggal):"(tanggal?)")+(c.excelAt?" \u00b7 Excel \u2714":"")}
-function buildSheets(){$("sheets").innerHTML=batch.map((c,i)=>`<div class="lw${i===idx?" act":""}" data-i="${i}"><div class="lbar"><span class="lt">${esc(letterTitle(i))}</span><span><button class="g" data-a="pdf">PDF ini</button> <button class="g" data-a="pr">Cetak ini</button>${batch.length>1?' <button class="g" data-a="rm">Hapus dari daftar</button>':""}</span></div><div class="shwrap"><div class="shbox"><div class="sheet">${renderSheet(c)}</div></div></div></div>`).join("");
- $("batchbar").hidden=batch.length<2;$("batchbar").innerHTML=`<b>${batch.length} surat</b> ${batch.map((c,i)=>`<button class="g" data-go="${i}">${i+1}</button>`).join(" ")} <button class="b" id="saveAll">Simpan semua draft</button> <button class="b nv" id="pdfAll">Unduh PDF semua</button> <button class="b xl" id="xlAll">Simpan ke Excel</button>`;fit()}
+function buildSheets(){$("sheets").innerHTML=batch.map((c,i)=>`<div class="lw${i===idx?" act":""}" data-i="${i}"><div class="lbar"><span class="lt">${esc(letterTitle(i))}</span></div><div class="shwrap"><div class="shbox"><div class="sheet">${renderSheet(c)}</div></div></div></div>`).join("");
+ $("batchbar").hidden=batch.length<2;$("batchbar").innerHTML=`<b>${batch.length} surat</b> ${batch.map((c,i)=>`<button class="g" data-go="${i}">${i+1}</button>`).join(" ")} <button class="b nv" id="pdfAktif" title="Unduh PDF hanya untuk surat yang sedang dibuka">PDF surat ini</button> <button class="g" id="hapusAktif" title="Keluarkan surat yang sedang dibuka dari daftar">Hapus surat ini</button>`;fit()}
 function setActive(i){idx=i;cur=batch[i];document.querySelectorAll("#sheets .lw").forEach((e,j)=>e.classList.toggle("act",j===i));sgSelect(null);syncForm();SKIP=true;update();SKIP=false}
-function printOne(){document.body.classList.add("p1");const done=()=>{document.body.classList.remove("p1");window.removeEventListener("afterprint",done)};window.addEventListener("afterprint",done);try{window.print()}catch(e){}finally{setTimeout(done,3000)}}
-function saveAll(){const keep=idx;let ok=0;for(let i=0;i<batch.length;i++){cur=batch[i];idx=i;if(saveRec("draft"))ok++}idx=keep;cur=batch[keep];persistCur();alert(ok+" surat tersimpan sebagai draft.")}
-$("batchbar").onclick=e=>{if(e.target.id==="saveAll")saveAll();if(e.target.id==="pdfAll")exportPdf(batch);if(e.target.id==="xlAll")bukaExcel(batch);const g=e.target.dataset.go;if(g!==undefined){setActive(+g);$("sheets").children[+g].scrollIntoView({behavior:"smooth",block:"start"})}};
-$("sheets").addEventListener("click",async e=>{const lw=e.target.closest(".lw");if(!lw)return;const i=+lw.dataset.i,a=e.target.dataset.a;
- if(a==="rm"){if(batch.length>1&&await ask("Hapus surat ini dari daftar? (Riwayat yang sudah tersimpan tidak terhapus.)")){batch.splice(i,1);idx=Math.min(i,batch.length-1);cur=batch[idx];buildForm();buildSheets();update()}return}
- if(a==="pdf"){exportPdf([batch[i]]);return}
- if(a==="pr"){if(i!==idx)setActive(i);printOne();return}
- if(i!==idx)setActive(i)});
+/* Aksi simpan memakai semua surat dalam daftar (satu surat = satu surat). Label tombol menampilkan jumlahnya. */
+async function simpanBatch(status){
+ const bad=status==="selesai"?batch.map((c,i)=>missing(c).length?"surat "+(i+1)+": "+missing(c).join(", "):"").filter(Boolean):[];
+ if(bad.length&&!await ask("Data belum lengkap -> "+bad.join(" | ")+". Tetap tandai selesai?"))return;
+ const keep=idx;let n=0;for(let i=0;i<batch.length;i++){cur=batch[i];idx=i;if(saveRec(status))n++}
+ idx=keep;cur=batch[keep];persistCur();
+ toast(n>1?n+" surat "+(status==="selesai"?"ditandai selesai dan tersimpan.":"tersimpan sebagai draft."):(status==="selesai"?"Ditandai selesai dan tersimpan.":"Draft tersimpan."))}
+function segarTombol(){const s=batch.length>1?" ("+batch.length+")":"";
+ [["bDraft","Simpan draft"],["bDone","Tandai selesai"],["bXl","Simpan ke Excel"],["bPdf","Unduh PDF"],["bPrint","Cetak"]].forEach(([id,t])=>{const e=$(id);if(e)e.textContent=t+s})}
+$("batchbar").onclick=async e=>{if(e.target.id==="pdfAktif"){exportPdf([cur]);return}if(e.target.id==="hapusAktif"&&batch.length>1&&await ask("Hapus surat "+(idx+1)+" dari daftar? (Riwayat yang sudah tersimpan tidak terhapus.)")){batch.splice(idx,1);idx=Math.min(idx,batch.length-1);cur=batch[idx];buildForm();buildSheets();update();return}const g=e.target.dataset.go;if(g!==undefined){setActive(+g);$("sheets").children[+g].scrollIntoView({behavior:"smooth",block:"start"})}};
+$("sheets").addEventListener("click",e=>{const lw=e.target.closest(".lw");if(!lw)return;const i=+lw.dataset.i;if(i!==idx)setActive(i)});
 async function applyMulti(){if((batch.length>1||cur.name||cur.uraian)&&!await ask("Isi formulir/daftar surat saat ini akan diganti dengan "+lastMulti.length+" surat baru. Lanjutkan?"))return;
  const s=DB.settings,arr=lastMulti.map(pr=>makeLetter(pr));
  arr.forEach((c,i)=>{c.spk=fmtNo(s.polaSpk,s.seqSpk+1+i,c.tanggal);c.lemburNo=fmtNo(s.polaLem,s.seqLem+1+i,c.tanggal)});

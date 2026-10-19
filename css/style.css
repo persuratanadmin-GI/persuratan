@@ -86,3 +86,18 @@ button:disabled{opacity:.55;cursor:not-allowed}
 @media print{.actbar{display:none!important}}
 #pane button.b.nv{background:#2b4f9e;border-color:#9db8ee}
 #pane button.b{border-color:#9db8ee}
+#batchbar{opacity:1;background:var(--card)}
+.actbar button{padding:8px 12px;font-size:13.5px}.actbar .gl{min-width:46px}
+
+/* Penataan tombol dan tampilan tab */
+.rbar{flex-wrap:nowrap;margin:0 0 10px}.rbar .d{margin-left:auto}
+#seForm{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}#seForm .sec:first-child{margin-top:4px}
+.sg-prev:not([src]),.sg-prev[src=""]{display:none}
+#tab-se .actbar{margin-top:18px}
+
+/* Surat baru = tombol utama (amber, sedikit lebih besar); jarak antartombol rapat */
+button.b.new{background:linear-gradient(#ffb938,#f59e0b);border-color:#cf8200;color:#1b2433;font-weight:800;min-height:40px;padding:8px 18px;box-shadow:0 0 0 3px rgba(245,158,11,.28),0 2px 6px rgba(0,0,0,.2)}
+button.b.new:hover{filter:brightness(1.06);box-shadow:0 0 0 4px rgba(245,158,11,.4),0 2px 8px rgba(0,0,0,.25)}
+.actbar .grp{gap:6px}.actbar .gl{min-width:52px}
+#batchbar button.b{min-width:0}
+#batchbar[hidden]{display:none}
