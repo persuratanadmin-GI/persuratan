@@ -3,8 +3,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Admin Surat Lembur</title>
 <link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/sppd.css">
 </head><body>
 <header><h1>Admin Surat Lembur</h1>
+<nav class="modes" id="modes"><button id="mdL" class="on">Surat Lembur</button><button id="mdS">SPPD</button></nav>
 <small id="st">Data tersimpan di browser ini</small></header>
 <main>
 <section id="left" class="card">
@@ -74,6 +76,59 @@
  <div id="batchbar" class="hint" hidden></div>
  <div id="sheets"></div>
 </section>
+<section id="sp-left" class="card" hidden>
+<div class="tabs" id="sp-tabs"><button data-t="in" class="on">Input</button><button data-t="pe">Pegawai</button><button data-t="ri">Riwayat</button><button data-t="se">Pengaturan</button></div>
+
+<div id="sp-tab-in">
+ <label>Tempel pesan WhatsApp (Form SPPD)</label>
+ <textarea id="sp-wa" style="min-height:150px" placeholder="Form SPPD:&#10;Personil :&#10;1. Nama pegawai&#10;&#10;Destinasi SPPD : Parepare - Pinrang&#10;Maksud SPPD : ...&#10;Estimasi : 1 hari&#10;Tanggal : 13 Oktober 2026&#10;Transportasi : Kendaraan dinas PP"></textarea>
+ <div class="acts"><button class="b" id="sp-parse">Proses Pesan</button></div>
+ <div id="sp-parseOut"></div>
+ <p class="hint lgd"><span class="rq">*</span> Wajib <i style="background:#eaf3ff;border-color:#1d5fd1"></i>Diisi <i style="background:#ffe9ec;border-color:#dc2626"></i>Kosong <i style="background:#fff3d6;border-color:#d97706"></i>Periksa</p>
+ <div id="sp-form"></div>
+ <div class="actbar">
+  <div class="grp"><span class="gl">Surat</span><button class="b new" id="sp-bNew">+ Surat baru</button><button class="b" id="sp-bDraft">Simpan draft</button><button class="g" id="sp-bDone">Tandai selesai</button></div>
+  <div class="grp"><span class="gl">Keluaran</span><button class="b nv" id="sp-bPdf">Unduh PDF</button><button class="g" id="sp-bPrint">Cetak</button><button class="g" id="sp-bTtd" title="Daftarkan gambar tanda tangan (dipakai bersama surat lembur)">Kelola tanda tangan</button></div>
+ </div>
+</div>
+
+<div id="sp-tab-pe" hidden>
+ <div class="acts"><label class="g" style="margin:0;cursor:pointer;display:inline-block">Impor dari Excel<input type="file" id="sp-peImp" accept=".xlsx" hidden></label><button class="d" id="sp-peClear">Hapus semua</button></div>
+ <p class="hint">Excel berisi kolom NAMA dan NIP (opsional GRADE dan JABATAN/PEKERJAAN). Data hanya tersimpan di browser ini.</p>
+ <input id="sp-peQ" placeholder="Cari nama / NIP / jabatan">
+ <div id="sp-peList"></div>
+ <h4 id="sp-peT" style="margin:12px 0 0">Tambah pegawai</h4>
+ <label>Nama lengkap</label><input id="sp-pn">
+ <div class="row"><div><label>Grade</label><input id="sp-pg"></div><div><label>NIP</label><input id="sp-pi"></div></div>
+ <label>Jabatan</label><input id="sp-pj">
+ <div class="acts"><button class="b" id="sp-peSave">Simpan pegawai</button><button class="g" id="sp-peReset">Batal</button></div>
+</div>
+
+<div id="sp-tab-ri" hidden>
+ <div class="acts rbar"><button class="b nv" id="sp-rPdf">Unduh PDF</button></div>
+ <input id="sp-rQ" placeholder="Cari nama / tujuan / maksud">
+ <div class="row"><div><label>Dari</label><input type="date" id="sp-rA"></div><div><label>Sampai</label><input type="date" id="sp-rB"></div></div>
+ <div id="sp-rList" style="margin-top:8px"></div>
+</div>
+
+<div id="sp-tab-se" hidden>
+ <div id="sp-seForm"></div>
+ <pre id="sp-testOut" class="hint"></pre>
+ <div class="actbar">
+  <div class="grp"><span class="gl">SPPD</span><button class="b" id="sp-seSave">Simpan pengaturan</button><button class="g" id="sp-selfTest">Uji parser SPPD</button></div>
+  <div class="grp"><span class="gl">Cadangan</span><button class="g" id="sp-exp">Ekspor JSON</button><label class="g" style="margin:0;cursor:pointer;display:inline-block">Impor JSON<input type="file" id="sp-imp" accept=".json" hidden></label></div>
+ </div>
+</div>
+</section>
+
+<section id="sp-pane" class="card" hidden>
+ <div id="sp-hint" class="hint"></div>
+ <div id="sp-sgbar" class="hint" hidden>
+  <span id="sp-sgctl" hidden><b id="sp-sgName"></b> · Ukuran <input type="range" id="sp-sgSize" min="20" max="400" step="5" style="width:110px;display:inline;padding:0"> <span id="sp-sgPct"></span>
+  <button class="g" data-n="l">←</button><button class="g" data-n="r">→</button><button class="g" data-n="u">↑</button><button class="g" data-n="d">↓</button> <button class="g" id="sp-sgReset">Reset</button></span></div>
+ <div id="sp-batchbar" class="hint" hidden></div>
+ <div id="sp-sheets"></div>
+</section>
 </main>
 <script src="vendor/jspdf.umd.min.js"></script>
 <script src="vendor/exceljs.min.js"></script>
@@ -90,4 +145,7 @@
 <script src="js/excel-ui.js"></script>
 <script src="js/manage.js"></script>
 <script src="js/main.js"></script>
+<script src="js/sppd-logo.js"></script>
+<script src="js/sppd-logic.js"></script>
+<script src="js/sppd.js"></script>
 </body></html>

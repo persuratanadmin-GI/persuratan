@@ -177,3 +177,37 @@ Tab **Pengaturan**, tombol **Jalankan uji parser & durasi** menjalankan uji bawa
 Pada pengembangan, tata letak diverifikasi dengan Chrome headless terhadap `Bahan_Proyek.pdf`:
 selisih garis dasar teks rata-rata 0,02 pt, ketebalan garis sama (0,85 pt setelah diskalakan).
 Pengujian cetak pada printer dan browser Anda sendiri tetap perlu dilakukan sebelum dipakai sebagai arsip.
+
+
+## Surat Perintah Perjalanan Dinas (SPPD)
+
+Tombol **SPPD** di pojok atas beralih ke mode SPPD (tombol **Surat Lembur** kembali ke mode lama; keduanya tidak saling mengubah).
+Tata letak mengikuti `Format Surat Dinas.docx` (satu A4 per surat, pratinjau dan PDF memakai daftar elemen yang sama).
+
+1. **Pegawai:** tab Pegawai, **Impor dari Excel** (kolom NAMA dan NIP; GRADE dan JABATAN/PEKERJAAN bila ada). Data digabung per NIP dan
+   hanya tersimpan di browser (kunci `sppd.v1`), tidak ikut di kode. Bisa juga ditambah/diedit manual.
+2. **Pengaturan:** pejabat yang memberi perintah (baris 1 dan blok tanda tangan) dan General Manager bersifat tetap di semua surat; ubah hanya lewat tab Pengaturan.
+   Bawaan: Kamran, grade 17, NIP 7493103F. Jika repositori publik, kosongkan NIP di `js/sppd-logic.js` (SP_DEF) lalu isi lewat Pengaturan.
+3. **Input:** tempel pesan WhatsApp lalu **Proses Pesan**. Contoh:
+
+```
+Form SPPD:
+Personil :
+1. Ikhwan
+
+Destinasi SPPD : Parepare - Pinrang
+Maksud SPPD : Koordinasi TJSL TPS3R Tadokkong
+Estimasi : 1 hari
+Tanggal : 13 Oktober 2026
+Transportasi : Kendaraan dinas PP
+```
+
+   Aturan: satu personil = satu surat. Di formulir, mengetik nama (mis. "ikhwan", "samsu alam") otomatis mengisi Grade, NIP, dan Jabatan dari
+   daftar pegawai (jabatan diberi akhiran unit dari Pengaturan). "Pinrang" menjadi "Kab. Pinrang"; Parepare/Makassar/Palopo menjadi "Kota ...".
+   Baris 7 (Urgensi) selalu "Melaksanakan " + isi baris 3 (Maksud). Lama perjalanan selalu mengikuti tanggal berangkat dan tanggal kembali
+   (mengubah tanggal berangkat menggeser tanggal kembali dengan lama yang sama; mengubah tanggal kembali menghitung ulang lama).
+   "Pada tanggal" di kanan bawah selalu sama dengan tanggal berangkat. Rentang seperti "13-15 Oktober 2026" juga dibaca. Beberapa blok
+   (diawali "Form SPPD:" atau label berulang) menjadi beberapa surat.
+4. Tanda tangan memakai tab **Tanda Tangan** yang sama dengan surat lembur (tombol **Kelola tanda tangan**). Tanda tangan di pratinjau bisa
+   digeser dan diubah ukurannya. Nama berkas PDF: `SPPD NAMA DD BULAN YYYY.pdf`.
+5. Riwayat SPPD, cadangan JSON, dan **Uji parser SPPD** ada di tab Riwayat/Pengaturan. Uji otomatis: `node tests/sppd.test.js`.

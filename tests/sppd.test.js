@@ -1,0 +1,30 @@
+/* Uji logika SPPD tanpa browser/jsdom. Jalankan: node tests/sppd.test.js */
+const vm = require("vm"), fs = require("fs"), path = require("path");
+const ctx = { window: {}, document: { getElementById() { return null; } }, console };
+vm.createContext(ctx);
+const baca = f => fs.readFileSync(path.join(__dirname, "..", "js", f), "utf8");
+vm.runInContext(baca("logic.js") + baca("sppd-logic.js") + ";this.X={spBlocks,spBuild,spLayout,spRute,spLama,spTanggal,spCari,spMissing,spLamaOf}", ctx);
+const X = ctx.X;
+let gagal = 0;
+const cek = (n, ok, info = "") => { console.log((ok ? "LULUS  " : "GAGAL  ") + n + (ok ? "" : " " + info)); if (!ok) gagal++; };
+const peg = [{ nama: "IKHWAN ALWI", grade: 12, nip: "9617047FBY", jabatan: "TL K3 & KAM" }, { nama: "SAMSU ALAM", grade: 14, nip: "7293107F", jabatan: " MANAGER" },
+  { nama: "MUARIS ", grade: 10, nip: "9515022FY", jabatan: "JTC HAR GI" }, { nama: "ICHSAN MAHYUDDIN ", grade: 13, nip: "8403050F", jabatan: "TL HAR JAR" }];
+const wa = "Form SPPD:\nPersonil :\n1. \u2060Ikhwan\n\nDestinasi SPPD : Parepare - Pinrang\n\nMaksud SPPD : Koordinasi TJSL TPS3R Tadokkong\nEstimasi : 1 hari\nTanggal : 13 Oktober 2026\n\u2060Transportasi : Kendaraan dinas PP";
+const r = X.spBuild(X.spBlocks(wa)[0], peg, {}).surat[0];
+cek("pesan contoh: pegawai", r.personName === "Ikhwan Alwi" && r.grade === "12" && r.nip === "9617047FBY" && r.jabatan === "TL K3 & KAM ULTG Parepare");
+cek("pesan contoh: rute", r.berangkat === "Kota Parepare" && r.tujuan === "Kab. Pinrang");
+cek("pesan contoh: tanggal/lama/terbit", r.tglBerangkat === "2026-10-13" && r.tglKembali === "2026-10-13" && r.lama === 1 && r.tglTerbit === "2026-10-13");
+cek("pesan contoh: transportasi & urgensi", r.transport === "Kendaraan Dinas PP");
+const m = X.spBuild(X.spBlocks("Personil:\n1. Samsu\n2. Muaris\nDestinasi: Pare-Pare - Polman\nMaksud: Rapat\nEstimasi: 3 hari\nTanggal: 13 Oktober 2026\nTransportasi: Kendaraan dinas")[0], peg, {}).surat;
+cek("multi personil", m.length === 2 && m[1].personName === "Muaris" && m[0].tglKembali === "2026-10-15" && m[0].berangkat === "Kota Pare-Pare".replace("Pare-Pare", "Parepare"));
+cek("lama terbilang", X.spLama(1) === "1 ( Satu ) hari" && X.spLama(12) === "12 ( Dua Belas ) hari" && X.spLama(21) === "21 ( Dua Puluh Satu ) hari");
+cek("rentang tanggal", (t => t.a === "2026-10-13" && t.b === "2026-10-15")(X.spTanggal("13-15 Oktober 2026")) && X.spTanggal("13/10/2026").a === "2026-10-13");
+cek("rute tidak salah belah", X.spRute("Pare-Pare - Polman").b === "Pare-Pare" && X.spRute("Parepare-Pinrang").t === "Pinrang");
+cek("nama ambigu tidak ditebak", X.spCari([{ nama: "ICHSAN A" }, { nama: "ICHSAN B" }], "ichsan").p === null);
+cek("dua blok Form SPPD", X.spBlocks(wa + "\n\nForm SPPD:\nPersonil: Muaris\nDestinasi: A - B").length === 2);
+cek("pesan kosong label -> tidak ada blok", X.spBlocks("halo apa kabar").length === 0);
+const lay = X.spLayout(r).filter(e => e.k === "t").map(e => e.t);
+cek("layout memuat isi surat", ["SURAT PERINTAH PERJALANAN DINAS", ": Kamran", ": 17 / 7493103F", ": Ikhwan Alwi", "a. 1 ( Satu ) hari", "b. 13 Oktober 2026", ": 13 Oktober 2026", ": Melaksanakan Koordinasi TJSL TPS3R Tadokkong", "KAMRAN", "FERMI TRAFIANTO"].every(t => lay.includes(t)), lay.join("|"));
+cek("data lengkap -> tidak ada yang hilang", X.spMissing(r).length === 0, X.spMissing(r).join(","));
+cek("lama mengikuti tanggal", X.spLamaOf({ tglBerangkat: "2026-10-13", tglKembali: "2026-10-16" }) === 4 && X.spLamaOf({ tglBerangkat: "2026-10-16", tglKembali: "2026-10-13" }) === 0);
+process.exit(gagal ? 1 : 0);
