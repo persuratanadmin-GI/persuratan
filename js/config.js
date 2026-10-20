@@ -11,7 +11,7 @@ const APP_CONFIG={
   ptNd:"PT PLN NUSADAYA",unitNd:"UNIT LAYANAN MAKASSAR,BULUKUMBA DAN WATAMPONE",almNd:"JL.BontoRamba No.9 manuruki Kec. Tamalate Kota. Makassar",
   kepada:"KOORDINATOR OPHARHGI PT.PLN NUSADAYA",koorName:"",jabPers:"PEMELIHARAAN",jabPemberi:"TL HAR JAR",
   kota:"PARE-PARE",zona:"WITA",lokasi:"ULTG PARE-PARE",
-  polaSpk:"{n}/ULTGPAREPARE/{rom}/{yyyy}",polaLem:"{n}/{rom}/PLNND/{yyyy}",seqSpk:0,seqLem:0,pad:3,
+  polaSpk:"{n}/ULTGPAREPARE/{rom}/{yyyy}",polaLem:"{n}/{rom}/PLNND/{yyyy}",seqSpk:0,seqLem:0,pad:3,nomorKosong:true,
   xlJudul:"DAFTAR LEMBUR PEMELIHARAAN (TENAGA ALIH DAYA) UPT MAKASSAR",xlUnit:"ULTG PAREPARE",xlKota:"Parepare",
   xlLbl1:"Manager,",xlLbl2:"TL Har Protek, MTR & OTM",xlLbl3:"TL Har GI",xlLbl4:"TL HAR JAR",xlNama1:"SAMSU ALAM",xlNama2:"MUH. APRIZAL A.",xlNama3:"ANHAR FITRA NUR SATYA",xlNama4:"ICHSAN MAHYUDDIN",excelMap:{}}
 };

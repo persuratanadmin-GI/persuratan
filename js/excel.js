@@ -92,13 +92,14 @@ function xlTangkapBlok(ws,start){
   row.eachCell({includeEmpty:false},(c,col)=>{if(c.master&&c.master!==c)return;cells.push({col,v:c.value,font:c.font,alignment:c.alignment,border:c.border,numFmt:c.numFmt,fill:c.fill})});
   rows.push({r:r-start,h:row.height,cells})}
  const merges=(ws.model.merges||[]).map(m=>{const [a,b]=m.split(":"),pa=ws.getCell(a),pb=ws.getCell(b);return{r1:pa.row,c1:pa.col,r2:pb.row,c2:pb.col}}).filter(m=>m.r1>=start).map(m=>({...m,r1:m.r1-start,r2:m.r2-start}));
- const gambar=ws.getImages().filter(i=>i.range.tl.row>=start-1).map(i=>({id:i.imageId,tl:{col:i.range.tl.col,row:i.range.tl.row-(start-1)},br:{col:i.range.br.col,row:i.range.br.row-(start-1)},editAs:i.range.editAs}));
+ /* Gambar bisa berjangkar dua sel (tl+br, dari Excel) atau satu sel + ukuran (tl+ext, dibuat aplikasi ini); keduanya dipertahankan. */
+ const gambar=ws.getImages().filter(i=>i.range.tl.row>=start-1&&(i.range.br||i.range.ext)).map(i=>({id:i.imageId,tl:{col:i.range.tl.col,row:i.range.tl.row-(start-1)},br:i.range.br?{col:i.range.br.col,row:i.range.br.row-(start-1)}:null,ext:i.range.br?null:{width:i.range.ext.width,height:i.range.ext.height},editAs:i.range.editAs}));
  return{rows,merges,gambar,ada:rows.some(x=>x.cells.length)||gambar.length>0}}
 function xlTulisBlok(ws,blok,start){
  blok.rows.forEach(rw=>{const row=ws.getRow(start+rw.r);if(rw.h)row.height=rw.h;
   rw.cells.forEach(c=>{const x=ws.getCell(start+rw.r,c.col);x.value=c.v;if(c.font)x.font=c.font;if(c.alignment)x.alignment=c.alignment;if(c.border)x.border=c.border;if(c.numFmt)x.numFmt=c.numFmt;if(c.fill)x.fill=c.fill})});
  blok.merges.forEach(m=>ws.mergeCells(start+m.r1,m.c1,start+m.r2,m.c2));
- blok.gambar.forEach(g=>ws.addImage(Number(g.id),{tl:{col:g.tl.col,row:g.tl.row+start-1},br:{col:g.br.col,row:g.br.row+start-1},editAs:g.editAs||"oneCell"}))}
+ blok.gambar.forEach(g=>ws.addImage(Number(g.id),g.br?{tl:{col:g.tl.col,row:g.tl.row+start-1},br:{col:g.br.col,row:g.br.row+start-1},editAs:g.editAs||"oneCell"}:{tl:{col:g.tl.col,row:g.tl.row+start-1},ext:g.ext,editAs:g.editAs||"oneCell"}))}
 /* Gambar tanda tangan pada sheet acuan yang masih milik orang yang sama (nama di kolom itu = nama pengesah sekarang). */
 function xlGambarRef(ref,slot){
  if(!ref||!ref.model.blockStart)return[];const ws=ref.ws,start=ref.model.blockStart,awal=XL.SLOT.map(s=>s[0]);

@@ -87,5 +87,6 @@ function parseWA(text){
  if(f.mulai&&f.selesai&&f.mulai===f.selesai)st.selesai={s:"warn",m:"Jam mulai = jam selesai (dihitung 24 jam)"};
  return{f,st,unk}}
 function nextNo(type){const s=DB.settings,seq=(type==="spk"?s.seqSpk:s.seqLem)+1;return fmtNo(type==="spk"?s.polaSpk:s.polaLem,seq,cur.tanggal)}
-function fmtNo(pola,n,iso){const d=iso?new Date(iso+"T00:00"):new Date();return pola.replace("{n}",String(n).padStart(DB.settings.pad,"0")).replace("{rom}",ROM[d.getMonth()]).replace("{yyyy}",d.getFullYear()).replace("{mm}",pad2(d.getMonth()+1))}
+/* Nomor urut ditulis "...." (diisi tangan setelah dicetak) selama Pengaturan "Nomor urut ditulis ...." aktif; bulan Romawi, tahun, dan kode unit tetap otomatis. */
+function fmtNo(pola,n,iso){const d=iso?new Date(iso+"T00:00"):new Date();return pola.replace("{n}",DB.settings.nomorKosong?"....":String(n).padStart(DB.settings.pad,"0")).replace("{rom}",ROM[d.getMonth()]).replace("{yyyy}",d.getFullYear()).replace("{mm}",pad2(d.getMonth()+1))}
 function bumpSeq(){const b=(no,k)=>{const n=parseInt(no,10);if(!isNaN(n)&&n>DB.settings[k])DB.settings[k]=n};b(cur.spk,"seqSpk");b(cur.lemburNo,"seqLem")}

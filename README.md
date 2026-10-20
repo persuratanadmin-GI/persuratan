@@ -125,7 +125,9 @@ objek lain di luar blok pengesahan pada sheet yang diperbarui tidak ikut diperta
 Tab **Pengaturan** memuat kop surat, kota, zona waktu, koordinator default (kosong di versi ini; isi sendiri), jabatan personel default (PEMELIHARAAN),
 jabatan pemberi perintah default (TL HAR JAR), serta pola dan nomor urut surat. Semuanya bisa diubah.
 
-Pola nomor saat ini (`{n}/ULTGPAREPARE/{rom}/{yyyy}` dan `{n}/{rom}/PLNND/{yyyy}`) **hanya berdasarkan satu contoh dokumen**.
+Nomor urut pada nomor surat ditulis **`....`** (diisi tangan setelah dicetak), sedangkan bagian lain tetap otomatis, misalnya
+`..../ULTGPAREPARE/X/2026` dan `..../X/PLNND/2026`. Untuk angka urut otomatis (001, 002, ...), matikan **Nomor urut ditulis ....** di Pengaturan.
+Pola nomor (`{n}/ULTGPAREPARE/{rom}/{yyyy}` dan `{n}/{rom}/PLNND/{yyyy}`) **hanya berdasarkan satu contoh dokumen**.
 Konfirmasikan aturan sebenarnya, lalu ubah di Pengaturan atau di `defaults` pada `js/config.js`.
 
 Nama koordinator sengaja dikosongkan di `js/config.js` agar tidak ikut terunggah ke repositori publik. Isi sekali di tab

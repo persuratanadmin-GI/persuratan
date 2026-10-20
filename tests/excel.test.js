@@ -55,6 +55,32 @@ const e = (nama, iso, masuk, pulang, ket) => ({ nama, iso, masuk, pulang, ket })
   const t5 = []; wb5.worksheets[0].eachRow(r => r.eachCell(c => { if (typeof c.value === "string" && /Parepare,/.test(c.value)) t5.push(c.value); }));
   cek("tanggal pengesahan bawaan = akhir bulan", t5[0] === "Parepare, 31 Oktober 2026", t5.join());
 
+  // 6) regresi: personel kedua/ketiga ke file buatan aplikasi sendiri (gambar TTD berjangkar satu sel + ukuran, tanpa "br")
+  const png = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4z8DwHwAFAAH/q842iQAAAABJRU5ErkJggg==";
+  const gb = { base64: png, ext: "png", w: 100, h: 50 };
+  const slotG = [{ label: "A,", nama: "PENGESAH SATU", gambar: gb }, { label: "B", nama: "PENGESAH DUA" }, { label: "C", nama: "PENGESAH TIGA", gambar: gb }, { label: "D", nama: "PENGESAH EMPAT", gambar: gb }];
+  const tambah = async (buf, n, iso) => { const w = new ExcelJS.Workbook(); if (buf) await w.xlsx.load(buf); X.xlTerapkan(w, [e(n, iso, "17:00", "20:00", "y")], { kota: "Parepare", slot: slotG }); return w.xlsx.writeBuffer(); };
+  let buf6 = await tambah(null, "PERSONEL SATU", "2026-10-05"), ok6 = true, info6 = "";
+  for (const [n, iso] of [["PERSONEL DUA", "2026-10-07"], ["PERSONEL TIGA", "2026-10-09"]]) {
+    try { buf6 = await tambah(buf6, n, iso); } catch (err) { ok6 = false; info6 = err.message; break; }
+  }
+  const w6 = new ExcelJS.Workbook(); await w6.xlsx.load(buf6);
+  cek("personel kedua dan ketiga masuk ke file yang sama tanpa galat", ok6, info6);
+  cek("3 personel tercatat dan 3 gambar tanda tangan tetap ada", ok6 && X.xlParse(w6.worksheets[0]).people.length === 3 && w6.worksheets[0].getImages().length === 3);
+  const baris6 = w6.worksheets[0].getImages().map(g => g.range.tl.row), nama6 = [];
+  w6.worksheets[0].eachRow(r => { const v = r.getCell(1).value; if (typeof v === "string") nama6.push([r.number, v]); });
+  const barisNama = (nama6.find(x => /PENGESAH/.test(x[1])) || nama6.find(x => x[1] === "Mengetahui") || [0])[0];
+  cek("gambar tanda tangan bergeser ke bawah mengikuti baris baru (di atas baris nama pengesah)", ok6 && baris6.every(r => r > 12.5 && r < barisNama), baris6.join());
+
+  // 7) regresi: gambar berjangkar dua sel (seperti file yang disimpan ulang di Excel) tetap bisa digeser
+  const w7a = new ExcelJS.Workbook(); X.xlTerapkan(w7a, [e("PERSONEL SATU", "2026-10-05", "16:30", "18:00", "x")], { kota: "Parepare", slot: slotG });
+  { const ws7 = w7a.worksheets[0], lama7 = ws7.getImages().map(g => ({ id: g.imageId, col: g.range.tl.col, row: g.range.tl.row }));
+    ws7._media = ws7._media.filter(m => m.type !== "image");   // ganti ke jangkar dua sel (tl + br) lewat addImage agar sah
+    lama7.forEach(g => ws7.addImage(g.id, { tl: { col: g.col, row: g.row }, br: { col: g.col + 1.5, row: g.row + 1.5 }, editAs: "oneCell" })); }
+  const buf7 = await w7a.xlsx.writeBuffer(), w7b = new ExcelJS.Workbook(); await w7b.xlsx.load(buf7);
+  let ok7 = true, info7 = ""; try { X.xlTerapkan(w7b, [e("PERSONEL DUA", "2026-10-07", "17:00", "20:00", "y")], { kota: "Parepare", slot: slotG }); } catch (err) { ok7 = false; info7 = err.message; }
+  cek("gambar berjangkar dua sel tetap bisa digeser saat personel baru ditambah", ok7 && w7b.worksheets[0].getImages().length === 3 && w7b.worksheets[0].getImages().every(g => g.range.br), info7);
+
   console.log(gagal ? `\n${gagal} uji GAGAL` : "\nSemua uji Excel lulus");
   process.exit(gagal ? 1 : 0);
 })();

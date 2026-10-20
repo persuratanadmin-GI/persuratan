@@ -66,7 +66,11 @@ const cek = (nama, ok, info = "") => { console.log((ok ? "LULUS  " : "GAGAL  ") 
   await new Promise(r => setTimeout(r, 50));
   cek("3 surat tampil di pratinjau", d.querySelectorAll("#sheets .lw").length === 3);
   const nomor = w.eval(`batch.map(c=>c.spk+"|"+c.lemburNo)`);
-  cek("nomor surat berurutan 001-003", /^001\//.test(nomor[0]) && /^002\//.test(nomor[1]) && /^003\//.test(nomor[2]), nomor.join(" "));
+  cek("nomor surat: urut '....', pola dan bulan tetap", nomor.every(n => n === "..../ULTGPAREPARE/VIII/2026|..../VIII/PLNND/2026"), nomor.join(" "));
+  cek("fmtNo contoh ..../ULTGPAREPARE/X/2026", w.eval(`fmtNo("{n}/ULTGPAREPARE/{rom}/{yyyy}",7,"2026-10-05")`) === "..../ULTGPAREPARE/X/2026");
+  w.eval(`DB.settings.nomorKosong=false`);
+  cek("nomor urut angka (bila opsi '....' dimatikan) tetap 001", w.eval(`fmtNo("{n}/X",1,"2026-10-05")`) === "001/X");
+  w.eval(`DB.settings.nomorKosong=true`);
   cek("kolom wajib kosong terdeteksi", w.eval(`missing(blank()).length`) >= 6);
 
   // 4. tata letak A4
