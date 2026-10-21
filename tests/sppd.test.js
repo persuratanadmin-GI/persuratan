@@ -27,4 +27,8 @@ const lay = X.spLayout(r).filter(e => e.k === "t").map(e => e.t);
 cek("layout memuat isi surat", ["SURAT PERINTAH PERJALANAN DINAS", ": Kamran", ": 17 / 7493103F", ": Ikhwan Alwi", "a. 1 ( Satu ) hari", "b. 13 Oktober 2026", ": 13 Oktober 2026", ": Melaksanakan Koordinasi TJSL TPS3R Tadokkong", "KAMRAN", "FERMI TRAFIANTO"].every(t => lay.includes(t)), lay.join("|"));
 cek("data lengkap -> tidak ada yang hilang", X.spMissing(r).length === 0, X.spMissing(r).join(","));
 cek("lama mengikuti tanggal", X.spLamaOf({ tglBerangkat: "2026-10-13", tglKembali: "2026-10-16" }) === 4 && X.spLamaOf({ tglBerangkat: "2026-10-16", tglKembali: "2026-10-13" }) === 0);
+cek("tanpa paraf -> tidak ada elemen paraf", !X.spLayout(r).some(e => e.key === "PF"));
+ctx.SPDB = { settings: { paraf: "data:image/png;base64,AAAA" } };
+const pf = X.spLayout(r).find(e => e.key === "PF");
+cek("dengan paraf -> muncul di kanan nama pejabat, di dalam halaman", !!pf && pf.src.startsWith("data:") && pf.cx > 432.4 && pf.cx + pf.w / 2 <= 582.45, JSON.stringify(pf));
 process.exit(gagal ? 1 : 0);

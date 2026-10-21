@@ -145,4 +145,8 @@ function spLayout(c){const S={...SP_DEF,...(typeof SPDB!=="undefined"?SPDB.setti
  T(163.1,y1+40.4,FS,"Menyetujui,",{a:"c"});T(163.1,y1+53.1,FS,S.gmJab||"",{a:"c"});T(163.1,nm,FS,String(S.gmNama||"").toUpperCase(),{a:"c"});
  T(432.4,y1+40.4,FS,"Yang Memberi Perintah,",{a:"c"});T(432.4,y1+53.1,FS,S.pjTtdJab||"",{a:"c"});T(432.4,nm,FS,String(S.pjNama||"").toUpperCase(),{a:"c"});
  it.push({k:"s",key:"GM",nama:S.gmNama,cx:163.1,cy},{k:"s",key:"PJ",nama:S.pjNama,cx:432.4,cy});
+ /* paraf (satu gambar untuk semua surat): di ujung kanan nama pejabat yang memberi perintah, sebaris dengan nama */
+ if(S.paraf){const pw=56,ph=28,nw=spW(String(S.pjNama||"").toUpperCase(),FS,false)||50,ujung=432.4+nw/2; /* ujung kanan nama */
+  const pcx=Math.min(ujung+1+pw/2,R-3-pw/2); /* mulai tepat di ujung nama (sedikit menempel), tidak keluar garis kanan */
+  it.push({k:"s",key:"PF",src:S.paraf,l:1,w:pw,h:ph,cx:pcx,cy:nm+10.5-ph/2}) /* dasar gambar sejajar garis dasar huruf nama */}
  return it}
