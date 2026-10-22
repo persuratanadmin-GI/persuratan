@@ -213,3 +213,68 @@ html[data-theme="dark"] .lg-ok{background:rgba(108,155,255,.18)}
 html[data-theme="dark"] .lg-need{background:rgba(255,139,126,.18)}
 html[data-theme="dark"] .lg-warn{background:rgba(240,180,85,.18)}
 }
+
+/* =====================================================================
+   Tambahan v2 (aditif, hanya layar): tab tanpa scroll, indikator tab,
+   meter kelengkapan, ringkasan personel, hapus + urungkan, empty state.
+   ===================================================================== */
+@media screen{
+/* ---- Tab: tanpa scroll horizontal, rapi di lebar berapa pun ---- */
+#tabs,#sp-tabs{position:relative;flex-wrap:wrap;overflow:visible;gap:0}
+#tabs button,#sp-tabs button{flex:1 1 auto;justify-content:center;gap:5px;padding:11px 6px;font-size:12.5px}
+#tabs.fx-ind button,#sp-tabs.fx-ind button{border-bottom-color:transparent}
+#tabs.fx-ind::after,#sp-tabs.fx-ind::after{content:"";position:absolute;left:0;top:0;height:3px;width:var(--iw,0);border-radius:3px 3px 0 0;
+  background:linear-gradient(90deg,var(--c-primary),var(--c-accent));transform:translate(var(--ix,0),var(--iy,0));
+  transition:transform .4s var(--ease),width .4s var(--ease);pointer-events:none}
+
+/* ---- Meter kelengkapan formulir ---- */
+.fx-meter{position:sticky;top:calc(var(--fx-hh,62px) + 8px);z-index:6;margin:0 0 12px;padding:10px 12px;border-radius:12px;border:1px solid var(--c-border);
+  background:var(--c-glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:var(--shadow-1);transition:border-color .3s,box-shadow .3s}
+.fx-meter[hidden]{display:none}
+.fx-meter.done{border-color:var(--c-ok-line);box-shadow:0 8px 24px -14px rgba(20,102,58,.55)}
+.fx-meter.done.warn{border-color:var(--c-warn-line)}
+.fx-m-top{display:flex;align-items:center;justify-content:space-between;gap:8px 12px;flex-wrap:wrap;font-size:12.5px;color:var(--c-muted)}
+.fx-m-txt b{color:var(--c-text);font-variant-numeric:tabular-nums}
+.fx-m-txt small{margin-left:8px;color:var(--c-warn);font-weight:600;font-size:12px}
+.fx-m-go{border:1px solid var(--c-primary-line);background:var(--c-primary-soft);color:var(--c-primary);border-radius:99px;padding:3px 12px;font:inherit;font-size:12px;font-weight:600;cursor:pointer;
+  max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;transition:transform .2s var(--ease),background .2s}
+.fx-m-go[hidden]{display:none}
+.fx-m-go:hover{transform:translateY(-1px)}
+.fx-m-go:active{transform:scale(.96)}
+.fx-m-bar{height:6px;border-radius:99px;background:var(--c-sunken);overflow:hidden;margin-top:8px}
+.fx-m-bar i{display:block;height:100%;width:var(--p,0%);border-radius:inherit;background:linear-gradient(90deg,hsl(var(--h,0) 75% 52%),hsl(var(--h2,18) 70% 46%));transition:width .55s var(--ease),background .4s}
+.fx-meter.done .fx-m-txt{animation:fxPop2 .45s var(--ease) both}
+.fx-ping{animation:fxPing 1.1s var(--ease) 1}
+@keyframes fxPing{0%{box-shadow:0 0 0 0 rgba(36,87,197,.55)}100%{box-shadow:0 0 0 14px rgba(36,87,197,0)}}
+@keyframes fxPop2{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:none}}
+
+/* ---- Ringkasan personel ---- */
+.fx-stats{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 8px}
+.fx-chip{display:inline-flex;align-items:baseline;gap:5px;padding:3px 11px;border-radius:99px;font-size:12px;color:var(--c-muted);background:var(--c-sunken);border:1px solid var(--c-border);animation:fxPop2 .35s var(--ease) both}
+.fx-chip b{color:var(--c-text);font-variant-numeric:tabular-nums}
+.fx-chip.ok{background:var(--c-ok-soft);border-color:var(--c-ok-line)}
+.fx-chip.warn{background:var(--c-warn-soft);border-color:var(--c-warn-line)}
+
+/* ---- Hapus: baris keluar halus, tombol urungkan di toast ---- */
+:is(#peList,#rList,#ttList,#sp-peList,#sp-rList) table.t tr.fx-out{animation:fxOut .24s var(--ease) forwards!important;pointer-events:none}
+@keyframes fxOut{to{opacity:0;transform:translateX(28px) scale(.97)}}
+#toast .fx-undo{margin-left:12px;border:0;border-radius:8px;padding:4px 11px;font:inherit;font-weight:700;font-size:12.5px;cursor:pointer;background:rgba(255,255,255,.16);color:#fff;transition:background .2s,transform .2s var(--ease)}
+#toast .fx-undo:hover{background:rgba(255,255,255,.3)}
+#toast .fx-undo:active{transform:scale(.94)}
+#toast .fx-undo:focus-visible{outline:2px solid #fff;outline-offset:2px}
+
+/* ---- Keadaan kosong yang mengajak bertindak ---- */
+:is(#peList,#rList,#ttList,#sp-peList,#sp-rList)>p.hint:only-child,#peList>.fx-stats+p.hint{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;
+  padding:22px 16px;margin:10px 0;border:1.5px dashed var(--c-border-strong);border-radius:14px;background:var(--c-sunken);animation:fxFade .4s var(--ease) both}
+:is(#peList,#rList,#ttList,#sp-peList,#sp-rList)>p.hint:only-child::before,#peList>.fx-stats+p.hint::before{content:"";width:34px;height:34px;background:var(--c-primary);opacity:.55;
+  -webkit-mask:var(--i-users) center/contain no-repeat;mask:var(--i-users) center/contain no-repeat}
+#rList>p.hint:only-child::before,#sp-rList>p.hint:only-child::before{-webkit-mask-image:var(--i-clock);mask-image:var(--i-clock)}
+#ttList>p.hint:only-child::before{-webkit-mask-image:var(--i-pen);mask-image:var(--i-pen)}
+
+@media(prefers-reduced-motion:reduce){
+  :is(#peList,#rList,#ttList,#sp-peList,#sp-rList) table.t tr.fx-out{animation-duration:.001ms!important}
+  #tabs.fx-ind::after,#sp-tabs.fx-ind::after,.fx-m-bar i{transition-duration:.001ms}
+}
+html[data-theme="dark"] .fx-m-go{background:var(--c-primary-soft)}
+html[data-theme="dark"] .fx-meter.done{box-shadow:0 8px 24px -14px rgba(95,211,148,.5)}
+}
