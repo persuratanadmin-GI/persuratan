@@ -31,4 +31,10 @@ cek("tanpa paraf -> tidak ada elemen paraf", !X.spLayout(r).some(e => e.key === 
 ctx.SPDB = { settings: { paraf: "data:image/png;base64,AAAA" } };
 const pf = X.spLayout(r).find(e => e.key === "PF");
 cek("dengan paraf -> muncul di kanan nama pejabat, di dalam halaman", !!pf && pf.src.startsWith("data:") && pf.cx > 432.4 && pf.cx + pf.w / 2 <= 582.45, JSON.stringify(pf));
+ctx.SPDB = { settings: { paraf: "data:image/png;base64,AAAA", parafAr: 0.5 } };
+const pa = X.spLayout(r).find(e => e.key === "PF");
+cek("paraf tinggi: tinggi 13pt, rasio terjaga", Math.abs(pa.h - 13) < 1e-6 && Math.abs(pa.w / pa.h - 0.5) < 1e-6 && pa.ex === 1, JSON.stringify(pa));
+ctx.SPDB = { settings: { paraf: "data:image/png;base64,AAAA", parafAr: 6 } };
+const pb = X.spLayout(r).find(e => e.key === "PF");
+cek("paraf lebar: dibatasi 26pt, rasio terjaga, di dalam halaman", Math.abs(pb.w - 26) < 1e-6 && Math.abs(pb.w / pb.h - 6) < 1e-6 && pb.cx + pb.w / 2 <= 582.45, JSON.stringify(pb));
 process.exit(gagal ? 1 : 0);

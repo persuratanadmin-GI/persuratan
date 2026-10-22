@@ -211,3 +211,12 @@ Transportasi : Kendaraan dinas PP
 4. Tanda tangan memakai tab **Tanda Tangan** yang sama dengan surat lembur (tombol **Kelola tanda tangan**). Tanda tangan di pratinjau bisa
    digeser dan diubah ukurannya. Nama berkas PDF: `SPPD NAMA DD BULAN YYYY.pdf`.
 5. Riwayat SPPD, cadangan JSON, dan **Uji parser SPPD** ada di tab Riwayat/Pengaturan. Uji otomatis: `node tests/sppd.test.js`.
+
+## Catatan pembaruan SPPD
+
+- **Paraf otomatis pas.** Saat gambar paraf diunggah, ruang kosong, latar, dan bayangan/noise foto di tepinya dibuang, lalu gambar dipotong rapat ke goresan tinta, lalu ukuran
+  (tinggi 13 pt, lebar maks 26 pt, jarak 2 pt dari nama, rasio asli terjaga) dan posisinya (menempel di kanan nama pejabat, sebaris dengan nama)
+  dihitung otomatis. Paraf lama yang sudah tersimpan dirapikan otomatis sekali saat aplikasi dibuka. Geser/ubah ukuran manual per surat tetap bisa, tetapi setiap unggah paraf baru mereset geseran lama.
+- **Unduh PDF satu per satu.** "Unduh semua PDF" membuat 1 file PDF per surat (tidak digabung). Nama file:
+  `SURAT PERINTAH PERJALANAN DINAS UPT MAKASSAR NAMA PEGAWAI (SPPD 5-7 OKTOBER).pdf`
+  (satu hari: `(SPPD 13 OKTOBER)`; lintas bulan: `(SPPD 30 OKTOBER-2 NOVEMBER)`; nama kembar diberi akhiran `(2)`, `(3)`).

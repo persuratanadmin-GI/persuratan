@@ -145,8 +145,11 @@ function spLayout(c){const S={...SP_DEF,...(typeof SPDB!=="undefined"?SPDB.setti
  T(163.1,y1+40.4,FS,"Menyetujui,",{a:"c"});T(163.1,y1+53.1,FS,S.gmJab||"",{a:"c"});T(163.1,nm,FS,String(S.gmNama||"").toUpperCase(),{a:"c"});
  T(432.4,y1+40.4,FS,"Yang Memberi Perintah,",{a:"c"});T(432.4,y1+53.1,FS,S.pjTtdJab||"",{a:"c"});T(432.4,nm,FS,String(S.pjNama||"").toUpperCase(),{a:"c"});
  it.push({k:"s",key:"GM",nama:S.gmNama,cx:163.1,cy},{k:"s",key:"PJ",nama:S.pjNama,cx:432.4,cy});
- /* paraf (satu gambar untuk semua surat): di ujung kanan nama pejabat yang memberi perintah, sebaris dengan nama */
- if(S.paraf){const pw=56,ph=28,nw=spW(String(S.pjNama||"").toUpperCase(),FS,false)||50,ujung=432.4+nw/2; /* ujung kanan nama */
-  const pcx=Math.min(ujung+1+pw/2,R-3-pw/2); /* mulai tepat di ujung nama (sedikit menempel), tidak keluar garis kanan */
-  it.push({k:"s",key:"PF",src:S.paraf,l:1,w:pw,h:ph,cx:pcx,cy:nm+10.5-ph/2}) /* dasar gambar sejajar garis dasar huruf nama */}
+ /* paraf (satu gambar untuk semua surat): menempel di ujung kanan nama pejabat, sebaris dengan nama.
+   Ukuran dihitung otomatis dari rasio gambar (S.parafAr = lebar/tinggi gambar yang sudah dipotong rapat): tinggi 13pt (sekitar 1,6x tinggi huruf kapital nama, sama seperti contoh), lebar maks 26pt. */
+ if(S.paraf){const ar=+S.parafAr>0?+S.parafAr:0,MW=26,MH=13;let pw=MW,ph=MH;
+  if(ar){ph=MH;pw=ph*ar;if(pw>MW){pw=MW;ph=MW/ar}}
+  const nw=spW(String(S.pjNama||"").toUpperCase(),FS,false)||50,ujung=432.4+nw/2; /* ujung kanan nama */
+  const pcx=Math.min(ujung+2+pw/2,R-3-pw/2); /* jarak 2pt dari nama (nyaris menempel), tidak keluar garis kanan */
+  it.push({k:"s",key:"PF",src:S.paraf,l:1,w:pw,h:ph,ex:ar?1:0,cx:pcx,cy:nm+11-ph/2}) /* dasar gambar sedikit di bawah garis dasar nama, seperti contoh */}
  return it}

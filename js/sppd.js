@@ -45,7 +45,7 @@ function spHtml(c){const o=[];for(const e of spLayout(c)){
  if(e.k==="t"){const ce=e.a==="c";o.push(`<div class="sp-t" style="left:${ce?e.x-250:e.x}pt;top:${e.y.toFixed(2)}pt;font-size:${e.s}pt;line-height:${(e.s*1.117).toFixed(2)}pt;${ce?"width:500pt;text-align:center;":""}${e.b?"font-weight:bold;":""}${e.i?"font-style:italic;":""}">${esc(e.t)}</div>`)}
  else if(e.k==="l"){const h=e.y1===e.y2;o.push(`<div class="sp-l" style="left:${h?e.x1:e.x1-e.w/2}pt;top:${(h?e.y1-e.w/2:e.y1).toFixed(2)}pt;width:${h?e.x2-e.x1:e.w}pt;height:${h?e.w:e.y2-e.y1}pt"></div>`)}
  else if(e.k==="i"){if(e.src)o.push(`<img class="sp-i" src="${e.src}" alt="" style="left:${e.x}pt;top:${e.y}pt;width:${e.w}pt;height:${e.h}pt">`)}
- else if(e.k==="s"){const s=e.src||spSigImg(e.nama);if(!s)continue;const p=(c.sigPos||{})[e.key]||{},bw=e.w||105,bh=e.h||56;o.push(`<div class="sp-sig" style="left:${(e.cx-bw/2).toFixed(2)}pt;top:${(e.cy-bh/2).toFixed(2)}pt;width:${bw}pt;height:${bh}pt${e.l?";justify-content:flex-start;align-items:flex-end":""}"><span class="sgb${spSel===e.key&&c===spCur?" sel":""}" data-p="${e.key}" title="Seret: geser · roda mouse: ukuran" style="--s:${p.s||1}${e.l?";transform-origin:0 100%":""};transform:translate(${p.x||0}mm,${p.y||0}mm) scale(${p.s||1})"><img src="${s}" alt="ttd" draggable="false"${e.w?` style="max-width:${e.w}pt;max-height:${e.h}pt"`:""}><i class="sgh"></i></span></div>`)}}
+ else if(e.k==="s"){const s=e.src||spSigImg(e.nama);if(!s)continue;const p=(c.sigPos||{})[e.key]||{},bw=e.w||105,bh=e.h||56;o.push(`<div class="sp-sig" style="left:${(e.cx-bw/2).toFixed(2)}pt;top:${(e.cy-bh/2).toFixed(2)}pt;width:${bw}pt;height:${bh}pt${e.l?";justify-content:flex-start;align-items:flex-end":""}"><span class="sgb${spSel===e.key&&c===spCur?" sel":""}" data-p="${e.key}" title="Seret: geser · roda mouse: ukuran" style="--s:${p.s||1}${e.l?";transform-origin:0 100%":""};transform:translate(${p.x||0}mm,${p.y||0}mm) scale(${p.s||1})"><img src="${s}" alt="ttd" draggable="false"${e.w?` style="${e.ex?`width:${e.w.toFixed(2)}pt;height:${e.h.toFixed(2)}pt;`:""}max-width:${e.w}pt;max-height:${e.h}pt"`:""}><i class="sgh"></i></span></div>`)}}
  return`<div class="sp-pg">${o.join("")}</div>`}
 function spTitleOf(i){const c=spBatch[i];return"SPPD "+(i+1)+" dari "+spBatch.length+" · "+(c.personName||"(belum ada nama)")+" · "+(c.tglBerangkat?fmtDate(c.tglBerangkat):"(tanggal?)")}
 function spBuildSheets(){$("sp-sheets").innerHTML=spBatch.map((c,i)=>`<div class="lw${i===spIdx?" act":""}" data-i="${i}"><div class="lbar"><span class="lt">${esc(spTitleOf(i))}</span></div><div class="shwrap"><div class="shbox"><div class="sheet">${spHtml(c)}</div></div></div></div>`).join("");
@@ -57,7 +57,7 @@ function spUpdate(){if(spCur!==spBatch[spIdx]){spBatch=[spCur];spIdx=0}
  spPersist();spButtons();if(spSel&&!document.querySelector('#sp-sheets .lw.act .sgb[data-p="'+spSel+'"]'))spSelect(null);
  const m=spMissing(spCur),sn=[],S0=SPDB.settings;if(S0.pjNama&&!spSigImg(S0.pjNama))sn.push("pejabat pemberi perintah");if(S0.gmNama&&!spSigImg(S0.gmNama))sn.push("general manager");
  $("sp-hint").textContent=[m.length?"Belum lengkap: "+m.join(", "):"",sn.length?"Tanda tangan belum terdaftar: "+sn.join(", ")+" (tab Tanda Tangan di mode Surat Lembur)":""].filter(Boolean).join(" · ")}
-function spButtons(){const s=spBatch.length>1?" ("+spBatch.length+")":"";[["sp-bDraft","Simpan draft"],["sp-bDone","Tandai selesai"],["sp-bPdf","Unduh PDF"],["sp-bPrint","Cetak"]].forEach(([id,t])=>{$(id).textContent=t+s})}
+function spButtons(){const s=spBatch.length>1?" ("+spBatch.length+")":"";[["sp-bDraft","Simpan draft"],["sp-bDone","Tandai selesai"],["sp-bPdf",spBatch.length>1?"Unduh semua PDF":"Unduh PDF"],["sp-bPrint","Cetak"]].forEach(([id,t])=>{$(id).textContent=t+s})}
 function spActive(i){spIdx=i;spCur=spBatch[i];document.querySelectorAll("#sp-sheets .lw").forEach((e,j)=>e.classList.toggle("act",j===i));spSelect(null);spSync();spUpdate()}
 $("sp-batchbar").onclick=async e=>{if(e.target.id==="sp-pdfAktif"){spPdf([spCur]);return}
  if(e.target.id==="sp-hapusAktif"&&spBatch.length>1&&await ask("Hapus SPPD "+(spIdx+1)+" dari daftar? (Riwayat yang sudah tersimpan tidak terhapus.)")){spBatch.splice(spIdx,1);spIdx=Math.min(spIdx,spBatch.length-1);spCur=spBatch[spIdx];spBuildForm();spBuildSheets();spUpdate();return}
@@ -111,22 +111,35 @@ async function spPdfLetter(pdf,c){pdf.setTextColor(0,0,0);pdf.setDrawColor(0,0,0
   if(e.k==="t"){pdf.setFont("helvetica",e.b&&e.i?"bolditalic":e.b?"bold":e.i?"italic":"normal");pdf.setFontSize(e.s);pdf.text(pdfTxt(e.t),e.x,e.y+.905*e.s,{align:e.a==="c"?"center":"left"})}
   else if(e.k==="l"){pdf.setLineWidth(e.w);pdf.line(e.x1,e.y1,e.x2,e.y2)}
   else if(e.k==="i"){if(e.src)pdf.addImage(e.src,"PNG",e.x,e.y,e.w,e.h)}
-  else if(e.k==="s"){const s=e.src||spSigImg(e.nama);if(s)sigs.push({src:s,p:e.key,cx:e.cx,cy:e.cy,bw:e.w||105,bh:e.h||56,l:e.l})}}
+  else if(e.k==="s"){const s=e.src||spSigImg(e.nama);if(s)sigs.push({src:s,p:e.key,cx:e.cx,cy:e.cy,bw:e.w||105,bh:e.h||56,l:e.l,ex:e.ex})}}
  for(const g of sigs){const im=await loadImg(g.src);if(!im)continue;const o=((c.sigPos||{})[g.p])||{x:0,y:0,s:1};
-  const k=Math.min(1,g.bw/(im.naturalWidth*.75),g.bh/(im.naturalHeight*.75)),w=im.naturalWidth*.75*k*(o.s||1),h=im.naturalHeight*.75*k*(o.s||1);
+  const k=Math.min(1,g.bw/(im.naturalWidth*.75),g.bh/(im.naturalHeight*.75)),w=g.ex?g.bw*(o.s||1):im.naturalWidth*.75*k*(o.s||1),h=g.ex?g.bh*(o.s||1):im.naturalHeight*.75*k*(o.s||1);
   pdf.addImage(g.src,"PNG",g.l?g.cx-g.bw/2+(o.x||0)*PX:g.cx+(o.x||0)*PX-w/2,(g.l?g.cy+g.bh/2-h:g.cy-h/2)+(o.y||0)*PX,w,h)}}
-function spNamaPdf(list){if(list.length===1){const c=list[0];return"SPPD "+(namaAman(c.personName)||"TANPA NAMA")+" "+(c.tglBerangkat?namaAman(fmtDate(c.tglBerangkat)):"TANPA TANGGAL")+".pdf"}
- const n=[...new Set(list.map(c=>namaAman(c.personName)).filter(Boolean))];return("DAFTAR FILE SPPD "+(n.length<=1?(n[0]||""):n.length<=3?n.join(" & "):n[0]+" DKK")).trim()+".pdf"}
+/* Nama file: SURAT PERINTAH PERJALANAN DINAS UPT MAKASSAR NAMA PEGAWAI (SPPD 5-7 OKTOBER) */
+function spTglRentang(c){const m=iso=>{const q=String(iso).split("-").map(Number);return{y:q[0],mo:q[1],d:q[2]}},bln=n=>String(BLN[n-1]||"").toUpperCase();
+ if(!c.tglBerangkat)return"TANPA TANGGAL";const a=m(c.tglBerangkat),b=c.tglKembali?m(c.tglKembali):a;
+ if(a.y===b.y&&a.mo===b.mo)return(a.d===b.d?a.d:a.d+"-"+b.d)+" "+bln(a.mo);
+ const th=a.y!==b.y;return a.d+" "+bln(a.mo)+(th?" "+a.y:"")+"-"+b.d+" "+bln(b.mo)+(th?" "+b.y:"")}
+function spNamaFile(c){return("SURAT PERINTAH PERJALANAN DINAS UPT MAKASSAR "+(namaAman(c.personName)||"TANPA NAMA")+" (SPPD "+spTglRentang(c)+")").replace(/\s+/g," ").trim()+".pdf"}
+function spNamaUnik(list){const pakai={};return list.map(c=>{let n=spNamaFile(c);if(pakai[n]){const k=++pakai[n];n=n.replace(/\.pdf$/," ("+k+").pdf")}else pakai[n]=1;return n})}
+const spJeda=ms=>new Promise(r=>setTimeout(r,ms));
+async function spSimpanFile(pdf,name,dl){const blob=pdf.output("blob");
+ if(dl){await dl.save({filename:name,data:blob});return}
+ const u=URL.createObjectURL(blob),a=document.createElement("a");a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),30000)}
+/* Satu surat = satu file PDF (tidak digabung). Dipakai oleh "Unduh semua PDF", "PDF surat ini", dan riwayat. */
 async function spPdf(list){if(pdfBusy)return;if(!list.length){toast("Tidak ada surat.");return}
  const bad=list.map((c,i)=>spMissing(c).length?"surat "+(i+1)+": "+spMissing(c).join(", "):"").filter(Boolean);
  if(bad.length&&!await ask("Data belum lengkap -> "+bad.join(" | ")+". Tetap buat PDF?"))return;
  if(!window.jspdf){toast("Pustaka PDF gagal dimuat. Gunakan tombol Cetak sebagai gantinya.");return}
- pdfBusy=true;
- try{const pdf=new window.jspdf.jsPDF({unit:"pt",format:"a4",orientation:"portrait",compress:true});
-  for(let i=0;i<list.length;i++){toast("Membuat PDF: SPPD "+(i+1)+" dari "+list.length+"...");if(i)pdf.addPage("a4","portrait");await spPdfLetter(pdf,list[i])}
-  const name=spNamaPdf(list),blob=pdf.output("blob");let dl=null;try{dl=window.claude&&await window.claude.use("downloads")}catch(e){}
-  if(dl){try{await dl.save({filename:name,data:blob});toast("PDF disimpan: "+list.length+" SPPD.")}catch(e){toast(e&&e.code==="declined"?"Unduhan dibatalkan.":"Unduhan gagal ("+(e&&e.code||"error")+").")}}
-  else{pdf.save(name);toast("PDF dibuat: "+list.length+" SPPD.")}
+ pdfBusy=true;let ok=0,dibatal=false;
+ try{let dl=null;try{dl=window.claude&&await window.claude.use("downloads")}catch(e){}
+  const names=spNamaUnik(list);
+  for(let i=0;i<list.length;i++){toast("Membuat PDF "+(i+1)+" dari "+list.length+": "+names[i]);
+   const pdf=new window.jspdf.jsPDF({unit:"pt",format:"a4",orientation:"portrait",compress:true});
+   await spPdfLetter(pdf,list[i]);
+   try{await spSimpanFile(pdf,names[i],dl);ok++}catch(e){if(e&&e.code==="declined"){dibatal=true;break}throw e}
+   if(i<list.length-1)await spJeda(700)} /* jeda singkat agar browser tidak memblokir unduhan beruntun */
+  toast(dibatal?"Unduhan dibatalkan ("+ok+" dari "+list.length+" file tersimpan).":ok===1?"PDF dibuat: "+names[0]:"Selesai: "+ok+" file PDF terpisah diunduh (1 surat = 1 file).")
  }catch(e){toast("Gagal membuat PDF: "+(e&&e.message||e))}finally{pdfBusy=false}}
 $("sp-bPdf").onclick=()=>spPdf(spBatch);
 /* ===== tab, mode ===== */
@@ -179,8 +192,8 @@ const SPSG=[["Kop surat",[["kopPt","Nama perusahaan",1],["kopUnit","Unit",1],["k
 function spBuildSet(){$("sp-seForm").innerHTML=`<p class="hint">Perubahan berlaku untuk surat baru. NIP dan data pribadi hanya disimpan di browser ini (tidak ikut di kode program).</p>`+SPSG.map(([j,f])=>`<h4 class="sec">${j}</h4>`+f.map(([k,l,p])=>`<div class="fld${p?" fw":""}"><label>${l}</label><input data-ss="${k}" value="${esc(SPDB.settings[k])}"></div>`).join("")).join("")+spParafBlok();spParafUi()}
 function spParafUi(){const v=SPDB.settings.paraf||"";const im=$("sp-parafImg");if(!im)return;if(v)im.src=v;else im.removeAttribute("src");$("sp-parafDel").hidden=!v}
 function spParafBlok(){return`<h4 class="sec">Paraf (tampil di setiap surat, ujung kanan bawah)</h4><div class="fld fw"><label>Gambar paraf (PNG/JPG/WEBP, maks 1 MB)</label><input type="file" id="sp-parafFile" accept="image/png,image/jpeg,image/webp"><img id="sp-parafImg" class="sg-prev" alt="" style="height:50px;max-width:160px;margin-top:6px"><div class="acts"><button class="d" id="sp-parafDel" hidden>Hapus paraf</button></div><p class="hint">Setelah diunggah, paraf langsung muncul di semua surat SPPD. Posisi dan ukuran bisa digeser/diubah per surat dengan mengklik parafnya di pratinjau.</p></div>`}
-$("sp-seForm").addEventListener("change",e=>{if(e.target.id!=="sp-parafFile")return;const f=e.target.files[0];e.target.value="";readSig(f,d=>{SPDB.settings.paraf=d;spSave();spParafUi();spUpdate();toast("Paraf tersimpan dan dipakai di semua surat.")})});
-$("sp-seForm").addEventListener("click",async e=>{if(e.target.id!=="sp-parafDel")return;if(await ask("Hapus paraf dari semua surat?")){delete SPDB.settings.paraf;spSave();spParafUi();spUpdate()}});
+$("sp-seForm").addEventListener("change",e=>{if(e.target.id!=="sp-parafFile")return;const f=e.target.files[0];e.target.value="";readSig(f,async d=>{const t=await spParafTrim(d);SPDB.settings.paraf=t.src;SPDB.settings.parafAr=t.ar;spResetPosParaf();spSave();spParafUi();spUpdate();toast("Paraf tersimpan, ukuran dan posisinya diatur otomatis.")})});
+$("sp-seForm").addEventListener("click",async e=>{if(e.target.id!=="sp-parafDel")return;if(await ask("Hapus paraf dari semua surat?")){delete SPDB.settings.paraf;delete SPDB.settings.parafAr;spSave();spParafUi();spUpdate()}});
 $("sp-seSave").onclick=()=>{document.querySelectorAll("[data-ss]").forEach(el=>{const k=el.dataset.ss;SPDB.settings[k]=el.value});spSave();spUpdate();alert("Pengaturan SPPD tersimpan.")};
 $("sp-exp").onclick=()=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(SPDB)],{type:"application/json"}));a.download="cadangan-sppd-"+new Date().toISOString().slice(0,10)+".json";a.click()};
 $("sp-imp").onchange=e=>{const f=e.target.files[0];e.target.value="";if(!f)return;const r=new FileReader;r.onload=async()=>{try{const d=JSON.parse(r.result);if(!Array.isArray(d.records)||!Array.isArray(d.pegawai))throw 0;if(!await ask("Impor akan MENGGANTI seluruh data SPPD (pegawai, riwayat, pengaturan). Lanjutkan?"))return;
@@ -203,3 +216,29 @@ $("sp-selfTest").onclick=()=>{const T=[],t=(n,c)=>T.push((c?"LULUS ":"GAGAL ")+n
 /* ===== mulai ===== */
 spBuildForm();spBuildSheets();spUpdate();spButtons();
 try{if(sessionStorage.getItem("app.mode")==="S")setMode("S")}catch(e){}
+
+/* ===== paraf otomatis: potong ruang kosong di tepi gambar, simpan rasio lebar/tinggi ===== */
+async function spParafTrim(src){const im=await loadImg(src);if(!im||!im.naturalWidth)return{src,ar:0};
+ const W=im.naturalWidth,H=im.naturalHeight,c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d");x.drawImage(im,0,0);
+ const id=x.getImageData(0,0,W,H),p=id.data,N=W*H,mk=new Uint8Array(N);
+ /* piksel "tinta" = cukup gelap dan tidak transparan; bayangan/noise foto di tepi gambar tidak ikut */
+ for(let i=0;i<N;i++){const o=i*4;if(p[o+3]>100&&Math.min(p[o],p[o+1],p[o+2])<150)mk[i]=1}
+ /* buang bercak kecil yang terpisah: simpan hanya gumpalan tinta yang berukuran berarti (>=10% gumpalan terbesar) */
+ const lab=new Int32Array(N);const sz=[0];let n=0;const st=[];
+ for(let i=0;i<N;i++){if(!mk[i]||lab[i])continue;n++;let cnt=0;st.push(i);lab[i]=n;
+  while(st.length){const q=st.pop();cnt++;const qx=q%W,qy=(q/W)|0;
+   for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){const nx=qx+dx,ny=qy+dy;if(nx<0||ny<0||nx>=W||ny>=H)continue;const j=ny*W+nx;if(mk[j]&&!lab[j]){lab[j]=n;st.push(j)}}}
+  sz.push(cnt)}
+ if(!n)return{src,ar:W/H}; /* tidak ada tinta terdeteksi: biarkan apa adanya */
+ const big=Math.max.apply(null,sz),keep=new Uint8Array(n+1);for(let k=1;k<=n;k++)if(sz[k]>=big*.1)keep[k]=1;
+ let x0=W,y0=H,x1=-1,y1=-1;
+ for(let y=0;y<H;y++)for(let i=0;i<W;i++){if(keep[lab[y*W+i]]){if(i<x0)x0=i;if(i>x1)x1=i;if(y<y0)y0=y;if(y>y1)y1=y}}
+ const pad=Math.max(1,Math.round(Math.max(x1-x0,y1-y0)*.02));x0=Math.max(0,x0-pad);y0=Math.max(0,y0-pad);x1=Math.min(W-1,x1+pad);y1=Math.min(H-1,y1+pad);
+ for(let i=0;i<N;i++){const o=i*4;if(Math.min(p[o],p[o+1],p[o+2])>=200)p[o+3]=0} /* sisa latar tipis dibuat transparan */
+ x.putImageData(id,0,0);
+ const w=x1-x0+1,h=y1-y0+1,o=document.createElement("canvas");o.width=w;o.height=h;o.getContext("2d").drawImage(c,x0,y0,w,h,0,0,w,h);
+ return{src:o.toDataURL("image/png"),ar:w/h}}
+/* geseran/ukuran manual paraf (sigPos.PF) menimpa posisi otomatis; dibuang saat paraf baru diunggah */
+function spResetPosParaf(){const f=c=>{if(c&&c.sigPos&&c.sigPos.PF)delete c.sigPos.PF};spBatch.forEach(f);(SPDB.records||[]).forEach(f)}
+/* paraf lama yang tersimpan sebelum fitur ini: rapikan sekali saja */
+(async()=>{const S=SPDB.settings;if(S.paraf&&(!(S.parafAr>0)||S.parafV!==3)){try{const t=await spParafTrim(S.paraf);S.paraf=t.src;S.parafAr=t.ar||0;S.parafV=3;spResetPosParaf();spSave();spBuildSheets();spUpdate()}catch(e){}}})();
