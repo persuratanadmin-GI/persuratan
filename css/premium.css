@@ -1,0 +1,269 @@
+/* =====================================================================
+   premium.css - penyempurnaan visual (aditif, hanya untuk layar)
+   ---------------------------------------------------------------------
+   - Dimuat PALING AKHIR setelah style.css, sppd.css, modern.css.
+   - Seluruhnya di dalam @media screen: hasil cetak dan PDF tidak tersentuh.
+   - Tidak ada selector yang menjangkau isi .sheet / .pg / .sp-pg (surat A4).
+   - Tidak mengubah ID, kelas, atribut data-*, maupun perilaku JavaScript.
+   - Arah desain: deep navy + electric blue, permukaan bersih, bayangan lembut,
+     gerak singkat (140-220 ms) dan hanya bila ada tindakan pengguna.
+   ===================================================================== */
+@media screen{
+
+/* ---------- 1. Design tokens ---------- */
+:root{
+  --c-bg:#f0f3f9;--c-surface:#fff;--c-sunken:#f5f7fb;--c-workspace:#e3e8f2;
+  --c-border:#dde3ee;--c-border-strong:#c4cde0;
+  --c-text:#14203a;--c-muted:#56627a;
+  --c-primary:#1f5fe0;--c-primary-dark:#1749b3;--c-primary-soft:#edf3ff;--c-primary-line:#c3d4fa;
+  --c-navy:#0a1d47;--c-accent:#2f7bff;--c-glass:#fff;
+  --c-ok:#146c43;--c-ok-soft:#ebf7f0;--c-ok-line:#9bd1b3;
+  --c-warn:#935606;--c-warn-soft:#fff7e4;--c-warn-line:#e6b95a;
+  --c-danger:#b42318;--c-danger-soft:#fdf0ee;--c-danger-line:#eab0aa;
+  --r-sm:8px;--r-md:10px;--r-lg:16px;--r-xl:20px;
+  --dur-fast:140ms;--dur:200ms;
+  --ease:cubic-bezier(.22,1,.36,1);
+  --shadow-1:0 1px 2px rgba(10,29,71,.05),0 2px 10px rgba(10,29,71,.04);
+  --shadow-2:0 2px 6px rgba(10,29,71,.10),0 16px 36px rgba(10,29,71,.12);
+  --shadow-pop:0 8px 20px -8px rgba(31,95,224,.55);
+  --ring:0 0 0 4px rgba(31,95,224,.18);
+  --touch:44px;
+}
+
+/* ---------- 2. Dasar & tipografi ---------- */
+body{
+  background:linear-gradient(180deg,#e9eef8 0,var(--c-bg) 360px) fixed;
+  color:var(--c-text);
+  font-feature-settings:"cv11","ss01","tnum" 0;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+}
+h1,h3,h4{letter-spacing:-.005em}
+.hint{line-height:1.45}
+::selection{background:rgba(31,95,224,.2)}
+
+/* ---------- 3. Header ---------- */
+.app-header{
+  background:linear-gradient(118deg,#071636 0%,#0c2559 58%,#123a8c 100%);
+  box-shadow:0 1px 0 rgba(255,255,255,.05) inset;
+}
+.app-header::before{display:none;animation:none}
+.app-header::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(110,165,255,.6) 50%,transparent);pointer-events:none}
+.app-header.fx-scrolled{box-shadow:0 8px 24px rgba(5,14,38,.32)}
+.brand-mark{background:rgba(255,255,255,.1);box-shadow:0 0 0 1px rgba(255,255,255,.18) inset;border-radius:11px}
+.brand:hover .brand-mark{transform:none}
+.app-header h1{font-size:17px;font-weight:700;letter-spacing:.005em}
+.brand-sub{color:rgba(255,255,255,.7)}
+.modes{background:rgba(255,255,255,.09);backdrop-filter:none;box-shadow:0 0 0 1px rgba(255,255,255,.12) inset}
+.modes button{transition:background var(--dur-fast),color var(--dur-fast),transform var(--dur-fast) var(--ease)}
+.modes button.on{background:#fff;color:var(--c-navy);box-shadow:0 2px 8px rgba(0,0,0,.22)}
+#st{animation:none}
+#st::before{animation:none}
+.fx-theme{transition:background var(--dur-fast),transform var(--dur) var(--ease)}
+.fx-theme:hover{transform:none}
+
+/* ---------- 4. Kartu ---------- */
+.card{
+  background:var(--c-surface);backdrop-filter:none;-webkit-backdrop-filter:none;
+  border:1px solid var(--c-border);border-radius:var(--r-lg);box-shadow:var(--shadow-1);
+}
+#left.card:hover,#sp-left.card:hover{box-shadow:var(--shadow-1)}
+
+/* ---------- 5. Tab (indikator aktif yang halus) ---------- */
+#tabs,#sp-tabs{border-bottom:1px solid var(--c-border)}
+#tabs button,#sp-tabs button{position:relative;border-bottom:0;margin-bottom:-1px;border-radius:var(--r-sm) var(--r-sm) 0 0;
+  transition:color var(--dur-fast),background var(--dur-fast)}
+#tabs button::after,#sp-tabs button::after{content:"";position:absolute;left:8px;right:8px;bottom:0;height:3px;border-radius:3px 3px 0 0;
+  background:var(--c-primary);transform:scaleX(0);transform-origin:center;transition:transform var(--dur) var(--ease)}
+#tabs button.on,#sp-tabs button.on{background:linear-gradient(180deg,transparent 40%,var(--c-primary-soft));border-bottom-width:0;color:var(--c-primary)}
+#tabs button.on::after,#sp-tabs button.on::after{transform:scaleX(1)}
+#tabs button:hover:not(.on),#sp-tabs button:hover:not(.on){background:var(--c-sunken)}
+#tabs button:focus-visible,#sp-tabs button:focus-visible{outline:2px solid var(--c-primary);outline-offset:-3px}
+#tab-in>.tabs{background:#e6ebf5;border-radius:var(--r-md);box-shadow:none}
+#tab-in>.tabs button{transition:background var(--dur-fast),color var(--dur-fast),box-shadow var(--dur-fast)}
+#tab-in>.tabs button.on{background:#fff;box-shadow:0 1px 3px rgba(10,29,71,.14)}
+
+/* ---------- 6. Formulir ---------- */
+label{color:var(--c-text);letter-spacing:.002em}
+:is(input,textarea,select):where(:not([type=checkbox],[type=radio],[type=range],[type=file])){
+  min-height:42px;border-radius:var(--r-md);border-color:var(--c-border-strong);background-color:#fff;
+  transition:border-color var(--dur-fast),box-shadow var(--dur) var(--ease),background-color var(--dur-fast);
+}
+:is(input,textarea,select):not(:disabled):hover{border-color:#8fa3c9}
+:is(input,textarea,select):focus{border-color:var(--c-primary);box-shadow:var(--ring);transform:none}
+:is(input,textarea,select):focus-visible{outline:0}
+:is(input,textarea,select):disabled{background:var(--c-sunken);color:var(--c-muted)}
+textarea{min-height:84px}
+::placeholder{color:#7d889e;opacity:1}
+.req{background:#f2f6ff}
+:is(input,textarea,select).warn{border-left-width:4px}
+:is(input,textarea,select).need{border-left-width:4px}
+input[type=checkbox],input[type=radio]{accent-color:var(--c-primary)}
+input[type=file]{border-radius:var(--r-md);transition:border-color var(--dur-fast),background var(--dur-fast)}
+input[type=file]:hover{border-color:var(--c-primary);background:var(--c-primary-soft)}
+.fld:focus-within>label{color:var(--c-primary)}
+.sec{color:var(--c-primary);letter-spacing:.08em}
+.legend{background:var(--c-sunken);border-radius:var(--r-md)}
+.wa-panel{background:linear-gradient(135deg,var(--c-primary-soft),#f6f9ff);border-color:var(--c-primary-line);border-radius:var(--r-lg)}
+.panel{background:var(--c-sunken);border-radius:var(--r-lg);border-color:var(--c-border)}
+.panel>h4{color:var(--c-navy);font-size:14.5px}
+details{border-radius:var(--r-md)}
+details[open]{box-shadow:var(--shadow-1)}
+
+/* ---------- 7. Tombol: tindakan utama / sekunder / destruktif ---------- */
+button.b,button.g,button.d,label.g{
+  min-height:40px;border-radius:var(--r-md);overflow:visible;
+  transition:transform var(--dur-fast) var(--ease),box-shadow var(--dur) var(--ease),background-color var(--dur-fast),border-color var(--dur-fast),color var(--dur-fast);
+}
+/* hapus kilau bergerak; ganti dengan umpan balik hover yang tenang */
+button.b:not(.new):not(.xl)::after{display:none}
+button.b:not(:disabled):hover,button.g:not(:disabled):hover,button.d:not(:disabled):hover,label.g:hover{transform:none}
+button.b:not(:disabled):active,button.g:not(:disabled):active,button.d:not(:disabled):active,label.g:active{transform:scale(.975)}
+button.b:active,button.g:active,button.d:active{background-image:none}
+/* utama */
+button.b{background:var(--c-primary);background-image:none;border-color:var(--c-primary-dark);color:#fff;
+  box-shadow:0 1px 2px rgba(10,29,71,.22),0 6px 14px -8px rgba(31,95,224,.7)}
+button.b:hover{background:#2a6cf0;background-image:none;border-color:var(--c-primary-dark);box-shadow:var(--shadow-pop)}
+/* utama gelap (keluaran) */
+button.b.nv{background:var(--c-navy);background-image:none;border-color:#071636;box-shadow:0 1px 2px rgba(7,22,54,.3),0 6px 14px -8px rgba(7,22,54,.7)}
+button.b.nv:hover{background:#142f6b;background-image:none}
+/* sekunder lunak */
+button.b.new{background:var(--c-primary-soft);background-image:none;border-color:var(--c-primary-line);color:var(--c-primary-dark);box-shadow:none}
+button.b.new:hover{background:#dfeaff;box-shadow:none}
+button.b.xl{background:var(--c-ok-soft);background-image:none;border-color:var(--c-ok-line);color:var(--c-ok);box-shadow:none}
+button.b.xl:hover{background:#dcf1e5;box-shadow:none}
+/* sekunder */
+button.g,label.g{background:#fff;border-color:var(--c-border-strong);color:#1f2c47}
+button.g:hover,label.g:hover{background:var(--c-sunken);border-color:#8fa3c9;box-shadow:0 2px 8px -4px rgba(10,29,71,.28)}
+button.g.ok{color:var(--c-ok);border-color:var(--c-ok-line)}
+button.g.ok:hover{background:var(--c-ok-soft);border-color:#6fb88f}
+/* destruktif: garis merah terkendali, isi merah hanya saat disorot */
+button.d{background:#fff;border-color:var(--c-danger-line);color:var(--c-danger)}
+button.d:hover{background:var(--c-danger-soft);border-color:#d9574b;box-shadow:0 2px 10px -5px rgba(180,35,24,.5)}
+button.d:active{background:#fbe1dd}
+button:focus-visible,label.g:focus-within{outline:2px solid var(--c-primary);outline-offset:2px;border-radius:var(--r-md)}
+button.d:focus-visible{outline-color:var(--c-danger)}
+button:disabled{opacity:.5;cursor:not-allowed;box-shadow:none}
+
+/* ---------- 8. Bilah tindakan ---------- */
+.actbar{background:rgba(255,255,255,.96);backdrop-filter:none;-webkit-backdrop-filter:none;border-top:1px solid var(--c-border);
+  box-shadow:0 -10px 24px -16px rgba(10,29,71,.25)}
+.actbar .gl{color:var(--c-muted);letter-spacing:.08em}
+
+/* ---------- 9. Daftar (personel, riwayat, tanda tangan) ---------- */
+:is(#peList,#rList,#ttList,#sp-peList,#sp-rList) table.t{border-radius:var(--r-lg);border-color:var(--c-border);box-shadow:var(--shadow-1);background:#fff}
+:is(#peList,#rList,#ttList,#sp-peList,#sp-rList) table.t tr{animation:fxFade var(--dur) ease both;animation-delay:0s!important;
+  transition:background-color var(--dur-fast);padding:12px 14px}
+:is(#peList,#rList,#ttList,#sp-peList,#sp-rList) table.t tr:hover{background:var(--c-primary-soft);transform:none}
+:is(#peList,#rList,#ttList,#sp-peList,#sp-rList) table.t td{min-width:0}
+.fx-av{background:linear-gradient(140deg,#1f5fe0,#0c2559);box-shadow:0 2px 6px -2px rgba(10,29,71,.45);border-radius:10px}
+.bd{box-shadow:none;border-radius:99px;padding:3px 10px;font-weight:600}
+
+/* Kolom aksi personel: Edit + Hapus (Hapus dipisahkan dan bergaya destruktif) */
+#peList table.t td:last-child{display:flex;align-items:center;gap:10px;margin-left:auto;flex-wrap:nowrap}
+#peList button[data-e]{min-height:38px}
+#peList button[data-x]{
+  min-height:38px;margin-left:6px;padding-inline:14px;
+  background:var(--c-danger-soft);border-color:var(--c-danger-line);color:var(--c-danger);
+}
+#peList button[data-x]:hover{background:var(--c-danger);border-color:var(--c-danger);color:#fff;box-shadow:0 6px 14px -8px rgba(180,35,24,.7)}
+#peList button[data-x]:active{background:#9a1e14;border-color:#9a1e14;color:#fff}
+#peList button[data-x]:focus-visible{outline:2px solid var(--c-danger);outline-offset:2px}
+
+/* ---------- 10. Panel pratinjau (hanya pembungkus luar) ---------- */
+#pane,#sp-pane{background:radial-gradient(rgba(10,29,71,.08) 1px,transparent 1.2px) 0 0/20px 20px,linear-gradient(180deg,var(--c-workspace),#dbe3f0);border-color:var(--c-border-strong)}
+#hint,#sp-hint,#sgbar,#sp-sgbar,#batchbar,#sp-batchbar{background:rgba(255,255,255,.96);backdrop-filter:none;-webkit-backdrop-filter:none}
+.lw.act{box-shadow:0 0 0 3px rgba(31,95,224,.14),0 14px 30px -18px rgba(10,29,71,.5)}
+.lw.act .shwrap{box-shadow:0 1px 3px rgba(10,29,71,.2),0 20px 44px -20px rgba(10,29,71,.55)}
+#batchbar button.on,#sp-batchbar button.on,#batchbar button.act,#sp-batchbar button.act{background:var(--c-primary);border-color:var(--c-primary)}
+
+/* ---------- 11. Dialog & notifikasi ---------- */
+/* Dialog konfirmasi bersama (ask) - gaya bawaan inline ditimpa agar mengikuti tema */
+[role=alertdialog]{background:rgba(7,18,45,.58)!important;animation:fxFade var(--dur) ease both}
+[role=alertdialog]>div{background:var(--c-surface)!important;color:var(--c-text)!important;border-radius:var(--r-xl)!important;
+  max-width:440px!important;padding:22px!important;border:1px solid var(--c-border);box-shadow:0 28px 70px -12px rgba(7,18,45,.55)!important;
+  animation:fxPop .26s var(--ease) both}
+[role=alertdialog]>div>p{line-height:1.55;font-size:14.5px;color:var(--c-text)}
+[role=alertdialog]>div>div{margin-top:4px;gap:10px!important}
+[role=alertdialog] button{min-height:42px;min-width:104px}
+[role=alertdialog] button.g{color:var(--c-text)!important}
+/* variasi destruktif */
+.ask-danger>div{border-top:4px solid var(--c-danger)!important}
+.ask-danger>div>p::first-line{font-size:18px;font-weight:700;color:var(--c-danger);line-height:1.8}
+.ask-danger button.d{background:var(--c-danger);border-color:#8f1b11;color:#fff}
+.ask-danger button.d:hover{background:#c52b1e;border-color:#8f1b11;color:#fff;box-shadow:0 8px 18px -8px rgba(180,35,24,.75)}
+.ask-danger button.d:focus-visible{outline-color:var(--c-danger)}
+
+.mdl{background:rgba(7,18,45,.58);backdrop-filter:none;-webkit-backdrop-filter:none}
+.mdl>div{border-radius:var(--r-xl);border:1px solid var(--c-border)}
+#toast{border-radius:14px!important;background:#0c1b3f!important;backdrop-filter:none;border:1px solid rgba(255,255,255,.08);
+  box-shadow:0 16px 40px -10px rgba(7,18,45,.6)!important;font-size:13.5px;line-height:1.45;font-weight:500}
+
+/* ---------- 12. Gerak: hanya atas tindakan pengguna ---------- */
+@keyframes fxFade{from{opacity:0}to{opacity:1}}
+@keyframes fxPop{from{opacity:0;transform:translateY(10px) scale(.985)}to{opacity:1;transform:none}}
+.app-foot{color:var(--c-muted)}
+
+/* ---------- 13. Tema gelap (hanya antarmuka) ---------- */
+html[data-theme="dark"]{
+  --c-bg:#08101f;--c-surface:#111a2d;--c-sunken:#16213a;--c-workspace:#0c1426;
+  --c-border:#233152;--c-border-strong:#33456b;--c-text:#e7ecf8;--c-muted:#9aa7c4;
+  --c-primary:#6e9cff;--c-primary-dark:#93b4ff;--c-primary-soft:rgba(110,156,255,.12);--c-primary-line:rgba(110,156,255,.36);
+  --c-navy:#cddbff;--c-glass:#111a2d;
+}
+html[data-theme="dark"] body{background:linear-gradient(180deg,#0a1328 0,var(--c-bg) 360px) fixed}
+html[data-theme="dark"] .card{background:var(--c-surface);border-color:var(--c-border)}
+html[data-theme="dark"] .app-header{background:linear-gradient(118deg,#050e24 0%,#0a1d47 60%,#0e2f73 100%)}
+html[data-theme="dark"] button.b{background:#2c66e6;border-color:#1b49b3;color:#fff}
+html[data-theme="dark"] button.b:hover{background:#3a74f2}
+html[data-theme="dark"] button.b.nv{background:#16306b;border-color:#0b1d47}
+html[data-theme="dark"] button.b.nv:hover{background:#1d3c82}
+html[data-theme="dark"] button.b.new{background:rgba(110,156,255,.14);color:#c3d6ff;border-color:var(--c-primary-line)}
+html[data-theme="dark"] button.b.xl{background:rgba(95,211,148,.12);color:#6fdba1;border-color:rgba(95,211,148,.4)}
+html[data-theme="dark"] button.g,html[data-theme="dark"] label.g{background:#16213a;color:var(--c-text);border-color:var(--c-border-strong)}
+html[data-theme="dark"] button.g:hover,html[data-theme="dark"] label.g:hover{background:#1e2c4b}
+html[data-theme="dark"] button.d{background:#16213a;color:#ff9a8f;border-color:rgba(255,139,126,.4)}
+html[data-theme="dark"] button.d:hover{background:rgba(255,139,126,.12)}
+html[data-theme="dark"] :is(#peList,#rList,#ttList,#sp-peList,#sp-rList) table.t{background:var(--c-surface)}
+html[data-theme="dark"] :is(#peList,#rList,#ttList,#sp-peList,#sp-rList) table.t tr:hover{background:rgba(110,156,255,.1)}
+html[data-theme="dark"] #peList button[data-x]{background:rgba(255,139,126,.1);color:#ff9a8f;border-color:rgba(255,139,126,.4)}
+html[data-theme="dark"] #peList button[data-x]:hover{background:#d9453a;border-color:#d9453a;color:#fff}
+html[data-theme="dark"] .actbar{background:rgba(17,26,45,.96)}
+html[data-theme="dark"] [role=alertdialog]>div{border-color:var(--c-border)}
+html[data-theme="dark"] .ask-danger>div>p::first-line{color:#ff9a8f}
+html[data-theme="dark"] .ask-danger button.d{background:#d9453a;border-color:#a12b21;color:#fff}
+html[data-theme="dark"] .ask-danger button.d:hover{background:#e5554a;color:#fff}
+html[data-theme="dark"] #tab-in>.tabs{background:#0b1222}
+html[data-theme="dark"] #tab-in>.tabs button.on{background:#1b2948}
+html[data-theme="dark"] .req{background:rgba(110,156,255,.08)}
+html[data-theme="dark"] :is(input,textarea,select):where(:not([type=checkbox],[type=radio],[type=range],[type=file])){background-color:#0d1527;color:var(--c-text)}
+html[data-theme="dark"] #pane,html[data-theme="dark"] #sp-pane{background:radial-gradient(rgba(150,175,230,.09) 1px,transparent 1.2px) 0 0/20px 20px,linear-gradient(180deg,#0c1426,#08101f)}
+html[data-theme="dark"] :is(#hint,#sp-hint,#sgbar,#sp-sgbar,#batchbar,#sp-batchbar){background:rgba(17,26,45,.96)}
+
+/* ---------- 14. Responsif & sentuh ---------- */
+@media(max-width:980px){
+  main{padding-inline:var(--sp-4)}
+}
+@media(max-width:640px){
+  .app-header h1{font-size:16px}
+  #peList table.t tr{align-items:flex-start}
+  #peList table.t td:last-child{width:100%;margin-left:0;margin-top:4px}
+  #peList button[data-e],#peList button[data-x]{flex:1 1 0;min-height:var(--touch)}
+  #peList button[data-x]{margin-left:0}
+  [role=alertdialog]{padding:12px!important;align-items:flex-end!important}
+  [role=alertdialog]>div{max-width:none!important;border-radius:var(--r-xl) var(--r-xl) 14px 14px!important}
+  [role=alertdialog]>div>div button{flex:1 1 0;min-height:var(--touch)}
+}
+@media(pointer:coarse){
+  button.b,button.g,button.d,label.g{min-height:var(--touch)}
+  #tabs button,#sp-tabs button{min-height:var(--touch)}
+  #peList button[data-x],#peList button[data-e]{min-height:var(--touch)}
+  :is(input,textarea,select):where(:not([type=checkbox],[type=radio],[type=range],[type=file])){min-height:var(--touch)}
+}
+
+/* ---------- 15. Hormati preferensi gerak ---------- */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-delay:0s!important;animation-iteration-count:1!important;
+    transition-duration:.001ms!important;scroll-behavior:auto!important}
+}
+}

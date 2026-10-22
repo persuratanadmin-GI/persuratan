@@ -25,7 +25,7 @@ lalu buka `http://localhost:8080`.
 
 ```
 index.html            kerangka halaman
-css/style.css         tampilan aplikasi dan template surat (satuan pt, koordinat dari PDF asli)
+css/style.css         design system antarmuka (bagian 1-13), template surat A4 (bagian 14, tidak diubah), aturan cetak, responsif
 js/logo.js            logo PLN dan PLN Nusa Daya (diambil dari Bahan_Proyek.pdf)
 js/config.js          nilai bawaan organisasi (kop, jabatan, pola nomor) dan data contoh fiktif
 js/storage.js         penyimpanan (localStorage), struktur data bawaan, pengaturan bawaan
@@ -220,3 +220,10 @@ Transportasi : Kendaraan dinas PP
 - **Unduh PDF satu per satu.** "Unduh semua PDF" membuat 1 file PDF per surat (tidak digabung). Nama file:
   `SURAT PERINTAH PERJALANAN DINAS UPT MAKASSAR NAMA PEGAWAI (SPPD 5-7 OKTOBER).pdf`
   (satu hari: `(SPPD 13 OKTOBER)`; lintas bulan: `(SPPD 30 OKTOBER-2 NOVEMBER)`; nama kembar diberi akhiran `(2)`, `(3)`).
+
+
+## Catatan tampilan
+
+- Antarmuka memakai design system berbasis CSS custom properties (`:root` di `css/style.css`); template surat A4 dan SPPD dipisah dan tidak terpengaruh.
+- Footer kredit "© 2026 - Dirancang dan Dikembangkan Oleh Mahasiswa ITH · 231011116" berada di `index.html` (`<footer class="app-foot">`), di luar panel dan lembar surat, sehingga tidak ikut PDF, cetak, maupun Excel.
+- Tema terang saja; mode gelap otomatis dari sistem tidak lagi dipakai.

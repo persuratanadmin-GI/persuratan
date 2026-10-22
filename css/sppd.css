@@ -1,15 +1,12 @@
-/* SPPD: tampilan tambahan. Hanya selektor baru (#sp-*, .sp-*, .modes, body.mode-sppd); tidak mengubah aturan surat lembur. */
-.modes{display:flex;gap:4px}.modes button{border:1.5px solid #9db8ee;background:transparent;color:#fff;padding:5px 14px;border-radius:7px;cursor:pointer;font:inherit;font-weight:600;font-size:13px}
-.modes button.on{background:#fff;color:#0b2a5b;border-color:#fff}
-#sp-left{--card:#fff;--txt:#1b2433;--line:#d5deec;--navy:#0b2a5b;background:#fff;color:#1b2433}
-#sp-form,#sp-seForm{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}#sp-seForm .sec:first-of-type{margin-top:4px}#sp-seForm>p{grid-column:1/-1}
-#sp-pane{position:sticky;top:8px;overflow:auto;max-height:calc(100vh - 20px)}
-@media(max-width:980px){#sp-pane{position:static;max-height:none}}
-#sp-sgbar{margin-bottom:6px}#sp-sgbar button{min-height:32px;padding:3px 10px;font-size:13px}
-#sp-batchbar{position:sticky;top:0;background:var(--card);z-index:5;padding:4px 0 6px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
-#sp-batchbar[hidden]{display:none}#sp-batchbar button{min-height:34px;padding:5px 12px;font-size:13px;margin:0}#sp-batchbar button.g{min-width:36px;padding:5px 10px}
-#sp-pane button.b.nv{background:#2b4f9e;border-color:#9db8ee}
-#sp-tab-se .actbar{margin-top:18px}#sp-testOut{white-space:pre-wrap}
+/* SPPD: komponen antarmuka (header, tab, formulir, tombol, daftar, pratinjau) memakai design system yang sama
+   dengan Surat Lembur di style.css (selector #sp-* sudah dikelompokkan di sana). Berkas ini memuat:
+   1. penyesuaian khusus SPPD,
+   2. template surat SPPD (.sp-pg) dan aturan cetaknya (tidak diubah). */
+
+/* ---------- 1. Khusus SPPD ---------- */
+#sp-tab-pe>.hint:first-of-type{margin-top:0}
+
+/* ---------- 2. Template surat SPPD (TIDAK DIUBAH) ---------- */
 .sp-pg{position:absolute;left:0;top:0;width:595.28pt;height:841.89pt;font-family:Arial,"Liberation Sans",Helvetica,sans-serif;color:#000;background:#fff}
 .sp-pg .sp-t{position:absolute;white-space:pre}.sp-pg .sp-l{position:absolute;background:#000}.sp-pg .sp-i{position:absolute}
 .sp-pg .sp-sig{position:absolute;width:105pt;height:56pt;display:flex;align-items:center;justify-content:center}

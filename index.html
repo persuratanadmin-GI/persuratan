@@ -1,12 +1,16 @@
 <!DOCTYPE html>
 <html lang="id"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<script>try{var t=localStorage.getItem("fx.theme");if(t==="dark"||t==="light")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <title>Admin Surat Lembur</title>
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/sppd.css">
+<link rel="stylesheet" href="css/modern.css">
 </head><body>
-<header><h1>Admin Surat Lembur</h1>
-<nav class="modes" id="modes"><button id="mdL" class="on">Surat Lembur</button><button id="mdS">SPPD</button></nav>
+<header class="app-header">
+<div class="brand"><span class="brand-mark" aria-hidden="true"></span><div><h1>Admin Surat Lembur</h1><p class="brand-sub">SPK Lembur dan SPPD</p></div></div>
+<nav class="modes" id="modes" aria-label="Modul aplikasi"><button id="mdL" class="on">Surat Lembur</button><button id="mdS">SPPD</button></nav>
 <small id="st">Data tersimpan di browser ini</small></header>
 <main>
 <section id="left" class="card">
@@ -14,17 +18,18 @@
 
 <div id="tab-in">
  <div class="tabs"><button id="m-man" class="on">Input manual</button><button id="m-wa">Dari WhatsApp</button></div>
- <div id="wa" hidden>
+ <div id="wa" class="wa-panel" hidden>
   <label>Tempel pesan WhatsApp</label>
   <textarea id="waText" style="min-height:130px" placeholder="Nama: ...&#10;ID Operator: ...&#10;Tanggal Lembur: 12/10/2026&#10;Jam Mulai: 18:00&#10;Jam Selesai: 22:00&#10;Pekerjaan: ...&#10;Pemberi Perintah: ..."></textarea>
+  <p class="hint">Beberapa surat dapat ditempel sekaligus, dipisahkan baris kosong.</p>
   <div class="acts"><button class="b" id="parse">Proses Pesan</button></div>
   <div id="parseOut"></div>
  </div>
- <p class="hint lgd"><span class="rq">*</span> Wajib <i style="background:#eaf3ff;border-color:#1d5fd1"></i>Diisi <i style="background:#ffe9ec;border-color:#dc2626"></i>Kosong <i style="background:#fff3d6;border-color:#d97706"></i>Periksa</p>
+ <div class="legend" aria-label="Keterangan warna kolom"><span><b class="rq">*</b> Wajib</span><span><i class="lg lg-ok"></i>Diisi</span><span><i class="lg lg-need"></i>Kosong</span><span><i class="lg lg-warn"></i>Periksa</span></div>
  <div id="form"></div>
  <div class="hint" id="durHint"></div>
  <div class="actbar">
-  <div class="grp"><span class="gl">Surat</span><button class="b new" id="bNew">+ Surat baru</button><button class="b" id="bDraft">Simpan draft</button><button class="g" id="bDone">Tandai selesai</button></div>
+  <div class="grp"><span class="gl">Surat</span><button class="b new" id="bNew">Surat baru</button><button class="g" id="bDraft">Simpan draft</button><button class="g ok" id="bDone">Tandai selesai</button></div>
   <div class="grp"><span class="gl">Keluaran</span><button class="b nv" id="bPdf">Unduh PDF</button><button class="g" id="bPrint">Cetak</button><button class="b xl" id="bXl">Simpan ke Excel</button></div>
  </div>
 </div>
@@ -32,30 +37,34 @@
 <div id="tab-pe" hidden>
  <input id="peQ" placeholder="Cari nama / NIP / jabatan">
  <div id="peList"></div>
- <h4 id="peT" style="margin:12px 0 0">Tambah personel</h4>
+ <div class="panel">
+ <h4 id="peT" class="ph">Tambah personel</h4>
  <label>Nama lengkap</label><input id="pn"><label>ID / NIP</label><input id="pi">
  <div class="row"><div><label>Jabatan</label><input id="pj"></div><div><label>Unit kerja</label><input id="pu"></div></div>
  <label>Gambar tanda tangan (PNG/JPG/WEBP, maks 1 MB)</label><input type="file" id="pf" accept="image/png,image/jpeg,image/webp">
  <img id="ps" class="sg-prev" alt=""><label><input type="checkbox" id="pa" style="width:auto" checked> Aktif</label>
  <div class="acts"><button class="b" id="peSave">Simpan personel</button><button class="g" id="peReset">Batal</button></div>
+ </div>
 </div>
 
 <div id="tab-ri" hidden>
  <div class="acts rbar"><button class="b nv" id="rPdf">Unduh PDF</button><button class="b xl" id="rXl">Simpan ke Excel</button><button class="d" id="rDelAll" title="Hapus semua riwayat">Hapus semua</button></div>
  <input id="rQ" placeholder="Cari nama / ID / nomor">
  <div class="row"><div><label>Dari</label><input type="date" id="rA"></div><div><label>Sampai</label><input type="date" id="rB"></div></div>
- <div id="rList" style="margin-top:8px"></div>
+ <div id="rList" style="margin-top:10px"></div>
 </div>
 
 <div id="tab-tt" hidden>
  
  <div id="ttList"></div>
- <h4 id="ttT" style="margin:12px 0 0">Tambah tanda tangan</h4>
+ <div class="panel">
+ <h4 id="ttT" class="ph">Tambah tanda tangan</h4>
  <label>Nama (sama dengan nama di surat)</label><input id="tn">
  <label>Jabatan (opsional)</label><input id="tj">
  <label>Gambar tanda tangan (PNG/JPG/WEBP, maks 1 MB)</label><input type="file" id="tf" accept="image/png,image/jpeg,image/webp">
  <img id="ts" class="sg-prev" alt="">
  <div class="acts"><button class="b" id="ttSave">Simpan tanda tangan</button><button class="g" id="ttReset">Batal</button></div>
+ </div>
 </div>
 
 <div id="tab-se" hidden>
@@ -63,7 +72,7 @@
  <pre id="testOut" class="hint"></pre>
  <div class="actbar">
   <div class="grp"><span class="gl">Pengaturan</span><button class="b" id="seSave">Simpan pengaturan</button><button class="g" id="selfTest">Uji parser &amp; durasi</button></div>
-  <div class="grp"><span class="gl">Cadangan</span><button class="g" id="exp">Ekspor JSON</button><label class="g" style="margin:0;cursor:pointer;display:inline-block">Impor JSON<input type="file" id="imp" accept=".json" hidden></label></div>
+  <div class="grp"><span class="gl">Cadangan</span><button class="g" id="exp">Ekspor JSON</button><label class="g imp">Impor JSON<input type="file" id="imp" accept=".json" hidden></label></div>
  </div>
 </div>
 </section>
@@ -80,28 +89,32 @@
 <div class="tabs" id="sp-tabs"><button data-t="in" class="on">Input</button><button data-t="pe">Pegawai</button><button data-t="ri">Riwayat</button><button data-t="se">Pengaturan</button></div>
 
 <div id="sp-tab-in">
+ <div class="wa-panel">
  <label>Tempel pesan WhatsApp (Form SPPD)</label>
  <textarea id="sp-wa" style="min-height:150px" placeholder="Form SPPD:&#10;Personil :&#10;1. Nama pegawai&#10;&#10;Destinasi SPPD : Parepare - Pinrang&#10;Maksud SPPD : ...&#10;Estimasi : 1 hari&#10;Tanggal : 13 Oktober 2026&#10;Transportasi : Kendaraan dinas PP"></textarea>
  <div class="acts"><button class="b" id="sp-parse">Proses Pesan</button></div>
  <div id="sp-parseOut"></div>
- <p class="hint lgd"><span class="rq">*</span> Wajib <i style="background:#eaf3ff;border-color:#1d5fd1"></i>Diisi <i style="background:#ffe9ec;border-color:#dc2626"></i>Kosong <i style="background:#fff3d6;border-color:#d97706"></i>Periksa</p>
+</div>
+ <div class="legend" aria-label="Keterangan warna kolom"><span><b class="rq">*</b> Wajib</span><span><i class="lg lg-ok"></i>Diisi</span><span><i class="lg lg-need"></i>Kosong</span><span><i class="lg lg-warn"></i>Periksa</span></div>
  <div id="sp-form"></div>
  <div class="actbar">
-  <div class="grp"><span class="gl">Surat</span><button class="b new" id="sp-bNew">+ Surat baru</button><button class="b" id="sp-bDraft">Simpan draft</button><button class="g" id="sp-bDone">Tandai selesai</button></div>
+  <div class="grp"><span class="gl">Surat</span><button class="b new" id="sp-bNew">Surat baru</button><button class="g" id="sp-bDraft">Simpan draft</button><button class="g ok" id="sp-bDone">Tandai selesai</button></div>
   <div class="grp"><span class="gl">Keluaran</span><button class="b nv" id="sp-bPdf">Unduh PDF</button><button class="g" id="sp-bPrint">Cetak</button><button class="g" id="sp-bTtd" title="Daftarkan gambar tanda tangan (dipakai bersama surat lembur)">Kelola tanda tangan</button></div>
  </div>
 </div>
 
 <div id="sp-tab-pe" hidden>
- <div class="acts"><label class="g" style="margin:0;cursor:pointer;display:inline-block">Impor dari Excel<input type="file" id="sp-peImp" accept=".xlsx" hidden></label><button class="d" id="sp-peClear">Hapus semua</button></div>
+ <div class="acts"><label class="g imp">Impor dari Excel<input type="file" id="sp-peImp" accept=".xlsx" hidden></label><button class="d" id="sp-peClear">Hapus semua</button></div>
  <p class="hint">Excel berisi kolom NAMA dan NIP (opsional GRADE dan JABATAN/PEKERJAAN). Data hanya tersimpan di browser ini.</p>
  <input id="sp-peQ" placeholder="Cari nama / NIP / jabatan">
  <div id="sp-peList"></div>
- <h4 id="sp-peT" style="margin:12px 0 0">Tambah pegawai</h4>
+ <div class="panel">
+ <h4 id="sp-peT" class="ph">Tambah pegawai</h4>
  <label>Nama lengkap</label><input id="sp-pn">
  <div class="row"><div><label>Grade</label><input id="sp-pg"></div><div><label>NIP</label><input id="sp-pi"></div></div>
  <label>Jabatan</label><input id="sp-pj">
  <div class="acts"><button class="b" id="sp-peSave">Simpan pegawai</button><button class="g" id="sp-peReset">Batal</button></div>
+ </div>
 </div>
 
 <div id="sp-tab-ri" hidden>
@@ -116,7 +129,7 @@
  <pre id="sp-testOut" class="hint"></pre>
  <div class="actbar">
   <div class="grp"><span class="gl">SPPD</span><button class="b" id="sp-seSave">Simpan pengaturan</button><button class="g" id="sp-selfTest">Uji parser SPPD</button></div>
-  <div class="grp"><span class="gl">Cadangan</span><button class="g" id="sp-exp">Ekspor JSON</button><label class="g" style="margin:0;cursor:pointer;display:inline-block">Impor JSON<input type="file" id="sp-imp" accept=".json" hidden></label></div>
+  <div class="grp"><span class="gl">Cadangan</span><button class="g" id="sp-exp">Ekspor JSON</button><label class="g imp">Impor JSON<input type="file" id="sp-imp" accept=".json" hidden></label></div>
  </div>
 </div>
 </section>
@@ -130,6 +143,7 @@
  <div id="sp-sheets"></div>
 </section>
 </main>
+<footer class="app-foot">© 2026 - Dirancang dan Dikembangkan Oleh Mahasiswa ITH · 231011116</footer>
 <script src="vendor/jspdf.umd.min.js"></script>
 <script src="vendor/exceljs.min.js"></script>
 <script src="js/logo.js"></script>
@@ -148,4 +162,5 @@
 <script src="js/sppd-logo.js"></script>
 <script src="js/sppd-logic.js"></script>
 <script src="js/sppd.js"></script>
+<script src="js/fx.js"></script>
 </body></html>
