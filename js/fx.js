@@ -30,7 +30,7 @@ function slider(bar){
   if(window.ResizeObserver)new ResizeObserver(pos).observe(bar);
   window.addEventListener("resize",pos);
   if(document.fonts&&document.fonts.ready)document.fonts.ready.then(pos)}
-slider(document.getElementById("tabs"));slider(document.getElementById("sp-tabs"));
+slider(document.getElementById("tabs"));slider(document.getElementById("sp-tabs"));slider(document.getElementById("rs-tabs"));
 
 /* Meter kelengkapan: membaca kolom wajib (.req) dan menunjuk kolom kosong berikutnya */
 function meter(formId){
@@ -57,20 +57,20 @@ function meter(formId){
     setTimeout(function(){try{el.focus({preventScroll:true})}catch(x){}},260);
     el.classList.remove("fx-ping");void el.offsetWidth;el.classList.add("fx-ping");setTimeout(function(){el.classList.remove("fx-ping")},1200)};
   run()}
-meter("form");meter("sp-form");
+meter("form");meter("sp-form");meter("rs-form");
 
 /* Pintasan: Ctrl/Cmd+S = Simpan draft (hanya saat tab Input terlihat) */
-[["bDraft"],["sp-bDraft"]].forEach(function(a){var b=document.getElementById(a[0]);if(b)b.title="Simpan draft (Ctrl+S)"});
+[["bDraft"],["sp-bDraft"],["rs-bDraft"]].forEach(function(a){var b=document.getElementById(a[0]);if(b)b.title="Simpan draft (Ctrl+S)"});
 document.addEventListener("keydown",function(e){
   if(!(e.ctrlKey||e.metaKey)||e.altKey||e.shiftKey||String(e.key).toLowerCase()!=="s")return;
-  var sp=document.body.classList.contains("mode-sppd"),tab=document.getElementById(sp?"sp-tab-in":"tab-in"),btn=document.getElementById(sp?"sp-bDraft":"bDraft");
+  var sp=document.body.classList.contains("mode-sppd"),rs=document.body.classList.contains("mode-rs"),tab=document.getElementById(rs?"rs-tab-in":sp?"sp-tab-in":"tab-in"),btn=document.getElementById(rs?"rs-bDraft":sp?"sp-bDraft":"bDraft");
   if(!tab||tab.hidden||!btn)return;e.preventDefault();btn.click()});
 /* Titik sentuh untuk efek ripple tombol (hanya variabel CSS) */
 document.addEventListener("pointerdown",function(e){
   var t=e.target.closest&&e.target.closest("button.b,button.g,button.d");if(!t)return;
   var r=t.getBoundingClientRect();t.style.setProperty("--rx",(e.clientX-r.left)+"px");t.style.setProperty("--ry",(e.clientY-r.top)+"px")},{passive:true});
 /* Inisial avatar pada daftar (dekoratif, dipasang ulang saat daftar dirender) */
-var lists="#peList,#rList,#ttList,#sp-peList,#sp-rList",busy=false,tm=0;
+var lists="#peList,#rList,#ttList,#sp-peList,#sp-rList,#rs-lkList,#rs-rList",busy=false,tm=0;
 function avatars(){
   if(busy)return;busy=true;
   document.querySelectorAll(lists.split(",").map(function(s){return s+" table.t td:first-child>b:first-child"}).join(",")).forEach(function(el){

@@ -227,3 +227,12 @@ Transportasi : Kendaraan dinas PP
 - Antarmuka memakai design system berbasis CSS custom properties (`:root` di `css/style.css`); template surat A4 dan SPPD dipisah dan tidak terpengaruh.
 - Footer kredit "© 2026 - Dirancang dan Dikembangkan Oleh Mahasiswa ITH · 231011116" berada di `index.html` (`<footer class="app-foot">`), di luar panel dan lembar surat, sehingga tidak ikut PDF, cetak, maupun Excel.
 - Tema terang saja; mode gelap otomatis dari sistem tidak lagi dipakai.
+
+## Modul Restitusi SPPD (tombol "Restitusi" di header)
+Satu pesan WhatsApp (format sama dengan Form SPPD) mengisi tiga surat: **Remburse Lumsum (Form 3)**, **Surat Pernyataan**, dan **Blangko SPPD (Lampiran VII)**.
+- Pegawai memakai daftar pegawai SPPD; tanda tangan memakai tanda tangan terdaftar (Surat Lembur/SPPD). Tidak ada data ganda.
+- Remburse: nominal diisi manual; Jumlah dan Total otomatis; keterangan otomatis "-" bila kosong, "Cash" bila ada (bisa diubah).
+- Pernyataan: kutipan maksud dan tanggal mengikuti Remburse. Kolom biru = manual; kosongkan = kembali otomatis.
+- Blangko: stempel dan pejabat per lokasi didaftarkan sekali di tab **Lokasi**; dicocokkan otomatis dari nama tempat tujuan (kata kunci).
+- Data tersimpan di localStorage `restitusi.v1` (terpisah dari `lembur.v1` dan `sppd.v1`). Aset gambar: `js/rs-assets.js`.
+- Uji: `node tests/rs.test.js`. CSS panel disalin dari aturan SPPD lewat `tools/mirror_css.py`.

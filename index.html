@@ -7,10 +7,11 @@
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/sppd.css">
 <link rel="stylesheet" href="css/modern.css">
+<link rel="stylesheet" href="css/restitusi.css">
 </head><body>
 <header class="app-header">
-<div class="brand"><span class="brand-mark" aria-hidden="true"></span><div><h1>Admin Surat Lembur</h1><p class="brand-sub">SPK Lembur dan SPPD</p></div></div>
-<nav class="modes" id="modes" aria-label="Modul aplikasi"><button id="mdL" class="on">Surat Lembur</button><button id="mdS">SPPD</button></nav>
+<div class="brand"><span class="brand-mark" aria-hidden="true"></span><div><h1>Admin Surat Lembur</h1><p class="brand-sub">SPK Lembur, SPPD dan Restitusi</p></div></div>
+<nav class="modes" id="modes" aria-label="Modul aplikasi"><button id="mdL" class="on">Surat Lembur</button><button id="mdS">SPPD</button><button id="mdR">Restitusi</button></nav>
 <small id="st">Data tersimpan di browser ini</small></header>
 <main>
 <section id="left" class="card">
@@ -86,7 +87,7 @@
  <div id="sheets"></div>
 </section>
 <section id="sp-left" class="card" hidden>
-<div class="tabs" id="sp-tabs"><button data-t="in" class="on">Input</button><button data-t="pe">Pegawai</button><button data-t="ri">Riwayat</button><button data-t="se">Pengaturan</button></div>
+<div class="tabs" id="sp-tabs"><button data-t="in" class="on">Input</button><button data-t="pe">Pegawai</button><button data-t="tt">Tanda Tangan</button><button data-t="ri">Riwayat</button><button data-t="se">Pengaturan</button></div>
 
 <div id="sp-tab-in">
  <div class="wa-panel">
@@ -99,7 +100,7 @@
  <div id="sp-form"></div>
  <div class="actbar">
   <div class="grp"><span class="gl">Surat</span><button class="b new" id="sp-bNew">Surat baru</button><button class="g" id="sp-bDraft">Simpan draft</button><button class="g ok" id="sp-bDone">Tandai selesai</button></div>
-  <div class="grp"><span class="gl">Keluaran</span><button class="b nv" id="sp-bPdf">Unduh PDF</button><button class="g" id="sp-bPrint">Cetak</button><button class="g" id="sp-bTtd" title="Daftarkan gambar tanda tangan (dipakai bersama surat lembur)">Kelola tanda tangan</button></div>
+  <div class="grp"><span class="gl">Keluaran</span><button class="b nv" id="sp-bPdf">Unduh PDF</button><button class="g" id="sp-bPrint">Cetak</button><button class="g" id="sp-bTtd" hidden title="Daftarkan gambar tanda tangan (dipakai bersama surat lembur)">Kelola tanda tangan</button></div>
  </div>
 </div>
 
@@ -142,6 +143,72 @@
  <div id="sp-batchbar" class="hint" hidden></div>
  <div id="sp-sheets"></div>
 </section>
+<section id="rs-left" class="card" hidden>
+<div class="tabs" id="rs-tabs"><button data-t="in" class="on">Input</button><button data-t="lk" title="Stempel dan pejabat penandatangan tiap lokasi tujuan">Lokasi</button><button data-t="tt">Tanda Tangan</button><button data-t="ri">Riwayat</button><button data-t="se">Pengaturan</button></div>
+
+<div id="rs-tab-in">
+ <div class="wa-panel">
+ <label>Tempel pesan WhatsApp (format sama dengan Form SPPD)</label>
+ <textarea id="rs-wa" style="min-height:150px" placeholder="Form SPPD:&#10;Personil :&#10;1. Nama pegawai&#10;&#10;Destinasi SPPD : Parepare - Makassar&#10;Maksud SPPD : ...&#10;Estimasi : 3 hari&#10;Tanggal : 12-14 Oktober 2026&#10;Transportasi : Kendaraan dinas PP"></textarea>
+ <p class="hint">Satu pesan mengisi tiga surat sekaligus: Remburse Lumsum, Surat Pernyataan, dan Blangko SPPD. Nominal biaya dan Nomor Trip SAP diisi manual di formulir.</p>
+ <div class="acts"><button class="b" id="rs-parse">Proses Pesan</button></div>
+ <div id="rs-parseOut"></div>
+</div>
+ <div class="legend" aria-label="Keterangan warna kolom"><span><b class="rq">*</b> Wajib</span><span><i class="lg lg-ok"></i>Diisi</span><span><i class="lg lg-need"></i>Kosong</span><span><i class="lg lg-warn"></i>Periksa</span><span><i class="lg" style="background:#eef4ff;border:1px solid #1d5fd1"></i>Manual (kosongkan = otomatis)</span></div>
+ <div id="rs-form"></div>
+ <div id="rs-opts"><b>Keluaran:</b>
+  <label><input type="checkbox" data-inc="R" checked> Remburse Lumsum</label><label><input type="checkbox" data-inc="P" checked> Surat Pernyataan</label><label><input type="checkbox" data-inc="B" checked> Blangko SPPD</label>
+  <label>Berkas PDF <select id="rs-fmt"><option value="gabung">1 PDF per pegawai (gabung)</option><option value="pisah">Pisah per surat</option></select></label></div>
+ <div class="actbar">
+  <div class="grp"><span class="gl">Surat</span><button class="b new" id="rs-bNew">Surat baru</button><button class="g" id="rs-bDraft">Simpan draft</button><button class="g ok" id="rs-bDone">Tandai selesai</button></div>
+  <div class="grp"><span class="gl">Keluaran</span><button class="b nv" id="rs-bPdf">Unduh PDF</button><button class="g" id="rs-bPrint">Cetak</button><button class="g" id="rs-bTtd" hidden title="Daftarkan gambar tanda tangan (dipakai bersama surat lembur dan SPPD)">Kelola tanda tangan</button><button class="g" id="rs-bPeg" title="Daftar pegawai dipakai bersama SPPD">Kelola pegawai</button></div>
+ </div>
+</div>
+
+<div id="rs-tab-lk" hidden>
+ <p class="hint">Setiap lokasi tujuan punya stempel dan pejabat penandatangan sendiri. Daftarkan sekali; saat nama tempat tujuan di surat cocok dengan kata kunci lokasi, stempel dan tanda tangan otomatis dipasang di kolom &ldquo;Cap &amp; tanda tangan&rdquo; Blangko (kiri dan kanan). Tanda tangan diambil dari tanda tangan terdaftar dengan nama pejabat yang sama; bila belum ada, pakai gambar yang diunggah di sini.</p>
+ <input id="rs-lkQ" placeholder="Cari lokasi / pejabat">
+ <div id="rs-lkList"></div>
+ <div class="panel">
+ <h4 id="rs-lkT" class="ph">Tambah lokasi</h4>
+ <label>Nama lokasi</label><input id="rs-lkN" placeholder="mis. GI Pangkep">
+ <label>Kata kunci pencocokan (pisahkan dengan koma)</label><input id="rs-lkK" placeholder="mis. pangkep, pangkajene">
+ <label>Nama pejabat penandatangan</label><input id="rs-lkP" placeholder="sama dengan nama di tanda tangan terdaftar">
+ <label>Gambar stempel (PNG/JPG/WEBP, maks 1 MB)</label><input type="file" id="rs-lkF" accept="image/png,image/jpeg,image/webp">
+ <label><input type="checkbox" id="rs-lkX" style="width:auto"> Gambar ini foto/scan: ambil hanya warna stempel (hapus latar dan tulisan hitam)</label>
+ <img id="rs-lkS" class="sg-prev" alt="">
+ <label>Gambar tanda tangan pejabat (opsional)</label><input type="file" id="rs-lkTf" accept="image/png,image/jpeg,image/webp">
+ <img id="rs-lkTs" class="sg-prev" alt="">
+ <label>Lebar stempel di surat (pt, bawaan 85)</label><input id="rs-lkW" type="number" min="30" max="160" step="1" placeholder="85">
+ <div class="acts"><button class="b" id="rs-lkSave">Simpan lokasi</button><button class="g" id="rs-lkReset">Batal</button></div>
+ </div>
+</div>
+
+<div id="rs-tab-ri" hidden>
+ <div class="acts rbar"><button class="b nv" id="rs-rPdf">Unduh PDF</button></div>
+ <input id="rs-rQ" placeholder="Cari nama / tujuan / maksud">
+ <div class="row"><div><label>Dari</label><input type="date" id="rs-rA"></div><div><label>Sampai</label><input type="date" id="rs-rB"></div></div>
+ <div id="rs-rList" style="margin-top:8px"></div>
+</div>
+
+<div id="rs-tab-se" hidden>
+ <div id="rs-seForm"></div>
+ <pre id="rs-testOut" class="hint"></pre>
+ <div class="actbar">
+  <div class="grp"><span class="gl">Restitusi</span><button class="b" id="rs-seSave">Simpan pengaturan</button></div>
+  <div class="grp"><span class="gl">Cadangan</span><button class="g" id="rs-exp">Ekspor JSON</button><label class="g imp">Impor JSON<input type="file" id="rs-imp" accept=".json" hidden></label></div>
+ </div>
+</div>
+</section>
+
+<section id="rs-pane" class="card" hidden>
+ <div id="rs-hint" class="hint"></div>
+ <div id="rs-sgbar" class="hint" hidden>
+  <span id="rs-sgctl" hidden><b id="rs-sgName"></b> · Ukuran <input type="range" id="rs-sgSize" min="20" max="400" step="5" style="width:110px;display:inline;padding:0"> <input type="number" id="rs-sgPct" min="20" max="400" step="5" title="Ketik ukuran (20-400), lalu Enter" style="width:66px;display:inline;padding:2px 4px"> %
+  <button class="g" data-n="l">←</button><button class="g" data-n="r">→</button><button class="g" data-n="u">↑</button><button class="g" data-n="d">↓</button> <button class="g" id="rs-sgReset">Reset</button></span></div>
+ <div id="rs-batchbar" class="hint" hidden></div>
+ <div id="rs-sheets"></div>
+</section>
 </main>
 <footer class="app-foot">© 2026 - Dirancang dan Dikembangkan Oleh Mahasiswa ITH · 231011116</footer>
 <script src="vendor/jspdf.umd.min.js"></script>
@@ -162,5 +229,9 @@
 <script src="js/sppd-logo.js"></script>
 <script src="js/sppd-logic.js"></script>
 <script src="js/sppd.js"></script>
+<script src="js/rs-assets.js"></script>
+<script src="js/rs-logic.js"></script>
+<script src="js/rs.js"></script>
+<script src="js/ttd-bar.js"></script>
 <script src="js/fx.js"></script>
 </body></html>

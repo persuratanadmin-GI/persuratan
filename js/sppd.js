@@ -56,7 +56,7 @@ function spUpdate(){if(spCur!==spBatch[spIdx]){spBatch=[spCur];spIdx=0}
  if($("sp-sheets").children.length!==spBatch.length)spBuildSheets();else{const lw=$("sp-sheets").children[spIdx];lw.querySelector(".sheet").innerHTML=spHtml(spCur);lw.querySelector(".lt").textContent=spTitleOf(spIdx)}
  spPersist();spButtons();if(spSel&&!document.querySelector('#sp-sheets .lw.act .sgb[data-p="'+spSel+'"]'))spSelect(null);
  const m=spMissing(spCur),sn=[],S0=SPDB.settings;if(S0.pjNama&&!spSigImg(S0.pjNama))sn.push("pejabat pemberi perintah");if(S0.gmNama&&!spSigImg(S0.gmNama))sn.push("general manager");
- $("sp-hint").textContent=[m.length?"Belum lengkap: "+m.join(", "):"",sn.length?"Tanda tangan belum terdaftar: "+sn.join(", ")+" (tab Tanda Tangan di mode Surat Lembur)":""].filter(Boolean).join(" · ")}
+ $("sp-hint").textContent=[m.length?"Belum lengkap: "+m.join(", "):"",sn.length?"Tanda tangan belum terdaftar: "+sn.join(", ")+" (tab Tanda Tangan)":""].filter(Boolean).join(" · ")}
 function spButtons(){const s=spBatch.length>1?" ("+spBatch.length+")":"";[["sp-bDraft","Simpan draft"],["sp-bDone","Tandai selesai"],["sp-bPdf",spBatch.length>1?"Unduh semua PDF":"Unduh PDF"],["sp-bPrint","Cetak"]].forEach(([id,t])=>{$(id).textContent=t+s})}
 function spActive(i){spIdx=i;spCur=spBatch[i];document.querySelectorAll("#sp-sheets .lw").forEach((e,j)=>e.classList.toggle("act",j===i));spSelect(null);spSync();spUpdate()}
 $("sp-batchbar").onclick=async e=>{if(e.target.id==="sp-pdfAktif"){spPdf([spCur]);return}
@@ -145,9 +145,11 @@ $("sp-bPdf").onclick=()=>spPdf(spBatch);
 /* ===== tab, mode ===== */
 function spTab(t){for(const x of["in","pe","ri","se"])$("sp-tab-"+x).hidden=x!==t;document.querySelectorAll("#sp-tabs button").forEach(b=>b.classList.toggle("on",b.dataset.t===t));if(t==="pe")spRenderPeg();if(t==="ri")spRenderRi();if(t==="se")spBuildSet()}
 $("sp-tabs").onclick=e=>{if(e.target.dataset.t)spTab(e.target.dataset.t)};
-function setMode(m){const S=m==="S";$("left").hidden=S;$("pane").hidden=S;$("sp-left").hidden=!S;$("sp-pane").hidden=!S;document.body.classList.toggle("mode-sppd",S);$("mdL").classList.toggle("on",!S);$("mdS").classList.toggle("on",S);
- document.querySelector("header h1").textContent=S?"Admin SPPD (Surat Perintah Perjalanan Dinas)":"Admin Surat Lembur";try{sessionStorage.setItem("app.mode",m)}catch(e){}
- if(S){spBuildForm();spBuildSheets();spUpdate();setTimeout(spFit,50)}else{try{fit()}catch(e){}setTimeout(()=>{try{fit()}catch(e){}},50)}}
+function setMode(m){const S=m==="S",R=m==="R",A=S||R;$("left").hidden=A;$("pane").hidden=A;$("sp-left").hidden=!S;$("sp-pane").hidden=!S;
+ if($("rs-left")){$("rs-left").hidden=!R;$("rs-pane").hidden=!R}
+ document.body.classList.toggle("mode-sppd",S);document.body.classList.toggle("mode-rs",R);$("mdL").classList.toggle("on",!A);$("mdS").classList.toggle("on",S);if($("mdR"))$("mdR").classList.toggle("on",R);
+ document.querySelector("header h1").textContent=S?"Admin SPPD (Surat Perintah Perjalanan Dinas)":R?"Admin Restitusi SPPD (Remburse, Pernyataan, Blangko)":"Admin Surat Lembur";try{sessionStorage.setItem("app.mode",m)}catch(e){}
+ if(S){spBuildForm();spBuildSheets();spUpdate();setTimeout(spFit,50)}else if(R){if(typeof rsEnter==="function")rsEnter()}else{try{fit()}catch(e){}setTimeout(()=>{try{fit()}catch(e){}},50)}}
 $("mdL").onclick=()=>setMode("L");$("mdS").onclick=()=>setMode("S");
 /* ===== pegawai ===== */
 let spEditP=null;

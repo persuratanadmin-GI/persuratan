@@ -1,0 +1,134 @@
+/* Modul Restitusi SPPD: aturan tampilan antarmuka DISALIN otomatis dari aturan #sp-* (SPPD) milik style.css dan modern.css,
+   supaya panel Restitusi tampil sama dengan panel SPPD. Dibuat oleh tools/mirror_css.py; bagian setelah garis "KHUSUS RESTITUSI" ditulis manual. */
+/* dari css/style.css */
+#rs-tabs{flex-wrap:nowrap;overflow-x:auto;border-bottom:1px solid var(--c-border);margin:-4px calc(var(--sp-1)*-1) var(--sp-5);scrollbar-width:thin}
+#rs-tabs button{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;border:0;border-bottom:2px solid transparent;margin-bottom:-1px;background:none;color:var(--c-muted);padding:11px 10px;border-radius:var(--r-sm) var(--r-sm) 0 0;cursor:pointer;font:inherit;font-weight:600;font-size:13px;white-space:nowrap;transition:color .12s,background .12s}
+#rs-tabs button:hover{color:var(--c-text);background:var(--c-sunken)}
+#rs-tabs button.on{color:var(--c-primary);border-bottom-color:var(--c-primary);background:none}
+#rs-tabs button:focus-visible{outline:2px solid var(--c-primary);outline-offset:-2px}
+#rs-form,#rs-seForm{display:grid;grid-template-columns:1fr 1fr;gap:0 var(--sp-4)}
+#rs-form>.sec:first-child,#rs-seForm .sec:first-of-type{margin-top:6px}
+#rs-seForm>p{grid-column:1/-1}
+#rs-lkQ,#rs-rQ{padding-left:36px;background-repeat:no-repeat;background-position:11px center;background-size:16px;margin-bottom:var(--sp-2)}
+#rs-tab-ri .row{margin-top:2px}
+#rs-testOut{white-space:pre-wrap;font:12px/1.5 var(--mono);color:var(--c-text);background:var(--c-sunken);border:1px solid var(--c-border);border-radius:var(--r-md);padding:10px 12px;margin:var(--sp-3) 0 0;overflow:auto}
+#rs-testOut:empty{display:none}
+#rs-parseOut{margin-top:var(--sp-3)}
+#rs-tab-se .actbar{margin-top:var(--sp-5)}
+:is(#rs-lkList,#rs-rList) table.t,:is(#rs-lkList,#rs-rList) table.t tbody{display:block;width:100%}
+:is(#rs-lkList,#rs-rList) table.t{border:1px solid var(--c-border);border-radius:var(--r-md);overflow:hidden}
+:is(#rs-lkList,#rs-rList) table.t tr{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;padding:10px 12px;border-bottom:1px solid var(--c-border)}
+:is(#rs-lkList,#rs-rList) table.t tr:last-child{border-bottom:0}
+:is(#rs-lkList,#rs-rList) table.t tr:hover{background:#f9fbfd}
+:is(#rs-lkList,#rs-rList) table.t td{display:block;border:0;padding:0}
+:is(#rs-lkList,#rs-rList) table.t td:first-child{flex:1 1 200px;min-width:0}
+:is(#rs-lkList,#rs-rList) table.t td:last-child:not(:first-child){display:flex;flex-wrap:wrap;gap:6px}
+:is(#rs-lkList,#rs-rList) table.t td button{min-height:30px;padding:4px 10px;font-size:12.5px}
+:is(#rs-lkList,#rs-rList) table.t td button::before{width:14px;height:14px}
+#rs-parseOut table.t{border:1px solid var(--c-border);border-radius:var(--r-md);background:#fff}
+#rs-parseOut table.t td:first-child{color:var(--c-muted);font-weight:600;white-space:nowrap}
+#rs-pane{position:sticky;top:var(--sp-3);overflow:auto;max-height:calc(100vh - 24px);padding:0;background:var(--c-workspace);border-color:var(--c-border-strong)}
+#rs-hint,#rs-sgbar,#rs-batchbar{margin:0;padding:9px 14px;background:#fff;border-bottom:1px solid var(--c-border)}
+#rs-hint:empty{display:none}
+#rs-hint:not(:empty){display:flex;gap:8px;align-items:flex-start;background:var(--c-warn-soft);border-bottom-color:#f0d99c;color:#7a4a06;font-size:13px;font-weight:600}
+#rs-sgbar{font-size:13px;color:var(--c-text)}
+#rs-sgctl{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+#rs-sgbar button{min-height:30px;padding:3px 10px;font-size:13px}
+#rs-batchbar{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;gap:6px;align-items:center;box-shadow:0 2px 6px rgba(16,24,40,.08)}
+#rs-batchbar b{margin-right:6px}
+#rs-batchbar button{min-height:32px;padding:4px 12px;font-size:13px}
+#rs-batchbar button.g{min-width:34px;padding:4px 10px}
+#rs-sheets{padding:14px}
+#rs-tabs button[data-t=in]::before,#rs-tabs button[data-t=pe]::before,#rs-tabs button[data-t=ri]::before,#rs-tabs button[data-t=se]::before,#rs-bNew::before,#rs-bDraft::before,#rs-bDone::before,#rs-bPdf::before,#rs-rPdf::before,#rs-bPrint::before,#rs-peClear::before,#rs-bTtd::before,#rs-parse::before,#rs-seSave::before,#rs-peSave::before,#rs-selfTest::before,#rs-exp::before,#rs-pdfAktif::before,#rs-hapusAktif::before,#rs-lkList button[data-e]::before,#rs-lkList button[data-x]::before,#rs-rList button[data-p]::before,#rs-rList button[data-o]::before,#rs-rList button[data-c]::before,#rs-rList button[data-x]::before,#rs-parafDel::before{content:"";flex:none;width:16px;height:16px;background:currentColor;-webkit-mask:center/contain no-repeat;mask:center/contain no-repeat}
+#rs-parse::before{-webkit-mask-image:var(--i-arrow);mask-image:var(--i-arrow)}
+#rs-bDone::before{-webkit-mask-image:var(--i-check);mask-image:var(--i-check)}
+#rs-tabs button[data-t=ri]::before{-webkit-mask-image:var(--i-clock);mask-image:var(--i-clock)}
+#rs-rList button[data-c]::before{-webkit-mask-image:var(--i-copy);mask-image:var(--i-copy)}
+#rs-bPdf::before,#rs-rPdf::before,#rs-exp::before,#rs-pdfAktif::before{-webkit-mask-image:var(--i-download);mask-image:var(--i-download)}
+#rs-lkList button[data-e]::before{-webkit-mask-image:var(--i-edit);mask-image:var(--i-edit)}
+#rs-tabs button[data-t=in]::before{-webkit-mask-image:var(--i-file);mask-image:var(--i-file)}
+#rs-selfTest::before{-webkit-mask-image:var(--i-flask);mask-image:var(--i-flask)}
+#rs-rList button[data-o]::before{-webkit-mask-image:var(--i-open);mask-image:var(--i-open)}
+#rs-rList button[data-p]::before{-webkit-mask-image:var(--i-pdf);mask-image:var(--i-pdf)}
+#rs-bTtd::before{-webkit-mask-image:var(--i-pen);mask-image:var(--i-pen)}
+#rs-bNew::before{-webkit-mask-image:var(--i-plus);mask-image:var(--i-plus)}
+#rs-bPrint::before{-webkit-mask-image:var(--i-print);mask-image:var(--i-print)}
+#rs-bDraft::before,#rs-seSave::before,#rs-peSave::before{-webkit-mask-image:var(--i-save);mask-image:var(--i-save)}
+#rs-tabs button[data-t=se]::before{-webkit-mask-image:var(--i-sliders);mask-image:var(--i-sliders)}
+#rs-peClear::before,#rs-hapusAktif::before,#rs-lkList button[data-x]::before,#rs-rList button[data-x]::before,#rs-parafDel::before{-webkit-mask-image:var(--i-trash);mask-image:var(--i-trash)}
+#rs-tabs button[data-t=pe]::before{-webkit-mask-image:var(--i-users);mask-image:var(--i-users)}
+#rs-lkQ,#rs-rQ{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235a6478' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='6'/%3E%3Cpath d='M20 20l-4.5-4.5'/%3E%3C/svg%3E")}
+#rs-hint:not(:empty)::before{content:"";flex:none;width:16px;height:16px;margin-top:1px;background:currentColor;-webkit-mask:var(--i-alert) center/contain no-repeat;mask:var(--i-alert) center/contain no-repeat}
+@media print{
+#rs-pane{box-shadow:none;border-radius:0}
+#rs-sheets{padding:0}
+}
+@media(max-width:980px){
+#rs-pane{position:static;max-height:none}
+}
+@media(max-width:640px){
+#rs-form,#rs-seForm{grid-template-columns:1fr}
+}
+/* dari css/modern.css */
+@media screen{
+#rs-left.card,#rs-pane.card{animation:fxRise .55s var(--ease) both}
+#rs-pane.card{animation-delay:.08s}
+#rs-left.card:hover{box-shadow:0 2px 6px rgba(13,35,82,.06),0 16px 36px -12px rgba(13,35,82,.18)}
+#rs-tab-in,#rs-tab-pe,#rs-tab-ri,#rs-tab-se{animation:fxFade .35s var(--ease) both}
+#rs-tabs{border-bottom-color:var(--c-border)}
+#rs-tabs button{border-radius:10px 10px 0 0;transition:color .2s,background .2s,border-color .2s}
+#rs-tabs button.on{background:linear-gradient(180deg,transparent,var(--c-primary-soft));border-bottom-width:3px}
+:is(#rs-lkList,#rs-rList) table.t{border-radius:14px;box-shadow:var(--shadow-1);background:#fff}
+:is(#rs-lkList,#rs-rList) table.t tr{transition:background .2s,transform .25s var(--ease),box-shadow .25s;animation:fxFade .4s var(--ease) both}
+:is(#rs-lkList,#rs-rList) table.t tr:hover{background:linear-gradient(90deg,var(--c-primary-soft),#fff);transform:translateX(3px)}
+:is(#rs-lkList,#rs-rList) table.t tr:nth-child(2){animation-delay:.04s}
+:is(#rs-lkList,#rs-rList) table.t tr:nth-child(3){animation-delay:.08s}
+:is(#rs-lkList,#rs-rList) table.t tr:nth-child(4){animation-delay:.12s}
+:is(#rs-lkList,#rs-rList) table.t tr:nth-child(n+5){animation-delay:.16s}
+#rs-pane{background:
+  radial-gradient(rgba(13,35,82,.10) 1px,transparent 1.2px) 0 0/18px 18px,
+  linear-gradient(180deg,var(--c-workspace),#d9e1ef);border-color:var(--c-border-strong)}
+#rs-hint:not(:empty){animation:fxSlide .4s var(--ease) both}
+#rs-hint,#rs-sgbar,#rs-batchbar{background:rgba(255,255,255,.85);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+#rs-batchbar{border-radius:0;box-shadow:0 6px 18px -10px rgba(13,35,82,.35)}
+#rs-batchbar button.on,#rs-batchbar button.act{background:var(--c-primary);color:#fff;border-color:var(--c-primary)}
+html[data-theme="dark"] #rs-parseOut table.t{background:var(--c-sunken)}
+html[data-theme="dark"] :is(#rs-lkList,#rs-rList) table.t{background:var(--c-surface)}
+html[data-theme="dark"] :is(#rs-lkList,#rs-rList) table.t tr:hover{background:linear-gradient(90deg,rgba(108,155,255,.12),transparent)}
+html[data-theme="dark"] #rs-pane{background:
+  radial-gradient(rgba(150,175,230,.10) 1px,transparent 1.2px) 0 0/18px 18px,linear-gradient(180deg,#0e1527,#0a1020)}
+html[data-theme="dark"] :is(#rs-hint,#rs-sgbar,#rs-batchbar){background:rgba(18,26,46,.88);border-bottom-color:var(--c-border)}
+html[data-theme="dark"] #rs-hint:not(:empty){background:var(--c-warn-soft);color:var(--c-warn)}
+}
+@media screen{
+#rs-tabs{position:relative;flex-wrap:wrap;overflow:visible;gap:0}
+#rs-tabs button{flex:1 1 auto;justify-content:center;gap:5px;padding:11px 6px;font-size:12.5px}
+#rs-tabs.fx-ind button{border-bottom-color:transparent}
+#rs-tabs.fx-ind::after{content:"";position:absolute;left:0;top:0;height:3px;width:var(--iw,0);border-radius:3px 3px 0 0;
+  background:linear-gradient(90deg,var(--c-primary),var(--c-accent));transform:translate(var(--ix,0),var(--iy,0));
+  transition:transform .4s var(--ease),width .4s var(--ease);pointer-events:none}
+:is(#rs-lkList,#rs-rList) table.t tr.fx-out{animation:fxOut .24s var(--ease) forwards!important;pointer-events:none}
+:is(#rs-lkList,#rs-rList)>p.hint:only-child{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;
+  padding:22px 16px;margin:10px 0;border:1.5px dashed var(--c-border-strong);border-radius:14px;background:var(--c-sunken);animation:fxFade .4s var(--ease) both}
+:is(#rs-lkList,#rs-rList)>p.hint:only-child::before{content:"";width:34px;height:34px;background:var(--c-primary);opacity:.55;
+  -webkit-mask:var(--i-users) center/contain no-repeat;mask:var(--i-users) center/contain no-repeat}
+#rs-rList>p.hint:only-child::before{-webkit-mask-image:var(--i-clock);mask-image:var(--i-clock)}
+}
+
+
+/* ===== KHUSUS RESTITUSI (ditulis manual) ===== */
+#rs-form .man{border-color:var(--c-primary,#1d5fd1);background:var(--c-primary-soft,#eef4ff)}
+#rs-form input[readonly].calc{background:#eef1f6;font-weight:600}
+#rs-form .fld .hint{margin:2px 0 0}
+#rs-opts{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center;margin:var(--sp-3,12px) 0 0}
+#rs-opts label{display:inline-flex;align-items:center;gap:6px;margin:0;font-weight:600}
+#rs-opts input,#rs-opts select{width:auto;display:inline-block}
+.rs-thumb{height:42px;max-width:90px;object-fit:contain;border:1px solid var(--c-border,#d6dce6);border-radius:6px;background:#fff;padding:2px}
+@media print{
+ body.mode-rs #left,body.mode-rs #pane,body.mode-rs #sp-left,body.mode-rs #sp-pane,body.mode-rs #rs-left,body.mode-rs #rs-hint,body.mode-rs #rs-sgbar,body.mode-rs #rs-batchbar{display:none!important}
+ #rs-pane{position:static;max-height:none;overflow:visible;border:0;padding:0;background:none}
+}
+/* ikon tab: Tanda Tangan (SPPD dan Restitusi) memakai ikon pena yang sama dengan Surat Lembur; Lokasi memakai ikon pin */
+#sp-tabs button[data-t=tt]::before,#rs-tabs button[data-t=tt]::before,#rs-tabs button[data-t=lk]::before{content:"";flex:none;width:16px;height:16px;background:currentColor;-webkit-mask:center/contain no-repeat;mask:center/contain no-repeat}
+#sp-tabs button[data-t=tt]::before,#rs-tabs button[data-t=tt]::before{-webkit-mask-image:var(--i-pen);mask-image:var(--i-pen)}
+#rs-tabs button[data-t=lk]::before{-webkit-mask-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0z'/><circle cx='12' cy='10' r='3'/></svg>");mask-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0z'/><circle cx='12' cy='10' r='3'/></svg>")}
