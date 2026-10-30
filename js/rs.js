@@ -88,7 +88,7 @@ function rsPaint(i){for(const L of rsLetters()){const lw=document.querySelector(
 function rsHintText(){const c=rsCur,x=rsCtx(),m=rsMissing(c),sn=[];
  if(c.personName&&!rsSigOf(c.personName))sn.push("pegawai "+c.personName);
  if(rsInc.B){const pa=rsGet(c,"bPejAsal",x);if(pa&&!rsSigOf(pa))sn.push("pejabat asal "+pa);if(!x.S.stempelAsal)sn.push("stempel pejabat asal (Pengaturan)");
-  [1,2,3].forEach(i=>{const s=rsStopInfo(c,i,x);if(!s.n)return;if(!s.lok)sn.push("lokasi "+s.n+" belum terdaftar (tab Lokasi)");else{if(!s.lok.stempel)sn.push("stempel "+s.lok.nama);if(!s.ttd)sn.push("TTD "+(s.pej||"pejabat "+s.lok.nama))}})}
+  [1,2,3].forEach(i=>{const s=rsStopInfo(c,i,x);if(!s.n)return;if(!s.lok)sn.push("lokasi "+s.n+" belum terdaftar (tab Lokasi)");else{if(!s.lok.stempel)sn.push("stempel "+s.lok.nama);if(!s.ttd&&!s.lok.menyatu)sn.push("TTD "+(s.pej||"pejabat "+s.lok.nama))}})}
  return[m.length?"Belum lengkap: "+m.join(", "):"",sn.length?"Belum terdaftar: "+sn.join(", ")+" (tab Lokasi / Tanda Tangan)":""].filter(Boolean).join(" · ")}
 function rsUpdate(){if(rsCur!==rsBatch[rsIdx]){rsBatch=[rsCur];rsIdx=0}
  if($("rs-sheets").querySelectorAll(".lw").length!==rsBatch.length*rsLetters().length)rsBuildSheets();else rsPaint(rsIdx);
