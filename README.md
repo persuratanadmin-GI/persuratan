@@ -57,7 +57,8 @@ jadi urutannya penting.
 5. Semua aksi ada di bar tombol di bawah formulir. Jika ada beberapa surat, angkanya tampil di label (misalnya **Simpan draft (8)**)
    dan aksinya berlaku untuk semua surat dalam daftar: **Simpan draft**, **Tandai selesai**, **Simpan ke Excel**, **Unduh PDF**
    (satu halaman A4 per surat), dan **Cetak**. Nama berkas PDF otomatis: beberapa surat menjadi
-   `DAFTAR FILE LEMBUR NAMA PERSONEL.pdf`, satu surat menjadi `LEMBUR NAMA PERSONEL DD BULAN YYYY.pdf`. **Surat baru** memulai surat kosong.
+   `DAFTAR FILE LEMBUR NAMA PERSONEL BULAN TAHUN.pdf` (misalnya `... BUDI SANTOSO OKTOBER 2026.pdf`; lintas bulan menjadi
+   `OKTOBER-NOVEMBER 2026`, lintas tahun `DESEMBER 2026-JANUARI 2027`), satu surat menjadi `LEMBUR NAMA PERSONEL DD BULAN YYYY.pdf`. **Surat baru** memulai surat kosong.
 6. Surat tersimpan ada di tab **Riwayat** (cari, filter tanggal, buka, duplikat, hapus, hapus semua). Di panel pratinjau,
    tombol nomor meloncat ke surat tertentu, **PDF surat ini** mengunduh PDF hanya untuk surat yang dibuka, dan **Hapus surat ini**
    mengeluarkannya dari daftar. Di tab Riwayat, tombol **PDF** pada tiap baris mengunduh PDF surat itu.
@@ -80,7 +81,14 @@ Jam lembur: 16:30-18:00
 TL: Hasan
 ```
 
-Label yang dikenali ada di `ALIAS` pada `js/logic.js` (misalnya `TL`, `Team Leader`, `Pemberi Perintah` untuk pemberi perintah).
+**Pembaca pesan memahami makna label, bukan hanya penulisan persis.** Kata pada label dinilai menurut artinya (`SEM_L` di `js/logic.js`;
+untuk SPPD `SP_VOC` di `js/sppd-logic.js`), sehingga `Maksud Lembur`, `Keperluan`, `Kegiatan Lembur`, `Perihal`, atau `Topik Kerjaan` terbaca sebagai uraian;
+`Nama Atasan`, `Disetujui oleh`, `Supervisor` sebagai pemberi perintah; `Hari/Tgl`, `Tanggal Pelaksanaan` sebagai tanggal; `Waktu Pelaksanaan` sebagai jam;
+`Nomor Induk Pegawai`, `NIK`, `No. ID` sebagai ID/NIP, dan seterusnya. Kata pengisi seperti "lembur", "kerja", "yang" diabaikan. Juga terbaca:
+emoji/simbol di awal baris, nilai di baris berikutnya (`Nama:` lalu `Budi` di baris bawahnya), tanggal+jam dalam satu baris
+(`Rabu, 7 Oktober 2026 (16.30-21.00 WITA)`), `Jam Mulai: 16.30 - 21.00`, nama hari di depan tanggal, singkatan bulan (`Agu`, `Ags`), dan nama tanpa label di baris awal.
+Bila label memuat satu kata asing atau salah ketik, hasilnya tetap dibaca tetapi ditandai kuning (periksa); label tanpa makna yang jelas (mis. `Catatan:`) tidak ditebak.
+Tabel alias lama (`ALIAS` pada `js/logic.js`) tetap dipakai lebih dulu. Label yang dikenali ada di `ALIAS` pada `js/logic.js` (misalnya `TL`, `Team Leader`, `Pemberi Perintah` untuk pemberi perintah).
 Urutan baris bebas dan tanda ":" tidak wajib: `Nama: Budi`, `Nama = Budi`, `Nama - Budi`, dan `Nama Budi` semuanya terbaca,
 termasuk `Tgl 10 Oktober 2026` dan `Jam 16:30-21:30`. Salah ketik ringan dimaklumi, dan hasil tebakan selalu ditandai kuning agar diperiksa.
 
@@ -105,6 +113,8 @@ Aturan yang dipakai:
 - Jam lembur dihitung dari jam masuk dan pulang (lewat tengah malam ditangani). Total ditulis dengan kebiasaan di contoh:
   jam.menit (4 jam 45 menit = `4.45`) beserta teks terbilang. Teks terbilang berupa tulisan biasa, bukan rumus.
 - Sheet bulan yang diperbarui ditulis ulang dengan gaya yang sama; sheet bulan lain tidak diubah.
+- Nama berkas unduhan Excel selalu memuat bulan dan tahun: berkas baru `daftar-lembur-oktober-2026.xlsx` (lintas bulan `daftar-lembur-oktober-november-2026.xlsx`);
+  berkas yang diperbarui `NAMA-diperbarui-oktober-2026.xlsx` (tidak digandakan bila nama berkas asli sudah memuat bulan dan tahunnya).
 - Penyimpanan: di Chrome atau Edge (lewat `http://localhost` atau GitHub Pages) file yang dipilih ditimpa langsung setelah
   Anda memberi izin. Jika tidak memungkinkan (misalnya file sedang terbuka di Excel, atau browser lain), salinan
   `...-diperbarui.xlsx` diunduh dan Anda tinggal menggantinya.

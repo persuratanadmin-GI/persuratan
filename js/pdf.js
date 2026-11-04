@@ -64,12 +64,15 @@ async function pdfLetter(pdf,c){
   const k=Math.min(1,105/(im.naturalWidth*.75),56/(im.naturalHeight*.75)),w=im.naturalWidth*.75*k*(o.s||1),h=im.naturalHeight*.75*k*(o.s||1);
   pdf.addImage(g.src,"PNG",X(g.cx+(o.x||0)*PX-w/2),Y(g.cy+(o.y||0)*PX-h/2),w*S,h*S)}
 }
-/* Nama berkas PDF: satu surat -> "LEMBUR NAMA DD BULAN YYYY"; beberapa surat -> "DAFTAR FILE LEMBUR NAMA". */
+/* Nama berkas PDF: satu surat -> "LEMBUR NAMA DD BULAN YYYY"; beberapa surat -> "DAFTAR FILE LEMBUR NAMA BULAN TAHUN". */
 function namaAman(t){return String(t||"").replace(/[\\/:*?"<>|\u0000-\u001f]+/g," ").replace(/\s+/g," ").trim().toUpperCase()}
+function labelBulanTahun(isoList){return rentangBulanTeks((isoList||[]).map(x=>String(x||"").slice(0,7)))}
 function namaBerkasPdf(list){
  if(list.length===1){const c=list[0];return "LEMBUR "+(namaAman(c.name)||"TANPA NAMA")+" "+(c.tanggal?namaAman(fmtDate(c.tanggal)):"TANPA TANGGAL")+".pdf"}
  const n=[...new Set(list.map(c=>namaAman(c.name)).filter(Boolean))];
- return ("DAFTAR FILE LEMBUR "+(n.length<=1?(n[0]||""):n.length<=3?n.join(" & "):n[0]+" DKK")).trim()+".pdf"}
+ /* Beberapa surat dalam satu berkas: nama berkas memuat bulan dan tahun (rentang bila lintas bulan/tahun). */
+ const bt=labelBulanTahun(list.map(c=>c.tanggal));
+ return ("DAFTAR FILE LEMBUR "+(n.length<=1?(n[0]||""):n.length<=3?n.join(" & "):n[0]+" DKK")+(bt?" "+bt:"")).replace(/\s+/g," ").trim()+".pdf"}
 async function exportPdf(list){
  if(pdfBusy)return;if(!list.length){toast("Tidak ada surat.");return}
  const bad=list.map((c,i)=>missing(c).length?"surat "+(i+1)+": "+missing(c).join(", "):"").filter(Boolean);

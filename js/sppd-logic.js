@@ -41,15 +41,30 @@ const SP_ALIAS={personil:["personil","personel","pegawai","nama","nama personil"
  tanggal:["tanggal","tgl","tanggal berangkat","tanggal sppd","tanggal perjalanan"],kembali:["tanggal kembali","tgl kembali","kembali"],transport:["transportasi","kendaraan","transport"],
  urgensi:["urgensi","justifikasi","urgensi pelaksanaan"],terbit:["tanggal terbit","dikeluarkan","tanggal surat"]};
 const SP_LOOK=(()=>{const l={};for(const k in SP_ALIAS)SP_ALIAS[k].forEach(a=>l[a]=k);return l})();
-function spLabel(raw){const l=spNorm(raw);if(!l)return null;if(SP_LOOK[l])return SP_LOOK[l];if(l.length<6)return null;let best=null,bd=9,tie=false;
- for(const a in SP_LOOK){if(a.length<6)continue;const x=lev(l,a);if(x<bd){bd=x;best=SP_LOOK[a];tie=false}else if(x===bd&&SP_LOOK[a]!==best)tie=true}return best&&!tie&&bd<=1?best:null}
-function spLine(line){const t=spClean(line).replace(/[*~`_]/g,"").replace(/^\s*(?:[-•]\s+)/,"").trim();if(!t)return null;
- const m=/^([^:=\n]{2,30}?)\s*[:=]\s*(.*)$/.exec(t);if(m){const k=spLabel(m[1]);if(k)return{k,v:m[2].trim()}}return{k:null,v:t}}
+/* Label dibaca menurut makna (sinonim, kata tambahan, salah ketik ringan): "Keperluan Dinas" = maksud, "Tgl Pulang" = kembali, "Moda Transportasi" = transport. */
+const SP_VOC=semBangun({personil:[["personil",6],["personel",6],["pegawai",6],["peserta",6],["petugas",5],["nama",4]],
+ destinasi:[["destinasi",8],["tujuan",5],["rute",8],["lokasi",9],["kota",4],["tempat",3]],
+ maksud:[["maksud",8],["keperluan",8],["kegiatan",7],["agenda",8],["acara",7],["uraian",7],["pekerjaan",7],["tugas",6],["perihal",7],["urusan",7]],
+ estimasi:[["estimasi",8],["lama",8],["lamanya",8],["durasi",8]],
+ tanggal:[["tanggal",5],["tgl",5],["jadwal",6],["berangkat",5],["keberangkatan",5],["waktu",4]],
+ kembali:[["kembali",9],["pulang",9],["kepulangan",9]],transport:[["transportasi",9],["transport",9],["kendaraan",9],["angkutan",8]],
+ urgensi:[["urgensi",9],["justifikasi",9],["alasan",6]],terbit:[["terbit",10],["dikeluarkan",10]]},
+ "sppd dinas perjalanan surat perintah yang untuk dari oleh nya moda jenis form data detail lengkap dan di ke pada no nomor".split(" "));
+function spLabelX(raw){const l=spNorm(raw);if(!l)return null;if(SP_LOOK[l])return{k:SP_LOOK[l]};
+ const sm=semNilai(raw,SP_VOC);if(sm)return{k:sm.k,loose:sm.loose};
+ if(l.length<6)return null;let best=null,bd=9,tie=false;
+ for(const a in SP_LOOK){if(a.length<6)continue;const x=lev(l,a);if(x<bd){bd=x;best=SP_LOOK[a];tie=false}else if(x===bd&&SP_LOOK[a]!==best)tie=true}return best&&!tie&&bd<=1?{k:best}:null}
+function spLabel(raw){const r=spLabelX(raw);return r?r.k:null}
+/* seen = label yang sudah muncul di blok ini. Label longgar yang sudah muncul dianggap lanjutan isi; label tanpa titik dua hanya dikenali bila belum muncul. */
+function spLine(line,seen){const t=spClean(line).replace(/[*~`_]/g,"").replace(/^\s*(?:[-•]\s+)/,"").replace(/^[^\p{L}\p{N}]+/u,"").trim();if(!t)return null;
+ const m=/^([^:=\n]{2,40}?)\s*[:=]\s*(.*)$/.exec(t);if(m){const r=spLabelX(m[1]);if(r&&!(r.loose&&seen&&seen[r.k]))return{k:r.k,v:m[2].trim()}}
+ if(seen){const w=t.split(/\s+/);if(w.length>=2){const r=labelTanpaTanda(w,SP_VOC,SP_LOOK,3,1);if(r&&!seen[r.k]){const v=w.slice(r.n).join(" ").trim();if(v)return{k:r.k,v}}}}
+ return{k:null,v:t}}
 function spSplitNames(v){return spClean(v).split(/\s*(?:,|;|\n|&|\bdan\b)\s*/i).map(x=>x.replace(/^\s*(?:\d+\s*[.)]|[-•])\s*/,"").trim()).filter(Boolean)}
 function spBlocks(text){const out=[];let b=null,key=null;const mk=()=>({r:{},names:[],unk:[],seen:{}});
  for(const raw of spClean(text).split(/\r?\n/)){const t=raw.trim();if(!t){continue}
   if(/^\W*form\s+sppd\W*$/i.test(t)){if(b&&Object.keys(b.seen).length)out.push(b);b=mk();key=null;continue}
-  const L=spLine(raw);if(!L)continue;if(!b)b=mk();
+  const L=spLine(raw,b?b.seen:{});if(!L)continue;if(!b)b=mk();
   if(L.k){if(b.seen[L.k]){out.push(b);b=mk()}b.seen[L.k]=1;key=L.k;if(L.k==="personil"){if(L.v)b.names.push(...spSplitNames(L.v))}else b.r[L.k]=L.v}
   else if(key==="personil")b.names.push(...spSplitNames(L.v));
   else if(key==="maksud"||key==="urgensi")b.r[key]=(b.r[key]?b.r[key]+" ":"")+L.v;

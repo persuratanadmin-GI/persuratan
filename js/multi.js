@@ -2,10 +2,10 @@
 /* Banyak surat dari satu pesan WhatsApp, daftar surat, simpan semua. */
 /* ===== Banyak surat dari satu pesan WhatsApp ===== */
 let QUIET=false,SKIP=false,lastMulti=[];
-function lineKey(line){const b=bacaBaris(line);return b?b.k:null}
+function lineKey(line,seen){const b=bacaBaris(line);return b&&!(b.loose&&seen&&seen[b.k])?b.k:null}
 /* Pisah blok: baris kosong, atau label yang berulang (= awal surat baru). Blok tanpa label digabung ke blok sebelumnya. */
 function splitBlocks(text){const out=[];let b=[],seen={};const flush=()=>{if(b.length)out.push(b);b=[];seen={}};
- for(const line of text.split(/\r?\n/)){if(!line.trim()){flush();continue}const k=lineKey(line);if(k){if(seen[k])flush();seen[k]=1}b.push(line)}
+ for(const line of text.split(/\r?\n/)){if(!line.trim()){flush();continue}const k=lineKey(line,seen);if(k){if(seen[k])flush();seen[k]=1}b.push(line)}
  flush();const merged=[];for(const bl of out){if(!bl.some(l=>lineKey(l))&&merged.length)merged[merged.length-1].push(...bl);else merged.push(bl)}
  return merged.map(b=>b.join("\n"))}
 /* Nama kosong diisi dari ID/NIP yang sama: (1) blok lain dalam pesan, (2) personel tersimpan, (3) riwayat surat. */

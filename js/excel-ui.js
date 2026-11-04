@@ -62,6 +62,11 @@ async function xlSlot(){const out=[];
  for(let i=1;i<=4;i++){const t=xlS.ttd[i-1],nama=t.nama||"",g=nama?sigLookup(nama):"",slot={label:t.label||"",nama};
   if(g){const im=await loadImg(g);if(im)slot.gambar={base64:g.split(",")[1],ext:"png",w:im.naturalWidth,h:im.naturalHeight}}out.push(slot)}
  return out}
+/* Nama berkas unduhan Excel selalu memuat bulan dan tahun (rentang bila lintas bulan). Berkas lama yang namanya sudah memuat bulan-tahun tidak digandakan. */
+function xlNamaUnduh(lap){const bt=rentangBulanTeks((lap||[]).map(l=>l.mk)),slug=bt.toLowerCase().replace(/\s+/g,"-");
+ if(!xlS||!xlS.namaFile)return"daftar-lembur"+(slug?"-"+slug:"")+".xlsx";
+ const dasar=xlS.namaFile.replace(/\.xlsx$/i,""),n=t=>t.toLowerCase().replace(/[\s_\-.]+/g," ").trim();
+ return dasar+"-diperbarui"+(slug&&!n(dasar).includes(n(bt))?"-"+slug:"")+".xlsx"}
 async function unduhBlob(nama,blob){let dl=null;try{dl=window.claude&&await window.claude.use("downloads")}catch(e){}
  if(dl){await dl.save({filename:nama,data:blob});return}
  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=nama;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000)}
@@ -74,8 +79,8 @@ async function xlSimpanExcel(){
   let pesan="";
   if(xlS.handle){try{let izin=await xlS.handle.queryPermission({mode:"readwrite"});if(izin!=="granted")izin=await xlS.handle.requestPermission({mode:"readwrite"});
     if(izin!=="granted")throw new Error("izin ditolak");const w=await xlS.handle.createWritable();await w.write(blob);await w.close();pesan="File Excel diperbarui langsung: "+xlS.namaFile}
-   catch(err){await unduhBlob(xlS.namaFile.replace(/\.xlsx$/i,"")+"-diperbarui.xlsx",blob);pesan="File asli tidak bisa ditimpa ("+(err&&err.message||err)+"). Salinan diunduh; tutup file di Excel lalu ganti file lama."}}
-  else{const nama=xlS.namaFile?xlS.namaFile.replace(/\.xlsx$/i,"")+"-diperbarui.xlsx":"daftar-lembur-"+xlBulanLabel(lap[0].mk).toLowerCase().replace(/\s+/g,"-")+".xlsx";await unduhBlob(nama,blob);pesan="Excel diunduh: "+nama}
+   catch(err){await unduhBlob(xlNamaUnduh(lap),blob);pesan="File asli tidak bisa ditimpa ("+(err&&err.message||err)+"). Salinan diunduh; tutup file di Excel lalu ganti file lama."}}
+  else{const nama=xlNamaUnduh(lap);await unduhBlob(nama,blob);pesan="Excel diunduh: "+nama}
   const tambah=lap.reduce((n,l)=>n+l.ditambah,0),lewat=lap.reduce((n,l)=>n+l.dilewati,0);
   xlS.letters.forEach(c=>{c.excelAt=Date.now();const r=DB.records.find(x=>x.id&&x.id===c.id);if(r)r.excelAt=c.excelAt});
   DB.settings.excelMap=DB.settings.excelMap||{};xlS.letters.forEach(c=>{const k=xlKunci(c);DB.settings.excelMap[k]=xlRapi(xlS.nama[k]||c.name).toUpperCase()});
