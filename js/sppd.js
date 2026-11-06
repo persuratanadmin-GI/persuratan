@@ -115,11 +115,11 @@ async function spPdfLetter(pdf,c){pdf.setTextColor(0,0,0);pdf.setDrawColor(0,0,0
  for(const g of sigs){const im=await loadImg(g.src);if(!im)continue;const o=((c.sigPos||{})[g.p])||{x:0,y:0,s:1};
   const k=Math.min(1,g.bw/(im.naturalWidth*.75),g.bh/(im.naturalHeight*.75)),w=g.ex?g.bw*(o.s||1):im.naturalWidth*.75*k*(o.s||1),h=g.ex?g.bh*(o.s||1):im.naturalHeight*.75*k*(o.s||1);
   pdf.addImage(g.src,"PNG",g.l?g.cx-g.bw/2+(o.x||0)*PX:g.cx+(o.x||0)*PX-w/2,(g.l?g.cy+g.bh/2-h:g.cy-h/2)+(o.y||0)*PX,w,h)}}
-/* Nama file: SURAT PERINTAH PERJALANAN DINAS UPT MAKASSAR NAMA PEGAWAI (SPPD 5-7 OKTOBER) */
+/* Nama file: SURAT PERINTAH PERJALANAN DINAS UPT MAKASSAR NAMA PEGAWAI (SPPD 5-7 OKTOBER 2026); lintas bulan: 30 OKTOBER-2 NOVEMBER 2026; lintas tahun: 30 DESEMBER 2026-2 JANUARI 2027 */
 function spTglRentang(c){const m=iso=>{const q=String(iso).split("-").map(Number);return{y:q[0],mo:q[1],d:q[2]}},bln=n=>String(BLN[n-1]||"").toUpperCase();
  if(!c.tglBerangkat)return"TANPA TANGGAL";const a=m(c.tglBerangkat),b=c.tglKembali?m(c.tglKembali):a;
- if(a.y===b.y&&a.mo===b.mo)return(a.d===b.d?a.d:a.d+"-"+b.d)+" "+bln(a.mo);
- const th=a.y!==b.y;return a.d+" "+bln(a.mo)+(th?" "+a.y:"")+"-"+b.d+" "+bln(b.mo)+(th?" "+b.y:"")}
+ if(a.y===b.y&&a.mo===b.mo)return(a.d===b.d?a.d:a.d+"-"+b.d)+" "+bln(a.mo)+" "+a.y;
+ const th=a.y!==b.y;return a.d+" "+bln(a.mo)+(th?" "+a.y:"")+"-"+b.d+" "+bln(b.mo)+" "+b.y}
 function spNamaFile(c){return("SURAT PERINTAH PERJALANAN DINAS UPT MAKASSAR "+(namaAman(c.personName)||"TANPA NAMA")+" (SPPD "+spTglRentang(c)+")").replace(/\s+/g," ").trim()+".pdf"}
 function spNamaUnik(list){const pakai={};return list.map(c=>{let n=spNamaFile(c);if(pakai[n]){const k=++pakai[n];n=n.replace(/\.pdf$/," ("+k+").pdf")}else pakai[n]=1;return n})}
 const spJeda=ms=>new Promise(r=>setTimeout(r,ms));
