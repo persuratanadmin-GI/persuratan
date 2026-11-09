@@ -115,6 +115,9 @@ Aturan yang dipakai:
 - Sheet bulan yang diperbarui ditulis ulang dengan gaya yang sama; sheet bulan lain tidak diubah.
 - Nama berkas unduhan Excel selalu memuat bulan dan tahun: berkas baru `daftar-lembur-oktober-2026.xlsx` (lintas bulan `daftar-lembur-oktober-november-2026.xlsx`);
   berkas yang diperbarui `NAMA-diperbarui-oktober-2026.xlsx` (tidak digandakan bila nama berkas asli sudah memuat bulan dan tahunnya).
+- Semua kolom tanggal memakai pemilih Indonesia (Tanggal / Bulan bernama / Tahun) dari `js/tanggal-id.js`, sehingga tidak bergantung pada bahasa browser.
+  Input `type="date"` aslinya tetap ada (disembunyikan) sebagai penyimpan nilai `YYYY-MM-DD`; kode lain tetap membaca/menulis `.value`.
+  Bila ada input tanggal baru, cukup tulis `<input type="date">` biasa: pemilih Indonesia dipasang otomatis.
 - Penyimpanan: di Chrome atau Edge (lewat `http://localhost` atau GitHub Pages) file yang dipilih ditimpa langsung setelah
   Anda memberi izin. Jika tidak memungkinkan (misalnya file sedang terbuka di Excel, atau browser lain), salinan
   `...-diperbarui.xlsx` diunduh dan Anda tinggal menggantinya.

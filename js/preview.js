@@ -6,7 +6,7 @@ let selSig=null;
 const SIG=(s,p,r)=>{if(!s)return"";const o=(r.sigPos||{})[p]||{};return`<span class="sgb${selSig===p&&r===cur?" sel":""}" data-p="${p}" title="Seret: geser · kotak biru atau roda mouse: ukuran" style="--s:${o.s||1};transform:translate(${o.x||0}mm,${o.y||0}mm) scale(${o.s||1})"><img src="${s}" alt="ttd" draggable="false"><i class="sgh"></i></span>`};
 function renderSheet(r){
  const s=DB.settings,tgl=fmtDate(r.tanggal),dur=durText(r),waktu=r.mulai&&r.selesai?`${r.mulai} s/d ${r.selesai} ${s.zona}${dur?" ("+dur+")":""}`:"";
- const place=`${esc(s.kota)}, ${tgl?esc(fmtDateEn(r.tanggal)):'<span class="empty">..........</span>'}`;
+ const place=`${esc(s.kota)}, ${tgl?esc(fmtDate(r.tanggal)):'<span class="empty">..........</span>'}`;
  const T=(top,sz,cls,h)=>`<div class="a c ${cls}" style="top:${top}pt;font-size:${sz}pt">${h}</div>`;
  const RL=t=>`<div class="a rl" style="top:${t}pt"></div>`;
  const row=(h,a,b)=>`<tr style="height:${h}pt"><td>${a}</td><td>${b}</td></tr>`;

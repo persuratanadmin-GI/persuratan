@@ -12,7 +12,7 @@ async function pdfLetter(pdf,c){
  const T=(t,x,y0,sz,f,al)=>{F(f||"normal",sz);pdf.text(pdfTxt(t),X(x),Y(y0+.891*sz),{align:al||"left"})};
  const R=(x0,y0,x1,y1)=>pdf.rect(X(x0),Y(y0),(x1-x0)*S,(y1-y0)*S,"F");
  const tgl=c.tanggal?fmtDate(c.tanggal):"",dur=durText(c),waktu=c.mulai&&c.selesai?`${c.mulai} s/d ${c.selesai} ${s.zona}${dur?" ("+dur+")":""}`:"";
- const place=s.kota+", "+(c.tanggal?fmtDateEn(c.tanggal):"");
+ const place=s.kota+", "+(c.tanggal?fmtDate(c.tanggal):"");
  pdf.setFillColor(0,0,0);pdf.setTextColor(0,0,0);
  F("normal",8);const ur=pdf.splitTextToSize(pdfTxt(c.uraian),343*S),n=Math.max(1,ur.length),d=(n-1)*8.856;
  const sigs=[];

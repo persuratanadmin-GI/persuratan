@@ -306,3 +306,9 @@ label.imp::before{-webkit-mask-image:var(--i-upload);mask-image:var(--i-upload)}
  #form,#seForm,#sp-form,#sp-seForm{grid-template-columns:1fr}
  .app-foot{padding:12px 12px calc(16px + env(safe-area-inset-bottom,0px))}
 }
+
+/* Pemilih tanggal berbahasa Indonesia (js/tanggal-id.js) */
+.tgl-id{display:flex;gap:6px;width:100%;min-width:0}
+.tgl-id select{min-width:0;padding-left:8px;padding-right:22px;background-position:right 6px center}
+.tgl-id select:nth-child(1){flex:1 1 0}.tgl-id select:nth-child(2){flex:2 1 0}.tgl-id select:nth-child(3){flex:1.6 1 0}
+.xlf .tgl-id{width:auto;min-width:260px}

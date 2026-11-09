@@ -16,7 +16,6 @@ function toast(m){let t=document.getElementById("toast");if(!t){t=document.creat
 window.alert=toast;
 /* ===== Logika murni: tanggal, durasi, parser, nomor ===== */
 function fmtDate(iso){if(!iso)return"";const[y,m,d]=iso.split("-").map(Number);return pad2(d)+" "+BLN[m-1]+" "+y}
-function fmtDateEn(iso){if(!iso)return"";const[y,m,d]=iso.split("-").map(Number);const n=BLN_EN[m-1];return pad2(d)+" "+n[0].toUpperCase()+n.slice(1)+" "+y}
 function fmtDay(iso){if(!iso)return"";const[y,m,d]=iso.split("-").map(Number);return HARI[new Date(y,m-1,d).getDay()]+", "+fmtDate(iso)}
 function toMin(t){const m=/^(\d{1,2}):(\d{2})$/.exec(t||"");if(!m||+m[1]>23||+m[2]>59)return null;return+m[1]*60+ +m[2]}
 function calcDur(s,e){const a=toMin(s),b=toMin(e);if(a==null||b==null)return null;let d=b-a,over=false;if(d<=0){d+=1440;over=true}return{min:d,over,same:b===a}}

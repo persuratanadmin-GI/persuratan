@@ -71,7 +71,8 @@ const names = page => page.$$eval("#peList table.t tr td:first-child b", e => e.
     await page.click("#tabs button[data-t=ri]");
     ok("A9 riwayat menampilkan 2 catatan", (await page.$$("#rList table.t tr")).length === 2);
     await page.fill("#rQ", "dewi"); ok("A10 pencarian riwayat", (await page.$$("#rList table.t tr")).length === 1); await page.fill("#rQ", "");
-    await page.fill("#rA", "2026-08-08"); ok("A11 filter tanggal riwayat", (await page.$$("#rList table.t tr")).length === 1); await page.fill("#rA", "");
+    const isiTgl = (sel, v) => page.evaluate(([s, x]) => { const e = document.querySelector(s); e.value = x; e.dispatchEvent(new Event("input", { bubbles: true })); }, [sel, v]); /* input tanggal asli disembunyikan oleh pemilih Indonesia (js/tanggal-id.js) */
+    await isiTgl("#rA", "2026-08-08"); ok("A11 filter tanggal riwayat", (await page.$$("#rList table.t tr")).length === 1); ok("A11b pemilih tanggal Indonesia ikut terisi (8 Agustus 2026)", await page.evaluate(() => { const w = document.querySelector("#rA").nextElementSibling; const [d, m, y] = w.querySelectorAll("select"); return w.className === "tgl-id" && d.value === "8" && m.selectedOptions[0].textContent === "Agustus" && y.value === "2026" })); await isiTgl("#rA", "");
     const [dl] = await Promise.all([page.waitForEvent("download", { timeout: 15000 }), page.click('#rList button[data-p="r1"]')]);
     ok("A12 PDF satu surat diunduh (.pdf)", /\.pdf$/i.test(dl.suggestedFilename()), dl.suggestedFilename());
     await page.click('#rList button[data-c="r1"]');
