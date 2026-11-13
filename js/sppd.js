@@ -145,12 +145,14 @@ $("sp-bPdf").onclick=()=>spPdf(spBatch);
 /* ===== tab, mode ===== */
 function spTab(t){for(const x of["in","pe","ri","se"])$("sp-tab-"+x).hidden=x!==t;document.querySelectorAll("#sp-tabs button").forEach(b=>b.classList.toggle("on",b.dataset.t===t));if(t==="pe")spRenderPeg();if(t==="ri")spRenderRi();if(t==="se")spBuildSet()}
 $("sp-tabs").onclick=e=>{if(e.target.dataset.t)spTab(e.target.dataset.t)};
-function setMode(m){const S=m==="S",R=m==="R",A=S||R;$("left").hidden=A;$("pane").hidden=A;$("sp-left").hidden=!S;$("sp-pane").hidden=!S;
+function setMode(m){const S=m==="S",R=m==="R",D=m==="D",A=S||R||D,SR=S||R;$("left").hidden=A;$("pane").hidden=A;$("sp-left").hidden=!S;$("sp-pane").hidden=!S;
  if($("rs-left")){$("rs-left").hidden=!R;$("rs-pane").hidden=!R}
- document.body.classList.toggle("mode-sppd",S);document.body.classList.toggle("mode-rs",R);$("mdL").classList.toggle("on",!A);$("mdS").classList.toggle("on",S);if($("mdR"))$("mdR").classList.toggle("on",R);
- document.querySelector("header h1").textContent=S?"Admin SPPD (Surat Perintah Perjalanan Dinas)":R?"Admin Restitusi SPPD (Remburse, Pernyataan, Blangko)":"Admin Surat Lembur";try{sessionStorage.setItem("app.mode",m)}catch(e){}
- if(S){spBuildForm();spBuildSheets();spUpdate();setTimeout(spFit,50)}else if(R){if(typeof rsEnter==="function")rsEnter()}else{try{fit()}catch(e){}setTimeout(()=>{try{fit()}catch(e){}},50)}}
-$("mdL").onclick=()=>setMode("L");$("mdS").onclick=()=>setMode("S");
+ if($("dv-left")){$("dv-left").hidden=!D;$("dv-pane").hidden=!D}
+ document.body.classList.toggle("mode-sppd",S);document.body.classList.toggle("mode-rs",R);document.body.classList.toggle("mode-drv",D);$("mdL").classList.toggle("on",!SR);$("mdS").classList.toggle("on",S);if($("mdR"))$("mdR").classList.toggle("on",R);
+ if($("lemSub")){$("lemSub").hidden=SR;$("lsH").classList.toggle("on",!D);$("lsD").classList.toggle("on",D)}
+ document.querySelector("header h1").textContent=S?"Admin SPPD (Surat Perintah Perjalanan Dinas)":R?"Admin Restitusi SPPD (Remburse, Pernyataan, Blangko)":D?"Admin Surat Lembur Driver":"Admin Surat Lembur";try{sessionStorage.setItem("app.mode",m);if(!SR)sessionStorage.setItem("app.lem",D?"D":"H")}catch(e){}
+ if(S){spBuildForm();spBuildSheets();spUpdate();setTimeout(spFit,50)}else if(R){if(typeof rsEnter==="function")rsEnter()}else if(D){if(typeof dvEnter==="function")dvEnter()}else{try{fit()}catch(e){}setTimeout(()=>{try{fit()}catch(e){}},50)}}
+$("mdL").onclick=()=>{let l="H";try{l=sessionStorage.getItem("app.lem")||"H"}catch(e){}setMode(l==="D"?"D":"L")};if($("lsH")){$("lsH").onclick=()=>setMode("L");$("lsD").onclick=()=>setMode("D")}$("mdS").onclick=()=>setMode("S");
 /* ===== pegawai ===== */
 let spEditP=null;
 function spRenderPeg(){const q=spNorm($("sp-peQ").value),l=SPDB.pegawai.filter(p=>spNorm(p.nama+" "+p.nip+" "+p.jabatan).includes(q)).sort((a,b)=>a.nama.localeCompare(b.nama));

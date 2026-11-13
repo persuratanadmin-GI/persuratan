@@ -192,6 +192,24 @@ selisih garis dasar teks rata-rata 0,02 pt, ketebalan garis sama (0,85 pt setela
 Pengujian cetak pada printer dan browser Anda sendiri tetap perlu dilakukan sebelum dipakai sebagai arsip.
 
 
+## Surat Lembur Driver
+
+Di mode **Surat Lembur** ada pilihan **Lembur HAR** (surat SPK yang sudah ada) dan **Lembur Driver**. Lembur Driver memakai template `Form Surat Lembur Driver.pdf`
+(perihal Permintaan Lembur Driver kepada Direktur PT. Bumi Jasa Utama) dan Excel `Absensi Lembur Driver ULTG Parepare.xlsx`. Fungsinya sama dengan Lembur HAR:
+input manual atau dari WhatsApp (banyak surat sekaligus), pratinjau A4, tanda tangan dan paraf yang bisa digeser, simpan draft/selesai, riwayat, cetak, PDF, cadangan JSON.
+
+- **Isi surat:** tanggal lembur (tampil sebagai Hari / Tanggal), jam (Pukul), Tujuan, dan pemberi perintah (TL). Manager yang mengetahui tetap (Pengaturan).
+- **Paraf:** di tab **Tanda Tangan** tiap pemilik bisa menambahkan gambar paraf (opsional, dipotong rapat otomatis seperti paraf SPPD). Di ujung bawah surat Driver tampil paraf Manager lebih dulu, lalu paraf TL pemberi perintah (mengikuti nama TL di surat). Posisi/ukuran bisa diatur per surat dengan mengklik parafnya.
+- **Nama driver** tidak tampil di surat (templatenya memang tanpa nama); dipakai untuk Excel dan nama berkas. Beberapa driver dipisah koma dan masing-masing dicatat di Excel.
+- **WhatsApp:** label dikenali menurut makna, termasuk `Driver:`, `Hari/Tanggal`, `Pukul`, `Tujuan`, `TL`. Contoh: `Driver: Syahrul` / `Hari/Tanggal: 7 Agustus 2026` / `Pukul: 16.30-21.00` / `Tujuan: ...` / `TL: ...`.
+- **PDF:** satu berkas, satu halaman A4 per surat (`LEMBUR DRIVER NAMA DD BULAN YYYY.pdf`; beberapa surat: `DAFTAR FILE LEMBUR DRIVER ... BULAN TAHUN.pdf`).
+- **Simpan ke Excel:** pilih file contoh (atau tanpa file: dibuat baru). Satu sheet per driver (NAMA, BULAN, tabel NO/HARI/TANGGAL/JAM/LEMBUR/KETERANGAN, JUMLAH JAM LEMBUR, blok pengesahan).
+  Sheet driver dicari dari nama dan bulan; baris sama dilewati; baris diurutkan; tabel minimal 10 baris dan bertambah bila lebih; driver yang sudah punya sheet bulan lain mendapat sheet baru `NAMA BULAN TAHUN`.
+  Total jam ditulis jam.menit beserta terbilang, seperti Excel HAR.
+- Data driver disimpan terpisah (localStorage `driver.v1`); daftar tanda tangan dipakai bersama modul lain.
+- Berkas: `js/drv-logic.js` (parser, tata letak), `js/drv.js` (antarmuka), `js/drv-excel.js` (Excel), `js/drv-assets.js` (kop), `css/driver.css`
+  (disalin dari aturan SPPD oleh `tools/mirror_css_driver.py`), uji: `node tests/drv.test.js`.
+
 ## Surat Perintah Perjalanan Dinas (SPPD)
 
 Tombol **SPPD** di pojok atas beralih ke mode SPPD (tombol **Surat Lembur** kembali ke mode lama; keduanya tidak saling mengubah).
