@@ -199,7 +199,7 @@ Di mode **Surat Lembur** ada pilihan **Lembur HAR** (surat SPK yang sudah ada) d
 input manual atau dari WhatsApp (banyak surat sekaligus), pratinjau A4, tanda tangan dan paraf yang bisa digeser, simpan draft/selesai, riwayat, cetak, PDF, cadangan JSON.
 
 - **Isi surat:** tanggal lembur (tampil sebagai Hari / Tanggal), jam (Pukul), Tujuan, dan pemberi perintah (TL). Manager yang mengetahui tetap (Pengaturan).
-- **Paraf:** di tab **Tanda Tangan** tiap pemilik bisa menambahkan gambar paraf (opsional, dipotong rapat otomatis seperti paraf SPPD). Di ujung bawah surat Driver tampil paraf Manager lebih dulu, lalu paraf TL pemberi perintah (mengikuti nama TL di surat). Posisi/ukuran bisa diatur per surat dengan mengklik parafnya.
+- **Paraf:** diunggah sekali di **Pengaturan** Lembur Driver (dipotong rapat otomatis, gaya paraf SPPD) dan tampil di garis "Paraf" ujung bawah setiap surat. Posisi/ukuran bisa diatur per surat dengan mengklik parafnya di pratinjau. Tab Tanda Tangan hanya untuk tanda tangan.
 - **Nama driver** tidak tampil di surat (templatenya memang tanpa nama); dipakai untuk Excel dan nama berkas. Beberapa driver dipisah koma dan masing-masing dicatat di Excel.
 - **WhatsApp:** label dikenali menurut makna, termasuk `Driver:`, `Hari/Tanggal`, `Pukul`, `Tujuan`, `TL`. Contoh: `Driver: Syahrul` / `Hari/Tanggal: 7 Agustus 2026` / `Pukul: 16.30-21.00` / `Tujuan: ...` / `TL: ...`.
 - **PDF:** satu berkas, satu halaman A4 per surat (`LEMBUR DRIVER NAMA DD BULAN YYYY.pdf`; beberapa surat: `DAFTAR FILE LEMBUR DRIVER ... BULAN TAHUN.pdf`).
@@ -260,6 +260,10 @@ Transportasi : Kendaraan dinas PP
 - Tema terang saja; mode gelap otomatis dari sistem tidak lagi dipakai.
 
 ## Modul Restitusi SPPD (tombol "Restitusi" di header)
+
+Paraf pejabat (SAMSU ALAM) pada **Remburse Lumsum**: unggah di **Pengaturan** Restitusi; tampil di ujung kanan bawah (garis "Paraf") dengan gaya paraf SPPD, dan bisa digeser per surat dengan mengklik parafnya di pratinjau.
+
+**Lampiran foto/file (struk dll):** tombol **+ Tambah foto / file** ada di preview, tepat di bawah surat Blangko SPPD tiap pegawai (JPG, PNG, WEBP; file PDF belum didukung). Tiap foto menjadi satu halaman yang UKURANNYA MENGIKUTI FOTO (bukan A4; piksel x 0,5 pt, sekitar 144 dpi) dan ukurannya bisa diubah manual 10-400% di bar atas halaman, beserta tombol urutan naik/turun dan hapus. Halaman lampiran ikut dalam PDF gabungan satu file per pegawai (atau file "LAMPIRAN ..." bila memilih pisah per surat); saat Cetak, foto disesuaikan muat di kertas A4. Kotak **Lampiran foto** di Keluaran mengatur ikut/tidaknya. Foto disimpan di IndexedDB browser (bukan localStorage), diperkecil maksimal 1800 px, dan tetap ada setelah dimuat ulang.
 Satu pesan WhatsApp (format sama dengan Form SPPD) mengisi tiga surat: **Remburse Lumsum (Form 3)**, **Surat Pernyataan**, dan **Blangko SPPD (Lampiran VII)**.
 - Pegawai memakai daftar pegawai SPPD; tanda tangan memakai tanda tangan terdaftar (Surat Lembur/SPPD). Tidak ada data ganda.
 - Remburse: nominal diisi manual; Jumlah dan Total otomatis; keterangan otomatis "-" bila kosong, "Cash" bila ada (bisa diubah).

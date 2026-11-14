@@ -66,8 +66,6 @@
  <label>Jabatan (opsional)</label><input id="tj">
  <label>Gambar tanda tangan (PNG/JPG/WEBP, maks 1 MB)</label><input type="file" id="tf" accept="image/png,image/jpeg,image/webp">
  <img id="ts" class="sg-prev" alt="">
- <label>Gambar paraf (opsional; dipakai di surat Lembur Driver, ujung bawah surat)</label><input type="file" id="tpf" accept="image/png,image/jpeg,image/webp">
- <img id="tps" class="sg-prev" alt="" style="height:40px;max-width:140px"><div class="acts"><button class="d" id="tpDel" type="button" hidden>Hapus paraf</button></div>
  <div class="acts"><button class="b" id="ttSave">Simpan tanda tangan</button><button class="g" id="ttReset">Batal</button></div>
  </div>
 </div>
@@ -161,7 +159,7 @@
  <div class="legend" aria-label="Keterangan warna kolom"><span><b class="rq">*</b> Wajib</span><span><i class="lg lg-ok"></i>Diisi</span><span><i class="lg lg-need"></i>Kosong</span><span><i class="lg lg-warn"></i>Periksa</span><span><i class="lg" style="background:#eef4ff;border:1px solid #1d5fd1"></i>Manual (kosongkan = otomatis)</span></div>
  <div id="rs-form"></div>
  <div id="rs-opts"><b>Keluaran:</b>
-  <label><input type="checkbox" data-inc="R" checked> Remburse Lumsum</label><label><input type="checkbox" data-inc="P" checked> Surat Pernyataan</label><label><input type="checkbox" data-inc="B" checked> Blangko SPPD</label>
+  <label><input type="checkbox" data-inc="R" checked> Remburse Lumsum</label><label><input type="checkbox" data-inc="P" checked> Surat Pernyataan</label><label><input type="checkbox" data-inc="B" checked> Blangko SPPD</label><label><input type="checkbox" data-inc="X" checked> Lampiran foto</label>
   <label>Berkas PDF <select id="rs-fmt"><option value="gabung">1 PDF per pegawai (gabung)</option><option value="pisah">Pisah per surat</option></select></label></div>
  <div class="actbar">
   <div class="grp"><span class="gl">Surat</span><button class="b new" id="rs-bNew">Surat baru</button><button class="g" id="rs-bDraft">Simpan draft</button><button class="g ok" id="rs-bDone">Tandai selesai</button></div>

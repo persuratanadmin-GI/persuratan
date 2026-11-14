@@ -56,7 +56,7 @@ function dvNamaBerkas(list){
  const d=dvLabelDriver(list),bt=rentangBulanTeks(list.map(c=>String(c.tanggal||"").slice(0,7)));
  return("DAFTAR FILE LEMBUR DRIVER"+(d?" "+d:"")+(bt?" "+bt:"")).replace(/\s+/g," ").trim()+".pdf"}
 /* ---- tata letak: daftar elemen (pt, A4) ---- */
-function dvLayout(c,S,P){P=P||{};S={...DV_DEF,...S};const it=[],FS=9.24,LH=13.33,SZ=FS*DV_PS,AS=.905;
+function dvLayout(c,S){S={...DV_DEF,...S};const it=[],FS=9.24,LH=13.33,SZ=FS*DV_PS,AS=.905;
  /* x, garis dasar (koordinat Letter asli), ukuran dalam pt Letter */
  const T=(x,base,t,o)=>{o=o||{};const sz=(o.s||FS)*DV_PS;it.push({k:"t",x:dvX(x),y:dvY(base)-AS*sz,s:sz,t:String(t),b:!!o.b,a:o.a||"l",col:o.col||""})};
  const D=n=>".".repeat(n);
@@ -75,17 +75,17 @@ function dvLayout(c,S,P){P=P||{};S={...DV_DEF,...S};const it=[],FS=9.24,LH=13.33
   T(114.86,b,no);T(131.9,b,lab);T(222.41,b,":");if(val!==null)T(233.81,b,val);else tuj.forEach((l,j)=>T(233.81,b+j*LH,l))});
  const ex=sh+(tuj.length-1)*LH;
  T(114.86,363.53+ex,S.penutup);
- const cl=195.6,cr=390.78;
+ const cl=195.6,cr=390.78,TT=2*LH; /* ruang tanda tangan: 2 baris tambahan antara jabatan dan nama */
  T(195.58,390.17+ex,"Pemberi Perintah",{a:"c"});T(390.78,390.17+ex,"Mengetahui",{a:"c"});
  T(cl,403.49+ex,c.pemberiJab||("TL "+D(30)),{a:"c"});T(cr,403.49+ex,S.mgrJab,{a:"c"});
- T(cl,443.47+ex,c.pemberiName?String(c.pemberiName).toUpperCase():D(30),{a:"c",b:1});T(cr,443.47+ex,String(S.mgrNama||"").toUpperCase(),{a:"c",b:1});
- it.push({k:"s",key:"G",nama:c.pemberiName,cx:dvX(cl),cy:dvY(423.5+ex),w:105,h:56},{k:"s",key:"M",nama:S.mgrNama,cx:dvX(cr),cy:dvY(423.5+ex),w:105,h:56});
+ T(cl,443.47+ex+TT,c.pemberiName?String(c.pemberiName).toUpperCase():D(30),{a:"c",b:1});T(cr,443.47+ex+TT,String(S.mgrNama||"").toUpperCase(),{a:"c",b:1});
+ it.push({k:"s",key:"G",nama:c.pemberiName,cx:dvX(cl),cy:dvY(423.5+ex+TT/2),w:105,h:56+TT*DV_PS},{k:"s",key:"M",nama:S.mgrNama,cx:dvX(cr),cy:dvY(423.5+ex+TT/2),w:105,h:56+TT*DV_PS});
  /* kaki halaman */
  T(71.47,735.86,S.alm1,{s:7.39});T(71.47,745.68,S.alm2,{s:7.42});
  T(71.47,755.4,"W",{s:7.39,b:1,col:"#244061"});T(80.86,755.4,S.web,{s:7.39});T(127.78,755.4,"T",{s:7.39,b:1,col:"#244061"});T(134.2,755.4,S.telp,{s:7.39});
  T(369.31,749.88,"Paraf"+D(32),{s:7.32});
- /* paraf di ujung bawah, gaya paraf SPPD (tinggi 13 pt, lebar maks 26 pt, rasio gambar terjaga): paraf Manager lebih dulu, lalu paraf TL pemberi perintah,
-   berurutan setelah tulisan "Paraf" dan menempel di garis titik-titik. */
- {let x=dvX(389);[["PFM",P.M],["PFG",P.G]].forEach(([key,p])=>{if(!p||!p.src)return;const ar=+p.ar>0?+p.ar:0,MW=26,MH=13;let pw=MW,ph=MH;if(ar){pw=ph*ar;if(pw>MW){pw=MW;ph=MW/ar}}
-  it.push({k:"s",key,src:p.src,ex:ar?1:0,w:pw,h:ph,cx:x+pw/2,cy:dvY(749.88)-ph/2+3});x+=pw+3})}
+ /* paraf (satu gambar untuk semua surat, diunggah di Pengaturan): gaya paraf SPPD (tinggi 13 pt, lebar maks 26 pt, rasio gambar terjaga),
+   menempel di garis titik-titik setelah tulisan "Paraf". S.parafAr = lebar/tinggi gambar yang sudah dipotong rapat. */
+ if(S.paraf){const ar=+S.parafAr>0?+S.parafAr:0,MW=26,MH=13;let pw=MW,ph=MH;if(ar){pw=ph*ar;if(pw>MW){pw=MW;ph=MW/ar}}
+  it.push({k:"s",key:"PF",src:S.paraf,ex:ar?1:0,w:pw,h:ph,cx:dvX(389)+pw/2,cy:dvY(749.88)-ph/2+3})}
  return it}

@@ -9,13 +9,43 @@ function rsLoad(){try{const d=JSON.parse(localStorage.getItem(RSK));if(d)return{
 let RSDB=rsLoad();
 function rsSave(){try{localStorage.setItem(RSK,JSON.stringify(RSDB));$("st").textContent="Restitusi tersimpan "+new Date().toLocaleTimeString("id-ID")}catch(e){$("st").textContent="Gagal menyimpan: penyimpanan penuh/dinonaktifkan"}}
 /* ===== state ===== */
-let rsBatch=[],rsIdx=0,rsCur=null,rsSel=null,rsScale=1,rsDrag=null,rsLast=[],rsInc={R:1,P:1,B:1},rsFmt="gabung";
+let rsBatch=[],rsIdx=0,rsCur=null,rsSel=null,rsScale=1,rsDrag=null,rsLast=[],rsInc={R:1,P:1,B:1,X:1},rsFmt="gabung";
 const rsNew=()=>{const r=rsBlank();r.berangkat=spTempat(SPDB.settings.kotaAsal||RSDB.settings.kotaAsal||"").v;return r};
-try{const b=JSON.parse(sessionStorage.getItem("rs.batch"));if(b&&b.batch&&b.batch.length){rsBatch=b.batch;rsIdx=Math.min(b.idx||0,rsBatch.length-1);if(b.inc)rsInc=b.inc;if(b.fmt)rsFmt=b.fmt}}catch(e){}
+try{const b=JSON.parse(sessionStorage.getItem("rs.batch"));if(b&&b.batch&&b.batch.length){rsBatch=b.batch;rsIdx=Math.min(b.idx||0,rsBatch.length-1);if(b.inc)rsInc={X:1,...b.inc};if(b.fmt)rsFmt=b.fmt}}catch(e){}
 if(!rsBatch.length)rsBatch=[rsNew()];
 rsCur=rsBatch[rsIdx];
 const rsPersist=()=>{try{sessionStorage.setItem("rs.batch",JSON.stringify({batch:rsBatch,idx:rsIdx,inc:rsInc,fmt:rsFmt}))}catch(e){}};
 const rsLetters=()=>["R","P","B"].filter(l=>rsInc[l]);
+/* ===== Lampiran foto (struk dll): tombol di bawah surat Blangko; tiap foto = satu halaman berukuran SESUAI FOTO (bukan A4), ikut dalam PDF dan cetak =====
+   Ukuran halaman = piksel foto x 0,5 pt (kira-kira 144 dpi) x skala (bawaan 100%, bisa diubah manual 10-400%). Gambar disimpan di IndexedDB (kunci c.lid)
+   agar tidak memenuhi sessionStorage/localStorage dan tetap ada setelah halaman dimuat ulang. */
+const RSLAMP={},RSLAMP_TRY={},RS_PT=.5;
+function rsLampIdb(){return new Promise((res,rej)=>{try{const q=indexedDB.open("rs-lampiran",1);q.onupgradeneeded=()=>q.result.createObjectStore("s");q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error)}catch(e){rej(e)}})}
+async function rsLampPut(lid,arr){try{const db=await rsLampIdb();await new Promise((r,j)=>{const t=db.transaction("s","readwrite"),o=t.objectStore("s");if(arr&&arr.length)o.put(arr,lid);else o.delete(lid);t.oncomplete=r;t.onerror=()=>j(t.error)})}catch(e){}}
+async function rsLampRead(lid){try{const db=await rsLampIdb();return await new Promise((r,j)=>{const q=db.transaction("s").objectStore("s").get(lid);q.onsuccess=()=>r(q.result||[]);q.onerror=()=>j(q.error)})}catch(e){return[]}}
+function rsLamp(c){if(!c||!c.lid)return[];if(RSLAMP[c.lid])return RSLAMP[c.lid];
+ if(!RSLAMP_TRY[c.lid]){RSLAMP_TRY[c.lid]=1;rsLampRead(c.lid).then(a=>{if(a&&a.length){RSLAMP[c.lid]=a;if(!$("rs-pane").hidden){rsBuildSheets();rsUpdate()}}})}return[]}
+const rsLampOn=c=>rsInc.X!==0&&rsLamp(c).length>0;
+const rsLampK=g=>+g.k>0?+g.k:1;
+const rsLampDim=g=>[Math.max(20,g.w*RS_PT*rsLampK(g)),Math.max(20,g.h*RS_PT*rsLampK(g))];
+const rsSheetCount=()=>rsBatch.reduce((n,c)=>n+rsLetters().length+(rsLampOn(c)?rsLamp(c).length:0),0);
+async function rsLampImg(f){try{let bmp;try{bmp=await createImageBitmap(f,{imageOrientation:"from-image"})}catch(e){bmp=await createImageBitmap(f)}
+ const M=1800,k=Math.min(1,M/Math.max(bmp.width,bmp.height)),w=Math.max(1,Math.round(bmp.width*k)),h=Math.max(1,Math.round(bmp.height*k)),cv=document.createElement("canvas");cv.width=w;cv.height=h;
+ const g=cv.getContext("2d");g.fillStyle="#fff";g.fillRect(0,0,w,h);g.drawImage(bmp,0,0,w,h);return{src:cv.toDataURL("image/jpeg",.85),w,h}}catch(e){return null}}
+async function rsLampSet(c,arr){if(!c.lid)c.lid=uid();RSLAMP[c.lid]=arr;if(!arr.length)delete RSLAMP_TRY[c.lid];await rsLampPut(c.lid,arr);rsPersist();rsBuildSheets();rsUpdate()}
+const rsLampBar=(i,c)=>{const n=rsLamp(c).length;return`<div class="lamp-bar" data-i="${i}"><span>Lampiran foto/file (struk dll) · <b>${esc(c.personName||"(belum ada nama)")}</b>${n?" · "+n+" foto":""}</span><label class="b imp">+ Tambah foto / file<input type="file" accept="image/*" multiple hidden data-lf="${i}"></label>${n?`<button class="d" type="button" data-lall="${i}">Hapus semua</button>`:""}</div>`};
+const rsLampCtl=(g,ix,n)=>`<span class="lp-ctl">Ukuran <input type="number" data-lpct="${ix}" min="10" max="400" step="5" value="${Math.round(rsLampK(g)*100)}" title="Ukuran halaman/foto (10-400%). Halaman mengikuti ukuran foto."> % <button class="g" type="button" data-lu="${ix}"${ix?"":" disabled"}>↑</button><button class="g" type="button" data-ld="${ix}"${ix<n-1?"":" disabled"}>↓</button><button class="d" type="button" data-lx="${ix}">Hapus</button></span>`;
+const rsTarget=el=>{const w=el.closest("[data-i]");return w?rsBatch[+w.dataset.i]:null};
+$("rs-sheets").addEventListener("change",async e=>{const t=e.target,c=rsTarget(t);if(!c)return;
+ if(t.dataset.lf!==undefined){const fs=[...t.files];t.value="";if(!fs.length)return;const arr=[...rsLamp(c)];let gagal=0,pdf=0;
+  for(const f of fs){if(/pdf/i.test(f.type)||/\.pdf$/i.test(f.name)){pdf++;continue}toast("Memproses "+f.name+"...");const d=await rsLampImg(f);if(d)arr.push({src:d.src,w:d.w,h:d.h,name:f.name,k:1});else gagal++}
+  await rsLampSet(c,arr);const n=fs.length-gagal-pdf;toast((n?n+" foto ditambahkan. ":"")+(pdf?pdf+" file PDF dilewati (belum didukung; ubah menjadi gambar). ":"")+(gagal?gagal+" file tidak bisa dibaca sebagai gambar.":""))}
+ else if(t.dataset.lpct!==undefined){const a=[...rsLamp(c)],g=a[+t.dataset.lpct];if(!g)return;const v=Math.min(400,Math.max(10,+t.value||100));g.k=v/100;await rsLampSet(c,a)}});
+$("rs-sheets").addEventListener("click",async e=>{const t=e.target.dataset,c=rsTarget(e.target);if(!c)return;const a=[...rsLamp(c)];let i;
+ if(t.lall!==undefined){if(await ask("Hapus semua lampiran foto untuk "+(c.personName||"pegawai ini")+"?"))await rsLampSet(c,[]);return}
+ if(t.lx!==undefined){i=+t.lx;a.splice(i,1)}else if(t.lu!==undefined){i=+t.lu;if(i<1)return;[a[i-1],a[i]]=[a[i],a[i-1]]}else if(t.ld!==undefined){i=+t.ld;if(i>=a.length-1)return;[a[i+1],a[i]]=[a[i],a[i+1]]}else return;
+ await rsLampSet(c,a)});
+
 const RSREQ=["personName","nip","jabatan","maksud","berangkat","tujuan","tglBerangkat","tglKembali","tripSap"];
 const RSFULL=["maksud","jabatan","personName","rMaksud","pMaksud","bMaksud","bKet","tujuan","rTujuan","rTgl"];
 const RSMONEY=["amtB","amtP","amtH"];
@@ -80,9 +110,11 @@ function rsHtml(L,c){const o=[],k=e=>`left:${e.x}pt;top:${e.y.toFixed(2)}pt;`;
  return`<div class="sp-pg">${o.join("")}</div>`}
 function rsTitle(i,L){const c=rsBatch[i];return"Restitusi "+(i+1)+" dari "+rsBatch.length+" · "+(c.personName||"(belum ada nama)")+" · "+RS_LETTERS[L]}
 function rsBuildSheets(){const ls=rsLetters();
- $("rs-sheets").innerHTML=ls.length?rsBatch.map((c,i)=>ls.map(L=>`<div class="lw${i===rsIdx?" act":""}" data-i="${i}" data-l="${L}"><div class="lbar"><span class="lt">${esc(rsTitle(i,L))}</span></div><div class="shwrap"><div class="shbox"><div class="sheet">${rsHtml(L,c)}</div></div></div></div>`).join("")).join(""):'<p class="hint">Pilih minimal satu surat pada kotak Keluaran.</p>';
+ const lw=(i,L,title,html,ctl,pw,ph)=>`<div class="lw${i===rsIdx?" act":""}" data-i="${i}" data-l="${L}"${pw?` data-pw="${pw}" data-ph="${ph}"`:""}><div class="lbar"><span class="lt">${esc(title)}</span>${ctl||""}</div><div class="shwrap"><div class="shbox"${pw?` style="width:${pw}px;height:${ph}px"`:""}><div class="sheet"${pw?` style="width:${pw}px;height:${ph}px"`:""}>${html}</div></div></div></div>`;
+ $("rs-sheets").innerHTML=rsBatch.map((c,i)=>{const im=rsLampOn(c)?rsLamp(c):[];
+  return ls.map(L=>lw(i,L,rsTitle(i,L),rsHtml(L,c))).join("")+im.map((g,ix)=>{const d=rsLampDim(g);return lw(i,"X","Lampiran "+(i+1)+" dari "+rsBatch.length+" · "+(c.personName||"(belum ada nama)")+" · foto "+(ix+1)+" dari "+im.length+(g.name?" ("+g.name+")":""),`<img class="lp-img" alt="" src="${g.src}">`,rsLampCtl(g,ix,im.length),Math.round(d[0]*4/3),Math.round(d[1]*4/3))}).join("")+rsLampBar(i,c)}).join("");
  const bb=$("rs-batchbar");bb.hidden=rsBatch.length<2;bb.innerHTML=`<b>${rsBatch.length} pegawai</b> ${rsBatch.map((c,i)=>`<button class="g" data-go="${i}">${i+1}</button>`).join(" ")} <button class="b nv" id="rs-pdfAktif">PDF pegawai ini</button> <button class="g" id="rs-hapusAktif">Hapus pegawai ini</button>`;rsFit()}
-function rsFit(){const p=$("rs-pane"),w=p.clientWidth-48;if(w<=0)return;const s=Math.min(1,w/794);rsScale=s;document.querySelectorAll("#rs-sheets .shbox").forEach(b=>b.style.transform=`scale(${s})`);document.querySelectorAll("#rs-sheets .shwrap").forEach(b=>{b.style.height=1123*s+"px";b.style.width=794*s+"px"})}
+function rsFit(){const p=$("rs-pane"),w=p.clientWidth-48;if(w<=0)return;rsScale=Math.min(1,w/794);document.querySelectorAll("#rs-sheets .lw").forEach(lw=>{const pw=+lw.dataset.pw||794,ph=+lw.dataset.ph||1123,k=Math.min(1,w/pw);lw.querySelector(".shbox").style.transform=`scale(${k})`;const sw=lw.querySelector(".shwrap");sw.style.height=ph*k+"px";sw.style.width=pw*k+"px"})}
 window.addEventListener("resize",()=>{if(!$("rs-pane").hidden)rsFit()});
 function rsPaint(i){for(const L of rsLetters()){const lw=document.querySelector(`#rs-sheets .lw[data-i="${i}"][data-l="${L}"]`);if(!lw)continue;lw.querySelector(".sheet").innerHTML=rsHtml(L,rsBatch[i]);lw.querySelector(".lt").textContent=rsTitle(i,L)}}
 function rsHintText(){const c=rsCur,x=rsCtx(),m=rsMissing(c),sn=[];
@@ -91,7 +123,7 @@ function rsHintText(){const c=rsCur,x=rsCtx(),m=rsMissing(c),sn=[];
   [1,2,3].forEach(i=>{const s=rsStopInfo(c,i,x);if(!s.n)return;if(!s.lok)sn.push("lokasi "+s.n+" belum terdaftar (tab Lokasi)");else{if(!s.lok.stempel)sn.push("stempel "+s.lok.nama);if(!s.ttd&&!s.lok.menyatu)sn.push("TTD "+(s.pej||"pejabat "+s.lok.nama))}})}
  return[m.length?"Belum lengkap: "+m.join(", "):"",sn.length?"Belum terdaftar: "+sn.join(", ")+" (tab Lokasi / Tanda Tangan)":""].filter(Boolean).join(" · ")}
 function rsUpdate(){if(rsCur!==rsBatch[rsIdx]){rsBatch=[rsCur];rsIdx=0}
- if($("rs-sheets").querySelectorAll(".lw").length!==rsBatch.length*rsLetters().length)rsBuildSheets();else rsPaint(rsIdx);
+ if($("rs-sheets").querySelectorAll(".lw").length!==rsSheetCount())rsBuildSheets();else rsPaint(rsIdx);
  rsPersist();rsButtons();if(rsSel&&!document.querySelector('#rs-sheets .lw.act .sgb[data-p="'+rsSel+'"]'))rsSelect(null);$("rs-hint").textContent=rsHintText()}
 function rsButtons(){const s=rsBatch.length>1?" ("+rsBatch.length+")":"";[["rs-bDraft","Simpan draft"],["rs-bDone","Tandai selesai"],["rs-bPdf",rsBatch.length>1?"Unduh semua PDF":"Unduh PDF"],["rs-bPrint","Cetak"]].forEach(([id,t])=>{$(id).textContent=t+s})}
 function rsActive(i){rsIdx=i;rsCur=rsBatch[i];document.querySelectorAll("#rs-sheets .lw").forEach(e=>e.classList.toggle("act",+e.dataset.i===i));rsSelect(null);rsSync();rsUpdate()}
@@ -102,7 +134,7 @@ $("rs-sheets").addEventListener("click",e=>{const lw=e.target.closest(".lw");if(
 document.querySelectorAll("[data-inc]").forEach(b=>{b.checked=!!rsInc[b.dataset.inc];b.onchange=()=>{rsInc[b.dataset.inc]=b.checked?1:0;rsBuildSheets();rsUpdate()}});
 $("rs-fmt").value=rsFmt;$("rs-fmt").onchange=e=>{rsFmt=e.target.value;rsPersist()};
 /* ===== tanda tangan / stempel: seret, ubah ukuran (posisi disimpan per pegawai) ===== */
-function rsSgLabel(k){const m=/^S(\d)([LR])\.(cap|ttd)$/.exec(k);if(m)return"Blok "+(+m[1]+2)+(m[2]==="L"?" tiba":" berangkat")+" · "+(m[3]==="cap"?"stempel":"tanda tangan");
+function rsSgLabel(k){if(k==="R.PF")return"Paraf pejabat (Remburse)";const m=/^S(\d)([LR])\.(cap|ttd)$/.exec(k);if(m)return"Blok "+(+m[1]+2)+(m[2]==="L"?" tiba":" berangkat")+" · "+(m[3]==="cap"?"stempel":"tanda tangan");
  return{"R.TTD":"Tanda tangan pegawai (Remburse)","P.TTD":"Tanda tangan pegawai (Pernyataan)","A.ttd":"TTD pejabat blok I","A.cap":"Stempel blok I","F.ttd":"TTD pejabat (tiba kembali)","F.cap":"Stempel (tiba kembali)"}[k]||k}
 function rsPos(p){rsCur.sigPos=rsCur.sigPos||{};return rsCur.sigPos[p]=rsCur.sigPos[p]||{x:0,y:0,s:1}}
 function rsSgApply(p){const o=rsPos(p);document.querySelectorAll("#rs-sheets .lw.act .sgb").forEach(i=>{if(i.dataset.p!==p)return;i.style.setProperty("--s",o.s);i.style.transform=`translate(${o.x}mm,${o.y}mm) scale(${o.s})`})}
@@ -156,20 +188,24 @@ async function rsPdfPage(pdf,c,L){pdf.setTextColor(0,0,0);pdf.setDrawColor(0,0,0
  for(const g of sigs){const im=await loadImg(g.src);if(!im)continue;const o=((c.sigPos||{})[g.key])||{x:0,y:0,s:1},bw=g.w||105,bh=g.h||56;
   const k=Math.min(1,bw/(im.naturalWidth*.75),bh/(im.naturalHeight*.75)),w=g.ex?bw*(o.s||1):im.naturalWidth*.75*k*(o.s||1),h=g.ex?bh*(o.s||1):im.naturalHeight*.75*k*(o.s||1);
   try{pdf.addImage(g.src,"PNG",g.cx+(o.x||0)*PX-w/2,g.cy+(o.y||0)*PX-h/2,w,h)}catch(x){}}}
-const RSPFX={R:"REMBURSE LUMSUM",P:"SURAT PERNYATAAN",B:"BLANGKO SPPD"};
+const RSPFX={R:"REMBURSE LUMSUM",P:"SURAT PERNYATAAN",B:"BLANGKO SPPD",X:"LAMPIRAN"};
 const rsNamaFile=(c,L)=>((L?RSPFX[L]:"RESTITUSI SPPD")+" "+(namaAman(c.personName)||"TANPA NAMA")+" (SPPD "+spTglRentang(c)+")").replace(/\s+/g," ").trim()+".pdf";
 function rsNamaUnik(names){const pakai={};return names.map(n=>{if(pakai[n]){const k=++pakai[n];return n.replace(/\.pdf$/,"("+k+").pdf")}pakai[n]=1;return n})}
-async function rsPdf(list){if(pdfBusy)return;if(!list.length){toast("Tidak ada surat.");return}const ls=rsLetters();if(!ls.length){toast("Pilih minimal satu surat pada kotak Keluaran.");return}
+/* ukuran halaman PDF: A4 untuk surat, ukuran foto (x skala) untuk lampiran */
+const rsPageFmt=(c,p)=>{if(p.L!=="X")return["a4","portrait"];const g=rsLamp(c)[p.k],d=rsLampDim(g);return[[Math.min(d[0],d[1]),Math.max(d[0],d[1])],d[0]>d[1]?"landscape":"portrait"]};
+function rsLampPdf(pdf,c,k){const g=rsLamp(c)[k];if(!g)return;const d=rsLampDim(g);try{pdf.addImage(g.src,"JPEG",0,0,d[0],d[1])}catch(e){}}
+async function rsPdf(list){if(pdfBusy)return;if(!list.length){toast("Tidak ada surat.");return}const ls=rsLetters();if(!ls.length&&!list.some(rsLampOn)){toast("Pilih minimal satu surat atau lampiran pada kotak Keluaran.");return}
  const bad=list.map((c,i)=>rsMissing(c).length?"pegawai "+(i+1)+": "+rsMissing(c).join(", "):"").filter(Boolean);
  if(bad.length&&!await ask("Data belum lengkap -> "+bad.join(" | ")+". Tetap buat PDF?"))return;
  if(!window.jspdf){toast("Pustaka PDF gagal dimuat. Gunakan tombol Cetak sebagai gantinya.");return}
  pdfBusy=true;let ok=0,dibatal=false;
  try{let dl=null;try{dl=window.claude&&await window.claude.use("downloads")}catch(e){}
-  const jobs=[];list.forEach(c=>{if(rsFmt==="gabung")jobs.push({c,ls,name:rsNamaFile(c)});else ls.forEach(L=>jobs.push({c,ls:[L],name:rsNamaFile(c,L)}))});
+  const jobs=[];list.forEach(c=>{const x=rsLampOn(c)?["X"]:[];if(rsFmt==="gabung")jobs.push({c,ls:[...ls,...x],name:rsNamaFile(c)});else[...ls,...x].forEach(L=>jobs.push({c,ls:[L],name:rsNamaFile(c,L)}))});
   const names=rsNamaUnik(jobs.map(j=>j.name));
   for(let i=0;i<jobs.length;i++){toast("Membuat PDF "+(i+1)+" dari "+jobs.length+": "+names[i]);
-   const pdf=new window.jspdf.jsPDF({unit:"pt",format:"a4",orientation:"portrait",compress:true});
-   for(let p=0;p<jobs[i].ls.length;p++){if(p)pdf.addPage("a4","portrait");await rsPdfPage(pdf,jobs[i].c,jobs[i].ls[p])}
+   const parts=[];jobs[i].ls.forEach(L=>{if(L==="X")rsLamp(jobs[i].c).forEach((_,k)=>parts.push({L,k}));else parts.push({L})});
+   const f0=rsPageFmt(jobs[i].c,parts[0]),pdf=new window.jspdf.jsPDF({unit:"pt",format:f0[0],orientation:f0[1],compress:true});
+   for(let p=0;p<parts.length;p++){if(p){const f=rsPageFmt(jobs[i].c,parts[p]);pdf.addPage(f[0],f[1])}if(parts[p].L==="X")rsLampPdf(pdf,jobs[i].c,parts[p].k);else await rsPdfPage(pdf,jobs[i].c,parts[p].L)}
    try{await spSimpanFile(pdf,names[i],dl);ok++}catch(e){if(e&&e.code==="declined"){dibatal=true;break}throw e}
    if(i<jobs.length-1)await spJeda(700)}
   toast(dibatal?"Unduhan dibatalkan ("+ok+" dari "+jobs.length+" file tersimpan).":ok===1?"PDF dibuat: "+names[0]:"Selesai: "+ok+" file PDF diunduh.")
@@ -209,17 +245,21 @@ function rsRenderRi(){const q=spNorm($("rs-rQ").value),a=$("rs-rA").value,b=$("r
  $("rs-rList").innerHTML=rsShown.length?`<table class="t">${rsShown.map(r=>`<tr><td><b>${esc(r.personName||"(tanpa nama)")}</b><div class="hint">${esc(r.tglBerangkat?fmtDate(r.tglBerangkat):"")} · ${esc(r.berangkat)} - ${esc(r.tujuan)}</div><div class="hint">${esc(r.maksud)}</div></td><td><span class="bd ${r.status==="selesai"?"ok":"warn"}">${r.status}</span></td><td style="white-space:nowrap"><button class="g" data-p="${r.id}">PDF</button> <button class="g" data-o="${r.id}">Buka</button> <button class="g" data-c="${r.id}">Duplikat</button> <button class="d" data-x="${r.id}">Hapus</button></td></tr>`).join("")}</table>`:'<p class="hint">Belum ada riwayat restitusi.</p>'}
 ["rs-rQ","rs-rA","rs-rB"].forEach(i=>$(i).oninput=rsRenderRi);$("rs-rPdf").onclick=()=>rsPdf(rsShown);
 $("rs-rList").onclick=async e=>{const t=e.target.dataset,r=RSDB.records.find(x=>x.id===(t.o||t.c||t.x||t.p));if(!r)return;
- if(t.p){rsPdf([r]);return}if(t.x){if(await ask("Hapus catatan ini secara permanen?")){RSDB.records=RSDB.records.filter(x=>x!==r);rsSave();rsRenderRi()}return}
- const c=JSON.parse(JSON.stringify(r));c.flags={};if(t.c){c.id=null;c.status="draft";c.tglBerangkat="";c.tglKembali="";c.tripSap="";c.amtB=c.amtP=c.amtH="";c.m={}}
+ if(t.p){rsPdf([r]);return}if(t.x){if(await ask("Hapus catatan ini secara permanen?")){RSDB.records=RSDB.records.filter(x=>x!==r);if(r.lid&&!RSDB.records.some(x=>x.lid===r.lid)&&!rsBatch.some(x=>x.lid===r.lid)){delete RSLAMP[r.lid];rsLampPut(r.lid,[])}rsSave();rsRenderRi()}return}
+ const c=JSON.parse(JSON.stringify(r));c.flags={};if(t.c){c.id=null;delete c.lid;c.status="draft";c.tglBerangkat="";c.tglKembali="";c.tripSap="";c.amtB=c.amtP=c.amtH="";c.m={}}
  rsCur=c;rsBatch=[c];rsIdx=0;rsBuildForm();rsBuildSheets();rsUpdate();rsTab("in")};
 /* ===== pengaturan ===== */
 const RSSG=[["Kop surat",[["uip","Baris 1 (UIP)"],["upt","Baris 2 (UPT)"],["ultg","Baris 3 (ULTG)"],["formNo","Nomor form (Remburse)"]]],
  ["Blangko SPPD",[["unit","Unit (isian Blangko)"],["kotaAsal","Tempat kedudukan / kota tiba kembali"],["pejabat","Pejabat pemberi perintah / pejabat asal (tanda tangan diambil dari tanda tangan terdaftar)",1],["stempelW","Lebar stempel bawaan (pt)"]]],
  ["Alamat kaki surat",[["almR1","Remburse baris 1",1],["almR2","Remburse baris 2",1],["almP1","Pernyataan baris 1",1],["almP2","Pernyataan baris 2",1],["telp","Telepon"],["web","Situs"]]]];
 function rsBuildSet(){$("rs-seForm").innerHTML=`<p class="hint">Perubahan berlaku untuk surat berikutnya dan pratinjau. Pegawai dan tanda tangan dikelola di modul SPPD / Surat Lembur dan dipakai bersama.</p>`+RSSG.map(([j,f])=>`<h4 class="sec">${j}</h4>`+f.map(([k,l,p])=>`<div class="fld${p?" fw":""}"><label>${l}</label><input data-rss="${k}" value="${esc(RSDB.settings[k])}"></div>`).join("")).join("")+
- `<h4 class="sec">Stempel pejabat asal (dipakai di blok I dan di "Pejabat yang memberi perintah" Blangko)</h4><div class="fld fw"><label>Gambar stempel (PNG/JPG/WEBP, maks 1 MB)</label><input type="file" id="rs-stFile" accept="image/png,image/jpeg,image/webp"><img id="rs-stImg" class="sg-prev" alt="" style="height:60px;margin-top:6px"><div class="acts"><button class="d" id="rs-stDel" hidden>Hapus stempel</button></div></div>`;rsStUi()}
+ `<h4 class="sec">Paraf pejabat (SAMSU ALAM) - tampil di Remburse Lumsum, ujung kanan bawah</h4><div class="fld fw"><label>Gambar paraf (PNG/JPG/WEBP, maks 1 MB)</label><input type="file" id="rs-pfFile" accept="image/png,image/jpeg,image/webp"><img id="rs-pfImg" class="sg-prev" alt="" style="height:50px;max-width:160px;margin-top:6px"><div class="acts"><button class="d" id="rs-pfDel" hidden>Hapus paraf</button></div><p class="hint">Dipotong rapat otomatis seperti paraf SPPD. Posisi dan ukuran bisa diatur per surat dengan mengklik parafnya di pratinjau.</p></div>
+ <h4 class="sec">Stempel pejabat asal (dipakai di blok I dan di "Pejabat yang memberi perintah" Blangko)</h4><div class="fld fw"><label>Gambar stempel (PNG/JPG/WEBP, maks 1 MB)</label><input type="file" id="rs-stFile" accept="image/png,image/jpeg,image/webp"><img id="rs-stImg" class="sg-prev" alt="" style="height:60px;margin-top:6px"><div class="acts"><button class="d" id="rs-stDel" hidden>Hapus stempel</button></div></div>`;rsStUi();rsPfUi()}
+function rsPfUi(){const v=RSDB.settings.paraf||"",im=$("rs-pfImg");if(!im)return;v?im.src=v:im.removeAttribute("src");$("rs-pfDel").hidden=!v}
 function rsStUi(){const v=RSDB.settings.stempelAsal||"",im=$("rs-stImg");if(!im)return;v?im.src=v:im.removeAttribute("src");$("rs-stDel").hidden=!v}
 $("rs-seForm").addEventListener("change",e=>{if(e.target.id!=="rs-stFile")return;const f=e.target.files[0];e.target.value="";readSig(f,async d=>{RSDB.settings.stempelAsal=d;RSDB.settings.stempelAr=await rsImgAr(d);rsSave();rsStUi();rsUpdate();toast("Stempel asal tersimpan.")})});
+$("rs-seForm").addEventListener("change",e=>{if(e.target.id!=="rs-pfFile")return;const f=e.target.files[0];e.target.value="";readSig(f,async d=>{const t=await spParafTrim(d);RSDB.settings.paraf=t.src;RSDB.settings.parafAr=t.ar;[rsCur,...rsBatch].forEach(c=>{if(c&&c.sigPos)delete c.sigPos["R.PF"]});rsSave();rsPfUi();rsUpdate();toast("Paraf pejabat tersimpan.")})});
+$("rs-seForm").addEventListener("click",async e=>{if(e.target.id!=="rs-pfDel")return;if(await ask("Hapus paraf pejabat dari Remburse Lumsum?")){delete RSDB.settings.paraf;delete RSDB.settings.parafAr;rsSave();rsPfUi();rsUpdate()}});
 $("rs-seForm").addEventListener("click",async e=>{if(e.target.id!=="rs-stDel")return;if(await ask("Hapus stempel pejabat asal?")){delete RSDB.settings.stempelAsal;delete RSDB.settings.stempelAr;rsSave();rsStUi();rsUpdate()}});
 $("rs-seSave").onclick=()=>{document.querySelectorAll("[data-rss]").forEach(el=>{const k=el.dataset.rss;RSDB.settings[k]=k==="stempelW"?(+el.value||RS_DEF.stempelW):el.value});rsSave();rsSync();rsUpdate();alert("Pengaturan Restitusi tersimpan.")};
 $("rs-exp").onclick=()=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(RSDB)],{type:"application/json"}));a.download="cadangan-restitusi-"+new Date().toISOString().slice(0,10)+".json";a.click()};

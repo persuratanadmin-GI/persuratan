@@ -85,6 +85,9 @@ function rsLayoutR(r,x){x=x||rsCtx();const S=x.S,g=k=>rsGet(r,k,x),{it,Tb,Ln,Im}
  Tb(56.9,683.7+dy,8,"CATATAN :",{b:1});
  ["Menyertakan Surat Pernyataan*) yang ditandatangani oleh atasan langsung / pemberi perintah apabila :","1. Tanggal pelaksanaan SPPD tidak sesuai dengan permohonan SPPD.","2. Jadwal keberangkatan / kepulangan tidak sesuai dengan permohonan SPPD.","3. Kelas fasilitas penginapan yang tidak sesuai dengan Tarif Grade masing-masing pegawai"].forEach((t,i)=>Tb(56.9,[694.3,705,715.7,726.2][i]+dy,8,t));
  const fo=49.9;Tb(61.6,748.3+fo,8,S.almR1);Tb(61.6,759+fo,8,S.almR2);Tb(61.6,769.7+fo,8,"W",{b:1});Tb(71.8,769.7+fo,8,S.web);Tb(133.6,769.7+fo,8,"T",{b:1});Tb(138.3,769.7+fo,8," -");Tb(421.6,769.7+fo,8,"Paraf_________________________");
+ /* paraf pejabat (SAMSU ALAM; diunggah di Pengaturan Restitusi), gaya paraf SPPD: tinggi 13 pt, lebar maks 26 pt, rasio gambar terjaga, menempel di garis setelah tulisan "Paraf" */
+ if(S.paraf){const ar=+S.parafAr>0?+S.parafAr:0,MW=26,MH=13;let pw=MW,ph=MH;if(ar){pw=ph*ar;if(pw>MW){pw=MW;ph=MW/ar}}
+  it.push({k:"s",key:"R.PF",src:S.paraf,ex:ar?1:0,w:pw,h:ph,cx:421.6+spW("Paraf",8,false)+3+pw/2,cy:769.7+fo-ph/2+3})}
  return it}
 /* ====== 2. Surat Pernyataan (A4). ====== */
 function rsLayoutP(r,x){x=x||rsCtx();const S=x.S,g=k=>rsGet(r,k,x),{it,Tb,Ln,Im}=rsTools(),F=11,LH=14.75,L=72,W=490.2;

@@ -36,9 +36,7 @@ $("dv-form").addEventListener("change",e=>{const w=e.target.dataset.dsel;if(!w)r
  dvSync();dvUpdate()});
 /* ===== pratinjau ===== */
 const dvSigImg=n=>n?sigLookup(n):"";
-/* paraf terdaftar di tab Tanda Tangan (opsional per nama): Manager tetap, TL mengikuti nama pemberi perintah di surat */
-function dvParaf(c){const g=n=>{const e=n?sigEntry(n):null;return e&&e.paraf?{src:e.paraf,ar:e.parafAr||0}:null};return{M:g(dvSet0().mgrNama),G:g(c.pemberiName)}}
-function dvHtml(c){const o=[];for(const e of dvLayout(c,dvSet0(),dvParaf(c))){
+function dvHtml(c){const o=[];for(const e of dvLayout(c,dvSet0())){
  if(e.k==="t"){const al=e.a==="c"?"width:500pt;text-align:center;":e.a==="r"?"width:500pt;text-align:right;":"";const x=e.a==="c"?e.x-250:e.a==="r"?e.x-500:e.x;
   o.push(`<div class="dv-t" style="left:${x.toFixed(2)}pt;top:${e.y.toFixed(2)}pt;font-size:${e.s.toFixed(2)}pt;line-height:${(e.s*1.117).toFixed(2)}pt;${al}${e.b?"font-weight:bold;":""}${e.col?"color:"+e.col+";":""}">${esc(e.t)}</div>`)}
  else if(e.k==="i"){if(e.src)o.push(`<img class="dv-i" src="${e.src}" alt="" style="left:${e.x.toFixed(2)}pt;top:${e.y.toFixed(2)}pt;width:${e.w.toFixed(2)}pt;height:${e.h.toFixed(2)}pt">`)}
@@ -53,7 +51,7 @@ window.addEventListener("resize",()=>{if(!$("dv-pane").hidden)dvFit()});
 function dvUpdate(){if(dvCur!==dvBatch[dvIdx]){dvBatch=[dvCur];dvIdx=0}
  if($("dv-sheets").children.length!==dvBatch.length)dvBuildSheets();else{const lw=$("dv-sheets").children[dvIdx];lw.querySelector(".sheet").innerHTML=dvHtml(dvCur);lw.querySelector(".lt").textContent=dvTitleOf(dvIdx)}
  dvPersist();dvButtons();if(dvSel&&!document.querySelector('#dv-sheets .lw.act .sgb[data-p="'+dvSel+'"]'))dvSelect(null);
- const m=dvMissing(dvCur),sn=[],S=dvSet0();if(dvCur.pemberiName&&!dvSigImg(dvCur.pemberiName))sn.push("pemberi perintah");if(S.mgrNama&&!dvSigImg(S.mgrNama))sn.push("manager");const pr=dvParaf(dvCur);if(!pr.M)sn.push("paraf manager");if(dvCur.pemberiName&&!pr.G)sn.push("paraf TL");
+ const m=dvMissing(dvCur),sn=[],S=dvSet0();if(dvCur.pemberiName&&!dvSigImg(dvCur.pemberiName))sn.push("pemberi perintah");if(S.mgrNama&&!dvSigImg(S.mgrNama))sn.push("manager");if(!dvSet0().paraf)sn.push("paraf (unggah di Pengaturan)");
  $("dv-hint").textContent=[m.length?"Belum lengkap: "+m.join(", "):"",sn.length?"Tanda tangan belum terdaftar: "+sn.join(", ")+" (tab Tanda Tangan)":""].filter(Boolean).join(" · ")}
 function dvButtons(){const s=dvBatch.length>1?" ("+dvBatch.length+")":"";[["dv-bDraft","Simpan draft"],["dv-bDone","Tandai selesai"],["dv-bXl","Simpan ke Excel"],["dv-bPdf","Unduh PDF"],["dv-bPrint","Cetak"]].forEach(([id,t])=>{$(id).textContent=t+s})}
 function dvActive(i){dvIdx=i;dvCur=dvBatch[i];document.querySelectorAll("#dv-sheets .lw").forEach((e,j)=>e.classList.toggle("act",j===i));dvSelect(null);dvSync();dvUpdate()}
@@ -62,7 +60,7 @@ $("dv-batchbar").onclick=async e=>{if(e.target.id==="dv-pdfAktif"){dvPdf([dvCur]
  const g=e.target.dataset.go;if(g!==undefined){dvActive(+g);$("dv-sheets").children[+g].scrollIntoView({block:"nearest"})}};
 $("dv-sheets").addEventListener("click",e=>{const lw=e.target.closest(".lw");if(!lw)return;const i=+lw.dataset.i;if(i!==dvIdx)dvActive(i)});
 /* tanda tangan: seret & ubah ukuran (posisi disimpan per surat) */
-const DVSGN={G:"Pemberi perintah (TL)",M:"Mengetahui (Manager)",PFM:"Paraf Manager",PFG:"Paraf TL"};
+const DVSGN={G:"Pemberi perintah (TL)",M:"Mengetahui (Manager)",PF:"Paraf"};
 function dvPos(p){dvCur.sigPos=dvCur.sigPos||{};return dvCur.sigPos[p]=dvCur.sigPos[p]||{x:0,y:0,s:1}}
 function dvSgApply(p){const o=dvPos(p);document.querySelectorAll('#dv-sheets .lw.act .sgb[data-p="'+p+'"]').forEach(i=>{i.style.setProperty("--s",o.s);i.style.transform=`translate(${o.x}mm,${o.y}mm) scale(${o.s})`})}
 function dvSelect(p){dvSel=p;document.querySelectorAll("#dv-sheets .lw .sgb[data-p]").forEach(i=>i.classList.toggle("sel",i.closest(".lw").classList.contains("act")&&i.dataset.p===p));$("dv-sgctl").hidden=!p;$("dv-sgbar").hidden=!p;if(p){$("dv-sgName").textContent=DVSGN[p];const s=Math.round(dvPos(p).s*100);$("dv-sgSize").value=s;$("dv-sgPct").value=s}}
@@ -107,7 +105,7 @@ $("dv-bPrint").onclick=async()=>{const bad=dvBad();if(bad.length&&!await ask("Da
 $("dv-bTtd").onclick=()=>{setMode("L");showTab("tt")};
 /* ===== PDF (semua surat dalam satu berkas, satu halaman A4 per surat) ===== */
 async function dvPdfLetter(pdf,c){pdf.setTextColor(0,0,0);const sigs=[];
- for(const e of dvLayout(c,dvSet0(),dvParaf(c))){
+ for(const e of dvLayout(c,dvSet0())){
   if(e.k==="t"){pdf.setFont("helvetica",e.b?"bold":"normal");pdf.setFontSize(e.s);if(e.col){const h=e.col.replace("#","");pdf.setTextColor(parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16))}else pdf.setTextColor(0,0,0);
    pdf.text(pdfTxt(e.t),e.x,e.y+.905*e.s,{align:e.a==="c"?"center":e.a==="r"?"right":"left"})}
   else if(e.k==="i"){if(e.src)pdf.addImage(e.src,"PNG",e.x,e.y,e.w,e.h)}
@@ -160,7 +158,11 @@ const DVSG=[["Kop dan kepada",[["kop1","Kop baris 1",1],["kop2","Kop baris 2",1]
  ["Mengetahui (tetap)",[["mgrJab","Jabatan"],["mgrNama","Nama"]]],
  ["Kaki halaman",[["alm1","Alamat baris 1",1],["alm2","Alamat baris 2",1],["web","Situs web"],["telp","Telepon"]]],
  ["Excel (daftar hadir driver)",[["xlJudul","Judul daftar",1],["xlKota","Kota tanda tangan"],["xlLbl1","Jabatan pengesah 1"],["xlNama1","Nama pengesah 1"],["xlLbl2","Jabatan pengesah 2"],["xlNama2","Nama pengesah 2"],["xlLbl3","Jabatan pengesah 3"],["xlNama3","Nama pengesah 3"],["xlLbl4","Jabatan pengesah 4"],["xlNama4","Nama pengesah 4"]]]];
-function dvBuildSet(){const S=dvSet0();$("dv-seForm").innerHTML=`<p class="hint">Perubahan berlaku untuk surat baru dan pratinjau. Data hanya disimpan di browser ini.</p>`+DVSG.map(([j,f])=>`<h4 class="sec">${j}</h4>`+f.map(([k,l,p,cb])=>cb?`<div class="fld fw"><label><input type="checkbox" data-ds="${k}"${S[k]!==false?" checked":""}> ${l}</label></div>`:`<div class="fld${p?" fw":""}"><label>${l}</label><input data-ds="${k}" value="${esc(S[k])}"></div>`).join("")).join("")}
+function dvParafBlok(){return`<h4 class="sec">Paraf (tampil di setiap surat, di garis "Paraf" ujung bawah)</h4><div class="fld fw"><label>Gambar paraf (PNG/JPG/WEBP, maks 1 MB)</label><input type="file" id="dv-parafFile" accept="image/png,image/jpeg,image/webp"><img id="dv-parafImg" class="sg-prev" alt="" style="height:50px;max-width:160px;margin-top:6px"><div class="acts"><button class="d" id="dv-parafDel" hidden>Hapus paraf</button></div><p class="hint">Posisi dan ukuran bisa diatur per surat dengan mengklik parafnya di pratinjau.</p></div>`}
+function dvParafUi(){const v=DVDB.settings.paraf||"",im=$("dv-parafImg");if(!im)return;if(v)im.src=v;else im.removeAttribute("src");$("dv-parafDel").hidden=!v}
+function dvBuildSet(){const S=dvSet0();$("dv-seForm").innerHTML=`<p class="hint">Perubahan berlaku untuk surat baru dan pratinjau. Data hanya disimpan di browser ini.</p>`+DVSG.map(([j,f])=>`<h4 class="sec">${j}</h4>`+f.map(([k,l,p,cb])=>cb?`<div class="fld fw"><label><input type="checkbox" data-ds="${k}"${S[k]!==false?" checked":""}> ${l}</label></div>`:`<div class="fld${p?" fw":""}"><label>${l}</label><input data-ds="${k}" value="${esc(S[k])}"></div>`).join("")).join("")+dvParafBlok();dvParafUi()}
+$("dv-seForm").addEventListener("change",e=>{if(e.target.id!=="dv-parafFile")return;const f=e.target.files[0];e.target.value="";readSig(f,async d=>{const t=await spParafTrim(d);DVDB.settings.paraf=t.src;DVDB.settings.parafAr=t.ar;[dvCur,...dvBatch].forEach(c=>{if(c.sigPos)delete c.sigPos.PF});dvSave();dvParafUi();dvUpdate();toast("Paraf tersimpan.")})});
+$("dv-seForm").addEventListener("click",async e=>{if(e.target.id!=="dv-parafDel")return;if(await ask("Hapus paraf dari semua surat?")){delete DVDB.settings.paraf;delete DVDB.settings.parafAr;dvSave();dvParafUi();dvUpdate()}});
 $("dv-seSave").onclick=()=>{document.querySelectorAll("[data-ds]").forEach(el=>{DVDB.settings[el.dataset.ds]=el.type==="checkbox"?el.checked:el.value});dvSave();dvUpdate();alert("Pengaturan driver tersimpan.")};
 $("dv-exp").onclick=()=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(DVDB)],{type:"application/json"}));a.download="cadangan-lembur-driver-"+new Date().toISOString().slice(0,10)+".json";a.click()};
 $("dv-imp").onchange=e=>{const f=e.target.files[0];e.target.value="";if(!f)return;const r=new FileReader;r.onload=async()=>{try{const d=JSON.parse(r.result);if(!Array.isArray(d.records)||!Array.isArray(d.drivers))throw 0;if(!await ask("Impor akan MENGGANTI seluruh data lembur driver (driver, riwayat, pengaturan). Lanjutkan?"))return;
