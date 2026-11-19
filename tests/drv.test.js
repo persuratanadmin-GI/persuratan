@@ -24,7 +24,7 @@ cek("tanggal surat mengikuti tanggal lembur", a.tglSurat === "2026-08-07");
 cek("kalimat berawalan 'driver' tanpa titik dua tidak dianggap label", X.dvPrep("Driver standby di kantor") === "Driver standby di kantor");
 cek("kelengkapan: surat kosong lima kolom wajib", X.dvMissing({}).length === 5 && X.dvMissing(a).length === 0);
 const teks = X.dvLayout(a, X.DV_DEF).filter(e => e.k === "t").map(e => e.t);
-cek("tata letak: hari/tanggal, pukul, tujuan", teks.includes("Jumat, 07 Agustus 2026") && teks.includes("16:30 s/d 21:00 WITA (4.5 Jam)") && teks.includes("Antar tim ke GI Barru"));
+cek("tata letak: label Waktu dan Uraian Tugas (bukan Pukul/Tujuan)", teks.includes("Waktu") && teks.includes("Uraian Tugas") && !teks.includes("Pukul") && !teks.includes("Tujuan") && teks.includes("Jumat, 07 Agustus 2026") && teks.includes("16:30 s/d 21:00 WITA (4.5 Jam)") && teks.includes("Antar tim ke GI Barru"));
 cek("tata letak: Parepare + tanggal, TL, manager", teks.includes("Parepare, 07 Agustus 2026") && teks.includes("RAHMAT HIDAYAT") && teks.includes("SAMSU ALAM"));
 const panjang = Object.assign({}, a, { tujuan: "Mengantar tim pemeliharaan ke GI Barru untuk penggantian relay proteksi dan pengecekan panel kontrol sekaligus membawa material tambahan dari gudang" });
 const yTtd = l => l.find(e => e.t === "SAMSU ALAM").y;

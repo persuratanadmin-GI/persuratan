@@ -25,7 +25,7 @@ function dvPrep(text){return String(text==null?"":text).split(/\r?\n/).map(l=>l.
 function dvNames(v){return String(v==null?"":v).replace(/[\u200b-\u200f\u2060\ufeff]/g,"").split(/\s*(?:,|;|&|\bdan\b|\r?\n)\s*/i).map(x=>x.replace(/^\s*(?:\d+\s*[.)]|[-\u2022])\s*/,"").replace(/\s+/g," ").trim()).filter(Boolean)}
 const dvNorm=s=>String(s==null?"":s).toLowerCase().replace(/\s+/g," ").trim();
 function dvBlank(S){S={...DV_DEF,...S};return{id:null,driver:"",tanggal:"",mulai:"",selesai:"",durManual:"",tujuan:"",tglSurat:"",pemberiName:"",pemberiJab:S.jabPemberi,sigPos:{},status:"draft",flags:{}}}
-function dvMissing(c){const m=[];[["tanggal","tanggal"],["mulai","jam mulai"],["selesai","jam selesai"],["tujuan","tujuan"],["pemberiName","pemberi perintah (TL)"]].forEach(([k,l])=>{if(!c[k])m.push(l)});return m}
+function dvMissing(c){const m=[];[["tanggal","tanggal"],["mulai","jam mulai"],["selesai","jam selesai"],["tujuan","uraian tugas"],["pemberiName","pemberi perintah (TL)"]].forEach(([k,l])=>{if(!c[k])m.push(l)});return m}
 /* ---- parser ---- */
 const DV_PARSE_KEYS=["nama","tanggal","mulai","selesai","uraian","pemberi"];
 /* Pisah blok: baris kosong, atau label yang berulang (= awal surat baru). Blok tanpa label digabung ke blok sebelumnya (sama dengan splitBlocks di multi.js). */
@@ -71,7 +71,7 @@ function dvLayout(c,S){S={...DV_DEF,...S};const it=[],FS=9.24,LH=13.33,SZ=FS*DV_
  const sh=(pem.length-2)*LH,b0=283.61+sh,gap=26.64;
  const dur=S.durTampil===false?"":durText(c),waktu=c.mulai&&c.selesai?c.mulai+" s/d "+c.selesai+" "+S.zona+(dur?" ("+dur+")":""):"";
  const tuj=spWrap(c.tujuan?String(c.tujuan).replace(/\s*\n\s*/g," "):D(39),530-233.81,FS,0,false);
- [["1.","Hari / Tanggal",c.tanggal?fmtDay(c.tanggal):D(39)],["2.","Pukul",waktu||D(39)],["3.","Tujuan",null]].forEach(([no,lab,val],i)=>{const b=b0+i*gap;
+ [["1.","Hari / Tanggal",c.tanggal?fmtDay(c.tanggal):D(39)],["2.","Waktu",waktu||D(39)],["3.","Uraian Tugas",null]].forEach(([no,lab,val],i)=>{const b=b0+i*gap;
   T(114.86,b,no);T(131.9,b,lab);T(222.41,b,":");if(val!==null)T(233.81,b,val);else tuj.forEach((l,j)=>T(233.81,b+j*LH,l))});
  const ex=sh+(tuj.length-1)*LH;
  T(114.86,363.53+ex,S.penutup);

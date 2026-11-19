@@ -113,8 +113,6 @@ textarea{min-height:76px;resize:vertical;line-height:1.45}
 .panel input[type=file]{background:#fff}
 #peQ,#rQ,#sp-peQ,#sp-rQ{padding-left:36px;background-repeat:no-repeat;background-position:11px center;background-size:16px;margin-bottom:var(--sp-2)}
 #tab-ri .row,#sp-tab-ri .row{margin-top:2px}
-#testOut,#sp-testOut{white-space:pre-wrap;font:12px/1.5 var(--mono);color:var(--c-text);background:var(--c-sunken);border:1px solid var(--c-border);border-radius:var(--r-md);padding:10px 12px;margin:var(--sp-3) 0 0;overflow:auto}
-#testOut:empty,#sp-testOut:empty{display:none}
 details{border:1px solid var(--c-border);border-radius:var(--r-md);margin:8px 0;background:#fff}
 details>summary{cursor:pointer;padding:8px 12px;font-size:13px;list-style-position:inside}
 details>summary:hover{background:var(--c-sunken)}
@@ -229,7 +227,7 @@ table.t tr:last-child td{border-bottom:0}
   --i-users:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='9' cy='8' r='3.5'/%3E%3Cpath d='M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M16 5a3.5 3.5 0 010 7M18 14c2 .6 3 2.6 3 5'/%3E%3C/svg%3E");
   --i-alert:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 4l9 16H3z'/%3E%3Cpath d='M12 10v4M12 17.5v.01'/%3E%3C/svg%3E");
 }
-#tabs button[data-t=in]::before,#tabs button[data-t=pe]::before,#tabs button[data-t=ri]::before,#tabs button[data-t=tt]::before,#tabs button[data-t=se]::before,#sp-tabs button[data-t=in]::before,#sp-tabs button[data-t=pe]::before,#sp-tabs button[data-t=ri]::before,#sp-tabs button[data-t=se]::before,#m-man::before,#m-wa::before,.brand-mark::before,#st::before,#bNew::before,#sp-bNew::before,#bDraft::before,#sp-bDraft::before,#bDone::before,#sp-bDone::before,#bPdf::before,#sp-bPdf::before,#rPdf::before,#sp-rPdf::before,#bPrint::before,#sp-bPrint::before,#bXl::before,#rXl::before,#rDelAll::before,#sp-peClear::before,#sp-bTtd::before,#parse::before,#sp-parse::before,#apply::before,#applyMulti::before,#peSave::before,#ttSave::before,#seSave::before,#sp-seSave::before,#sp-peSave::before,#selfTest::before,#sp-selfTest::before,#exp::before,#sp-exp::before,label.imp::before,#pdfAktif::before,#sp-pdfAktif::before,#hapusAktif::before,#sp-hapusAktif::before,#peList button[data-e]::before,#sp-peList button[data-e]::before,#ttList button[data-e]::before,#peList button[data-x]::before,#sp-peList button[data-x]::before,#ttList button[data-x]::before,#rList button[data-p]::before,#rList button[data-o]::before,#rList button[data-c]::before,#rList button[data-x]::before,#sp-rList button[data-p]::before,#sp-rList button[data-o]::before,#sp-rList button[data-c]::before,#sp-rList button[data-x]::before,#sp-parafDel::before{content:"";flex:none;width:16px;height:16px;background:currentColor;-webkit-mask:center/contain no-repeat;mask:center/contain no-repeat}
+#tabs button[data-t=in]::before,#tabs button[data-t=pe]::before,#tabs button[data-t=ri]::before,#tabs button[data-t=tt]::before,#tabs button[data-t=se]::before,#sp-tabs button[data-t=in]::before,#sp-tabs button[data-t=pe]::before,#sp-tabs button[data-t=ri]::before,#sp-tabs button[data-t=se]::before,#m-man::before,#m-wa::before,.brand-mark::before,#st::before,#bNew::before,#sp-bNew::before,#bDraft::before,#sp-bDraft::before,#bDone::before,#sp-bDone::before,#bPdf::before,#sp-bPdf::before,#rPdf::before,#sp-rPdf::before,#bPrint::before,#sp-bPrint::before,#bXl::before,#rXl::before,#rDelAll::before,#sp-peClear::before,#sp-bTtd::before,#parse::before,#sp-parse::before,#apply::before,#applyMulti::before,#peSave::before,#ttSave::before,#seSave::before,#sp-seSave::before,#sp-peSave::before,#exp::before,#sp-exp::before,label.imp::before,#pdfAktif::before,#sp-pdfAktif::before,#hapusAktif::before,#sp-hapusAktif::before,#peList button[data-e]::before,#sp-peList button[data-e]::before,#ttList button[data-e]::before,#peList button[data-x]::before,#sp-peList button[data-x]::before,#ttList button[data-x]::before,#rList button[data-p]::before,#rList button[data-o]::before,#rList button[data-c]::before,#rList button[data-x]::before,#sp-rList button[data-p]::before,#sp-rList button[data-o]::before,#sp-rList button[data-c]::before,#sp-rList button[data-x]::before,#sp-parafDel::before{content:"";flex:none;width:16px;height:16px;background:currentColor;-webkit-mask:center/contain no-repeat;mask:center/contain no-repeat}
 #parse::before,#sp-parse::before{-webkit-mask-image:var(--i-arrow);mask-image:var(--i-arrow)}
 #bDone::before,#sp-bDone::before,#apply::before,#applyMulti::before{-webkit-mask-image:var(--i-check);mask-image:var(--i-check)}
 #tabs button[data-t=ri]::before,#sp-tabs button[data-t=ri]::before{-webkit-mask-image:var(--i-clock);mask-image:var(--i-clock)}
@@ -237,7 +235,6 @@ table.t tr:last-child td{border-bottom:0}
 #bPdf::before,#sp-bPdf::before,#rPdf::before,#sp-rPdf::before,#exp::before,#sp-exp::before,#pdfAktif::before,#sp-pdfAktif::before{-webkit-mask-image:var(--i-download);mask-image:var(--i-download)}
 #m-man::before,#peList button[data-e]::before,#sp-peList button[data-e]::before,#ttList button[data-e]::before{-webkit-mask-image:var(--i-edit);mask-image:var(--i-edit)}
 #tabs button[data-t=in]::before,#sp-tabs button[data-t=in]::before,.brand-mark::before{-webkit-mask-image:var(--i-file);mask-image:var(--i-file)}
-#selfTest::before,#sp-selfTest::before{-webkit-mask-image:var(--i-flask);mask-image:var(--i-flask)}
 #m-wa::before{-webkit-mask-image:var(--i-message);mask-image:var(--i-message)}
 #rList button[data-o]::before,#sp-rList button[data-o]::before{-webkit-mask-image:var(--i-open);mask-image:var(--i-open)}
 #rList button[data-p]::before,#sp-rList button[data-p]::before{-webkit-mask-image:var(--i-pdf);mask-image:var(--i-pdf)}
@@ -307,8 +304,28 @@ label.imp::before{-webkit-mask-image:var(--i-upload);mask-image:var(--i-upload)}
  .app-foot{padding:12px 12px calc(16px + env(safe-area-inset-bottom,0px))}
 }
 
-/* Pemilih tanggal berbahasa Indonesia (js/tanggal-id.js) */
-.tgl-id{display:flex;gap:6px;width:100%;min-width:0}
-.tgl-id select{min-width:0;padding-left:8px;padding-right:22px;background-position:right 6px center}
-.tgl-id select:nth-child(1){flex:1 1 0}.tgl-id select:nth-child(2){flex:2 1 0}.tgl-id select:nth-child(3){flex:1.6 1 0}
-.xlf .tgl-id{width:auto;min-width:260px}
+/* Pemilih tanggal berbahasa Indonesia: satu kolom + kalender cepat (js/tanggal-id.js) */
+.tgl-id{position:relative;display:flex;width:100%;min-width:0}
+.tgl-id .tgl-in{width:100%;min-width:0;padding-right:40px;font-variant-numeric:tabular-nums}
+.tgl-id .tgl-in.tgl-salah{border-color:#d92d20;box-shadow:0 0 0 3px rgba(217,45,32,.18)}
+.tgl-id .tgl-btn{position:absolute;right:4px;top:50%;transform:translateY(-50%);width:32px;height:32px;min-height:0;padding:0;border:0;border-radius:8px;background:transparent;color:var(--c-muted);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:none}
+.tgl-id .tgl-btn:hover{background:var(--c-bg);color:var(--c-primary)}
+.tgl-id .tgl-btn:disabled{opacity:.4;cursor:default}
+.xlf .tgl-id{width:auto;min-width:190px}
+.tgl-pop{position:fixed;z-index:2000;width:268px;padding:10px;background:var(--c-surface);color:var(--c-text);border:1px solid var(--c-border);border-radius:14px;box-shadow:0 18px 44px -12px rgba(13,35,82,.45),0 2px 6px rgba(13,35,82,.15);font-size:13px;user-select:none}
+.tgl-pop button{font:inherit;min-height:0;box-shadow:none;cursor:pointer}
+.tgl-h{display:flex;align-items:center;gap:2px;margin-bottom:6px}
+.tgl-h button{width:28px;height:28px;padding:0;border:0;border-radius:8px;background:transparent;color:var(--c-text);font-size:17px;line-height:1}
+.tgl-h button:hover{background:var(--c-bg)}
+.tgl-h .tgl-jd{flex:1;width:auto;font-size:14px;font-weight:700}
+.tgl-w,.tgl-g{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center}
+.tgl-w span{padding:4px 0;font-size:11px;font-weight:700;color:var(--c-muted)}
+.tgl-g button,.tgl-bln button{height:34px;padding:0;border:1px solid transparent;border-radius:9px;background:transparent;color:var(--c-text)}
+.tgl-g button:hover,.tgl-bln button:hover,.tgl-f button:hover{background:var(--c-bg)}
+.tgl-g button.luar{color:var(--c-muted);opacity:.55}
+.tgl-g button.hr,.tgl-bln button.hr{border-color:var(--c-primary)}
+.tgl-g button.on,.tgl-bln button.on{background:var(--c-primary);border-color:var(--c-primary);color:#fff;opacity:1}
+.tgl-bln{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}.tgl-bln button{height:44px}
+.tgl-f{display:flex;gap:6px;justify-content:space-between;margin-top:8px;padding-top:8px;border-top:1px solid var(--c-border)}
+.tgl-f button{flex:1;padding:6px 8px;border:1px solid var(--c-border);border-radius:9px;background:transparent;color:var(--c-text);font-weight:600}
+@media print{.tgl-pop{display:none!important}}

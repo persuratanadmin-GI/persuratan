@@ -37,7 +37,7 @@ js/multi.js           banyak surat dari satu pesan, daftar surat
 js/pdf.js             ekspor PDF vektor (jsPDF) dan hapus semua riwayat
 js/excel.js           inti integrasi Excel (ExcelJS): baca/tulis daftar lembur bulanan, total jam, terbilang
 js/excel-ui.js        dialog "Simpan ke Excel": pilih file, cocokkan nama, rencana, simpan
-js/manage.js          personel, tanda tangan per nama, riwayat, pengaturan, cadangan, uji bawaan
+js/manage.js          personel, tanda tangan per nama, riwayat, pengaturan, cadangan
 js/main.js            inisialisasi
 vendor/               jsPDF 2.5.1 dan ExcelJS 4.4.0 (lisensi MIT, lihat LICENSE-*.txt)
 tests/                uji otomatis dan uji visual terhadap dokumen referensi
@@ -115,7 +115,7 @@ Aturan yang dipakai:
 - Sheet bulan yang diperbarui ditulis ulang dengan gaya yang sama; sheet bulan lain tidak diubah.
 - Nama berkas unduhan Excel selalu memuat bulan dan tahun: berkas baru `daftar-lembur-oktober-2026.xlsx` (lintas bulan `daftar-lembur-oktober-november-2026.xlsx`);
   berkas yang diperbarui `NAMA-diperbarui-oktober-2026.xlsx` (tidak digandakan bila nama berkas asli sudah memuat bulan dan tahunnya).
-- Semua kolom tanggal memakai pemilih Indonesia (Tanggal / Bulan bernama / Tahun) dari `js/tanggal-id.js`, sehingga tidak bergantung pada bahasa browser.
+- Semua kolom tanggal memakai satu kolom isian hh/bb/tttt + kalender cepat (`js/tanggal-id.js`), sehingga tidak bergantung pada bahasa browser. Ketik angka saja (`07082026` menjadi 07/08/2026; juga `7-8-2026`, `7 Agustus 2026`, atau `0708` untuk tahun ini), atau klik ikon kalender / tekan panah bawah: pilih hari, geser bulan/tahun dengan panah, klik judul bulan untuk melompat ke bulan lain, tombol Hari ini dan Hapus. Nilai tetap disimpan sebagai ISO di input aslinya, jadi formulir, riwayat, dan Excel tidak berubah.
   Input `type="date"` aslinya tetap ada (disembunyikan) sebagai penyimpan nilai `YYYY-MM-DD`; kode lain tetap membaca/menulis `.value`.
   Bila ada input tanggal baru, cukup tulis `<input type="date">` biasa: pemilih Indonesia dipasang otomatis.
 - Penyimpanan: di Chrome atau Edge (lewat `http://localhost` atau GitHub Pages) file yang dipilih ditimpa langsung setelah
@@ -186,11 +186,23 @@ npm test                                  # uji otomatis: parser, nama via NIP, 
 python tests/compare_template.py Bahan_Proyek.pdf hasil.pdf   # uji visual terhadap dokumen referensi (pip install pymupdf)
 ```
 
-Tab **Pengaturan**, tombol **Jalankan uji parser & durasi** menjalankan uji bawaan langsung di aplikasi.
+Uji logika parser dan durasi yang dulu berupa tombol di tab Pengaturan kini dijalankan oleh `npm test` (pernyataannya ada di `tests/fixtures/`).
 Pada pengembangan, tata letak diverifikasi dengan Chrome headless terhadap `Bahan_Proyek.pdf`:
 selisih garis dasar teks rata-rata 0,02 pt, ketebalan garis sama (0,85 pt setelah diskalakan).
 Pengujian cetak pada printer dan browser Anda sendiri tetap perlu dilakukan sebelum dipakai sebagai arsip.
 
+
+## Tombol modern
+
+Tombol utama (**Surat baru**, **Unduh PDF**, **Simpan ke Excel**, dan tombol berwarna lain) kini berwarna solid bergradasi dengan kilau di sisi atas, bayangan berwarna, dan efek kilat saat disorot; **Surat baru** selalu berlabel dan sejelas Unduh PDF (biru terang; kuning petir di tema PLN). Tombol sekunder bergaya kaca tipis, tombol hapus bergaris merah, dan cincin fokus papan ketik lebih jelas. Di bar tombol yang sempit, Simpan draft/Tandai selesai/Cetak menjadi ikon (nama sebagai tooltip) dan "Simpan ke Excel" diringkas menjadi "Excel" supaya semua muat satu baris. Berkas: `css/tombol.css` (hapus satu baris `<link>` di `index.html` untuk kembali ke gaya sebelumnya). Hanya tampilan layar.
+
+## Logo PLN dan tema PLN (listrik)
+
+Ikon dokumen di header diganti **logo PLN** (di semua tema; berkas `assets/pln-logo.png`, juga dipakai sebagai ikon tab). Tombol tema di pojok kanan atas kini bergiliran **Terang -> Gelap -> PLN (listrik) -> Terang** (pilihan diingat di browser; judul tombol menyebut tema sekarang dan berikutnya). Tema PLN: header biru PLN dengan garis listrik kuning-sian yang berkilat pelan, petir samar, garis kuning di sisi atas kartu, progres kelengkapan kuning ke sian, dan latar kebiruan lembut. Hanya tampilan layar: lembar surat dan hasil Cetak/PDF tidak berubah. Berkas: `css/pln.css` (hapus satu baris `<link>` di `index.html` untuk membatalkan; logo kembali ke ikon dokumen).
+
+## Tampilan panel input yang lebih lega
+
+Panel input dibuat lebih lapang tanpa memperbesar ukurannya, dengan memadatkan "chrome" (bukan kolom isian): pilihan **Lembur HAR / Lembur Driver** digabung ke bar mode di header (empat tombol tetap: Lembur HAR, Lembur Driver, SPPD, Restitusi; posisinya tidak bergeser antarmode); legenda warna disembunyikan dan dibuka dengan tombol **i** di baris kelengkapan; kotak progres "kolom wajib terisi" menjadi satu baris tipis; bar tombol menjadi satu baris (draft, selesai, dan cetak tampil sebagai ikon dengan tooltip bila bar sempit); kotak pesan WhatsApp SPPD/Restitusi punya tombol **Ciutkan/Buka** (bawaan terbuka, pilihan diingat). Di layar 1366x768 area isian terlihat naik dari ±290 px menjadi ±470 px. Berkas: `css/ringkas.css` dan `js/ringkas.js` (dimuat paling akhir; menghapus keduanya mengembalikan tampilan semula).
 
 ## Surat Lembur Driver
 
@@ -201,7 +213,7 @@ input manual atau dari WhatsApp (banyak surat sekaligus), pratinjau A4, tanda ta
 - **Isi surat:** tanggal lembur (tampil sebagai Hari / Tanggal), jam (Pukul), Tujuan, dan pemberi perintah (TL). Manager yang mengetahui tetap (Pengaturan).
 - **Paraf:** diunggah sekali di **Pengaturan** Lembur Driver (dipotong rapat otomatis, gaya paraf SPPD) dan tampil di garis "Paraf" ujung bawah setiap surat. Posisi/ukuran bisa diatur per surat dengan mengklik parafnya di pratinjau. Tab Tanda Tangan hanya untuk tanda tangan.
 - **Nama driver** tidak tampil di surat (templatenya memang tanpa nama); dipakai untuk Excel dan nama berkas. Beberapa driver dipisah koma dan masing-masing dicatat di Excel.
-- **WhatsApp:** label dikenali menurut makna, termasuk `Driver:`, `Hari/Tanggal`, `Pukul`, `Tujuan`, `TL`. Contoh: `Driver: Syahrul` / `Hari/Tanggal: 7 Agustus 2026` / `Pukul: 16.30-21.00` / `Tujuan: ...` / `TL: ...`.
+- **WhatsApp:** label dikenali menurut makna, termasuk `Driver:`, `Hari/Tanggal`, `Waktu` (atau `Pukul`/`Jam`), `Uraian Tugas` (atau `Tujuan`), `TL`. Contoh: `Driver: Syahrul` / `Hari/Tanggal: 7 Agustus 2026` / `Waktu: 16.30-21.00` / `Uraian Tugas: ...` / `TL: ...`. Di form dan di surat, label barisnya adalah **Waktu** dan **Uraian Tugas**.
 - **PDF:** satu berkas, satu halaman A4 per surat (`LEMBUR DRIVER NAMA DD BULAN YYYY.pdf`; beberapa surat: `DAFTAR FILE LEMBUR DRIVER ... BULAN TAHUN.pdf`).
 - **Simpan ke Excel:** pilih file contoh (atau tanpa file: dibuat baru). Satu sheet per driver (NAMA, BULAN, tabel NO/HARI/TANGGAL/JAM/LEMBUR/KETERANGAN, JUMLAH JAM LEMBUR, blok pengesahan).
   Sheet driver dicari dari nama dan bulan; baris sama dilewati; baris diurutkan; tabel minimal 10 baris dan bertambah bila lebih; driver yang sudah punya sheet bulan lain mendapat sheet baru `NAMA BULAN TAHUN`.
@@ -241,7 +253,7 @@ Transportasi : Kendaraan dinas PP
    (diawali "Form SPPD:" atau label berulang) menjadi beberapa surat.
 4. Tanda tangan memakai tab **Tanda Tangan** yang sama dengan surat lembur (tombol **Kelola tanda tangan**). Tanda tangan di pratinjau bisa
    digeser dan diubah ukurannya. Nama berkas PDF: `SPPD NAMA DD BULAN YYYY.pdf`.
-5. Riwayat SPPD, cadangan JSON, dan **Uji parser SPPD** ada di tab Riwayat/Pengaturan. Uji otomatis: `node tests/sppd.test.js`.
+5. Riwayat SPPD dan cadangan JSON ada di tab Riwayat/Pengaturan. Uji otomatis: `node tests/sppd.test.js`.
 
 ## Catatan pembaruan SPPD
 

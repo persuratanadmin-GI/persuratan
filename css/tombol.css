@@ -1,0 +1,77 @@
+/* Tombol modern: tombol utama (Surat baru, Unduh PDF, Simpan ke Excel, dan tombol .b lain) berwarna solid dengan kilau dan bayangan berwarna,
+   tombol sekunder (.g) bergaya kaca tipis, tombol hapus (.d) bergaris merah. "Surat baru" kini sejelas "Unduh PDF" (selalu berlabel).
+   Hanya tampilan layar; dimuat paling akhir. Untuk membatalkan: hapus baris <link ... tombol.css> di index.html. */
+@media screen{
+:root:not(#_){
+  --bt-g1:#ffffff;--bt-g2:#f3f6fb;--bt-gb:#c8d3e6;--bt-gt:#22304a;--bt-gh:var(--c-primary-soft);
+  --bt-d1:#ffffff;--bt-dt:#c42b1c;--bt-db:#f0b9b2;--bt-dh:#fdeceb;
+}
+html[data-theme="dark"]:not(#_){--bt-g1:#1a2644;--bt-g2:#141e38;--bt-gb:#33456b;--bt-gt:#e6ebf7;--bt-gh:rgba(108,155,255,.16);--bt-d1:#1a2644;--bt-dt:#ff8b7e;--bt-db:rgba(255,139,126,.45);--bt-dh:rgba(255,139,126,.12)}
+html[data-theme="pln"]:not(#_){--bt-gb:#b9d3e4;--bt-gt:#0d3358}
+
+/* dasar semua tombol */
+:root:not(#_) :is(button.b,button.g,button.d,label.g){border-radius:12px;font-weight:650;letter-spacing:.005em;min-height:38px;padding:8px 16px;gap:8px}
+:root:not(#_) .actbar :is(button,label.g){min-height:36px;padding:7px 14px;font-size:13px}
+:root:not(#_) :is(button.b,button.g,button.d,label.g)::before{width:17px;height:17px}
+
+/* tombol utama: warna solid bergradasi, kilau di sisi atas, bayangan berwarna; variabel --p1/--p2 menentukan warna */
+:root:not(#_) button.b{--p1:#3b82f6;--p2:#1d4fd8;--pg:rgba(29,79,216,.75);color:#fff;border:1px solid var(--p2);
+  background:linear-gradient(180deg,var(--p1),var(--p2));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.28),0 1px 2px rgba(10,30,80,.3),0 9px 18px -9px var(--pg)}
+:root:not(#_) button.b.nv{--p1:#1f4390;--p2:#0b1d45;--pg:rgba(11,29,69,.8)}
+:root:not(#_) button.b.new{--p1:#3b82f6;--p2:#1d4fd8}
+:root:not(#_) button.b.xl{--p1:#2bb577;--p2:#127a48;--pg:rgba(18,122,72,.75);color:#fff}
+:root:not(#_) button.b:not(:disabled):hover{filter:brightness(1.08) saturate(1.05);box-shadow:inset 0 1px 0 rgba(255,255,255,.32),0 2px 4px rgba(10,30,80,.3),0 14px 24px -10px var(--pg)}
+:root:not(#_) button.b:not(:disabled):active{background-image:radial-gradient(circle at var(--rx,50%) var(--ry,50%),rgba(255,255,255,.35) 0,transparent 55%),linear-gradient(180deg,var(--p1),var(--p2))}
+:root:not(#_) button.b.new::after,:root:not(#_) button.b.xl::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.28) 50%,transparent 70%);transform:translateX(-120%);transition:transform .6s var(--ease);pointer-events:none}
+:root:not(#_) button.b.new:hover::after,:root:not(#_) button.b.xl:hover::after{transform:translateX(120%)}
+:root:not(#_) button.b:disabled{filter:grayscale(.5);opacity:.55}
+
+/* tombol sekunder */
+:root:not(#_) :is(button.g,label.g){background:linear-gradient(180deg,var(--bt-g1),var(--bt-g2));border:1px solid var(--bt-gb);color:var(--bt-gt);box-shadow:0 1px 2px rgba(13,35,82,.08)}
+:root:not(#_) :is(button.g,label.g):not(:disabled):hover{background:var(--bt-gh);border-color:var(--c-primary-line);color:var(--c-primary-dark);box-shadow:0 8px 16px -10px rgba(13,35,82,.4)}
+html[data-theme="dark"]:not(#_) :is(button.g,label.g):not(:disabled):hover{color:#b9cfff}
+:root:not(#_) button.g.ok{color:var(--c-ok);border-color:var(--c-ok-line)}
+:root:not(#_) button.g.ok:not(:disabled):hover{background:var(--c-ok-soft);border-color:var(--c-ok);color:var(--c-ok)}
+
+/* tombol hapus */
+:root:not(#_) button.d{background:var(--bt-d1);border:1px solid var(--bt-db);color:var(--bt-dt);box-shadow:0 1px 2px rgba(13,35,82,.06)}
+:root:not(#_) button.d:not(:disabled):hover{background:var(--bt-dh);border-color:#d92d20;box-shadow:0 8px 16px -10px rgba(217,45,32,.55)}
+
+/* fokus papan ketik: cincin lembut */
+:root:not(#_) :is(button.b,button.g,button.d,label.g):focus-visible,:root:not(#_) label.g:focus-within{outline:0;box-shadow:0 0 0 3px var(--c-surface),0 0 0 5px var(--c-primary)}
+
+/* tema PLN: Surat baru kuning petir (menonjol), PDF biru tua, Excel hijau */
+html[data-theme="pln"]:not(#_) button.b{--p1:#18b4da;--p2:#0a76b4;--pg:rgba(10,118,180,.75)}
+html[data-theme="pln"]:not(#_) button.b.nv{--p1:#0c5a9a;--p2:#08305c;--pg:rgba(8,48,92,.8)}
+html[data-theme="pln"]:not(#_) button.b.new{--p1:#ffec4d;--p2:#f4c400;--pg:rgba(244,196,0,.8);color:#08305c;border-color:#d8aa00}
+html[data-theme="pln"]:not(#_) button.b.new::before{background:#08305c}
+html[data-theme="pln"]:not(#_) button.b.xl{--p1:#2bb577;--p2:#127a48;--pg:rgba(18,122,72,.75)}
+html[data-theme="dark"]:not(#_) button.b.new{--p1:#5a95ff;--p2:#2b5fd6;--pg:rgba(43,95,214,.8);color:#fff}
+html[data-theme="dark"]:not(#_) button.b.nv{--p1:#3358b0;--p2:#1b2f6b}
+html[data-theme="dark"]:not(#_) button.b.xl{color:#fff}
+
+/* bar tombol sempit: label "Simpan ke Excel" diringkas menjadi "Excel" (ikon tetap; nama lengkap tampil sebagai tooltip) supaya semua tombol muat satu baris */
+@container (max-width:640px){
+ :root:not(#_) :is(#bXl,#dv-bXl){font-size:0}
+ :root:not(#_) :is(#bXl,#dv-bXl)::after,:root:not(#_) :is(#bXl,#dv-bXl):hover::after{content:"Excel";position:static;inset:auto;background:none;transform:none;transition:none;font-size:13px;font-weight:650;pointer-events:none}
+ :root:not(#_) .actbar button.b{padding-left:12px;padding-right:12px}
+ :root:not(#_) :is(#bDraft,#bDone,#bPrint,#sp-bDraft,#sp-bDone,#sp-bPrint,#rs-bDraft,#rs-bDone,#rs-bPrint,#dv-bDraft,#dv-bDone,#dv-bPrint){font-size:0;gap:0;padding:0;width:38px;min-width:38px;justify-content:center}
+}
+
+/* SPPD dan Restitusi: bar tombol selalu satu baris (seperti Surat Lembur) supaya panel input tidak tertutup.
+   Restitusi punya satu tombol lebih (Kelola pegawai): tombol sekunder (draft, selesai, cetak, kelola pegawai) menjadi ikon saja
+   sejak bar < 780 px; pada bar sangat sempit (< 470 px) "Surat baru" dan "Unduh PDF" memendek menjadi "Baru" dan "PDF".
+   Nama lengkap tombol tetap tampil sebagai tooltip (atribut title). */
+:root:not(#_) #rs-bPeg::before{content:"";flex:none;width:16px;height:16px;background:currentColor;-webkit-mask:var(--i-users) center/contain no-repeat;mask:var(--i-users) center/contain no-repeat}
+@container (max-width:780px){
+ :root:not(#_) :is(#sp-bDraft,#sp-bDone,#sp-bPrint,#rs-bDraft,#rs-bDone,#rs-bPrint,#rs-bPeg){font-size:0;gap:0;padding:0;width:36px;min-width:36px;justify-content:center}
+}
+@container (max-width:470px){
+ :root:not(#_) :is(#sp-bNew,#sp-bPdf,#rs-bNew,#rs-bPdf){font-size:0}
+ :root:not(#_) :is(#sp-bNew,#rs-bNew)::after,:root:not(#_) :is(#sp-bNew,#rs-bNew):hover::after{content:"Baru"}
+ :root:not(#_) :is(#sp-bPdf,#rs-bPdf)::after{content:"PDF"}
+ :root:not(#_) :is(#sp-bNew,#sp-bPdf,#rs-bNew,#rs-bPdf)::after,:root:not(#_) :is(#sp-bNew,#rs-bNew):hover::after{position:static;inset:auto;background:none;transform:none;transition:none;font-size:13px;font-weight:650;pointer-events:none}
+ :root:not(#_) :is(#sp-tab-in,#rs-tab-in) .actbar button.b{padding-left:10px;padding-right:10px;gap:6px}
+}
+}

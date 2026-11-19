@@ -13,7 +13,7 @@ const dvPersist=()=>{try{sessionStorage.setItem("driver.batch",JSON.stringify({b
 const dvSet0=()=>({...DV_DEF,...DVDB.settings});
 /* ===== formulir ===== */
 const DVREQ=["tanggal","mulai","selesai","tujuan","pemberiName"],DVFULL=["tujuan","driver"];
-const DVF=[["#","Waktu dan keperluan"],["tanggal","Hari / tanggal lembur","date"],["mulai","Jam mulai (pukul)","time"],["selesai","Jam selesai","time"],["durManual","Durasi manual (jam)"],["tujuan","Tujuan","area"],
+const DVF=[["#","Waktu dan keperluan"],["tanggal","Hari / tanggal lembur","date"],["mulai","Jam mulai (waktu)","time"],["selesai","Jam selesai","time"],["durManual","Durasi manual (jam)"],["tujuan","Uraian Tugas","area"],
  ["#","Driver (tidak tampil di surat; dipakai untuk Excel dan nama berkas)"],["@dr"],["driver","Nama driver (beberapa driver dipisah koma)"],
  ["#","Pemberi perintah (TL)"],["@pm"],["pemberiName","Nama pemberi perintah"],["pemberiJab","Jabatan pemberi perintah"],
  ["#","Surat"],["tglSurat","Tanggal surat (kosong = sama dengan tanggal lembur)","date"]];
@@ -81,9 +81,9 @@ document.addEventListener("keydown",e=>{if(!dvSel||/INPUT|TEXTAREA|SELECT/.test(
 /* ===== input manual / WhatsApp ===== */
 $("dv-m-man").onclick=()=>{$("dv-wa").hidden=true;$("dv-m-man").classList.add("on");$("dv-m-wa").classList.remove("on")};
 $("dv-m-wa").onclick=()=>{$("dv-wa").hidden=false;$("dv-m-wa").classList.add("on");$("dv-m-man").classList.remove("on")};
-const DVLB={driver:"Nama driver",tanggal:"Tanggal",mulai:"Jam mulai",selesai:"Jam selesai",tujuan:"Tujuan",pemberiName:"Pemberi perintah (TL)"},DVMS={ok:"terbaca",warn:"periksa",missing:"hilang",error:"gagal"};
+const DVLB={driver:"Nama driver",tanggal:"Tanggal",mulai:"Jam mulai",selesai:"Jam selesai",tujuan:"Uraian Tugas",pemberiName:"Pemberi perintah (TL)"},DVMS={ok:"terbaca",warn:"periksa",missing:"hilang",error:"gagal"};
 $("dv-parse").onclick=()=>{const t=$("dv-waText").value.trim();if(!t){$("dv-parseOut").innerHTML='<p class="hint w">Tempel pesan terlebih dahulu.</p>';return}
- const r=dvBuildAll(t,dvSet0(),DB.sigs);if(!r.surat.length){$("dv-parseOut").innerHTML='<p class="hint w">Tidak ada baris berlabel yang dikenali (Tanggal, Pukul/Jam, Tujuan, TL, Nama driver).</p>';return}
+ const r=dvBuildAll(t,dvSet0(),DB.sigs);if(!r.surat.length){$("dv-parseOut").innerHTML='<p class="hint w">Tidak ada baris berlabel yang dikenali (Tanggal, Waktu/Pukul/Jam, Uraian Tugas/Tujuan, TL, Nama driver).</p>';return}
  /* nama driver dicocokkan ke daftar driver terdaftar */
  r.surat.forEach(c=>{if(c.driver)c.driver=dvNames(c.driver).map(n=>{const h=spCari(DVDB.drivers.map(d=>({nama:d.nama})),n);return h.p?h.p.nama:n}).join(", ")});
  dvLast=r.surat;const unk=r.unk;
@@ -154,7 +154,7 @@ $("dv-rList").onclick=async e=>{const t=e.target.dataset,r=DVDB.records.find(x=>
  dvCur=c;dvBatch=[c];dvIdx=0;dvBuildForm();dvBuildSheets();dvUpdate();dvTab("in")};
 /* ===== pengaturan ===== */
 const DVSG=[["Kop dan kepada",[["kop1","Kop baris 1",1],["kop2","Kop baris 2",1],["kop3","Kop baris 3",1],["kota","Kota (Parepare, tanggal)"],["perihal","Perihal"],["kepada1","Kepada Yth (baris 1)",1],["kepada2","Kepada Yth (kota)"]]],
- ["Isi surat",[["pembuka","Kalimat pembuka",1],["penutup","Kalimat penutup",1],["zona","Zona waktu"],["jabPemberi","Jabatan pemberi perintah bawaan"],["durTampil","Tampilkan durasi di baris Pukul",1,"cb"]]],
+ ["Isi surat",[["pembuka","Kalimat pembuka",1],["penutup","Kalimat penutup",1],["zona","Zona waktu"],["jabPemberi","Jabatan pemberi perintah bawaan"],["durTampil","Tampilkan durasi di baris Waktu",1,"cb"]]],
  ["Mengetahui (tetap)",[["mgrJab","Jabatan"],["mgrNama","Nama"]]],
  ["Kaki halaman",[["alm1","Alamat baris 1",1],["alm2","Alamat baris 2",1],["web","Situs web"],["telp","Telepon"]]],
  ["Excel (daftar hadir driver)",[["xlJudul","Judul daftar",1],["xlKota","Kota tanda tangan"],["xlLbl1","Jabatan pengesah 1"],["xlNama1","Nama pengesah 1"],["xlLbl2","Jabatan pengesah 2"],["xlNama2","Nama pengesah 2"],["xlLbl3","Jabatan pengesah 3"],["xlNama3","Nama pengesah 3"],["xlLbl4","Jabatan pengesah 4"],["xlNama4","Nama pengesah 4"]]]];
@@ -167,16 +167,6 @@ $("dv-seSave").onclick=()=>{document.querySelectorAll("[data-ds]").forEach(el=>{
 $("dv-exp").onclick=()=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(DVDB)],{type:"application/json"}));a.download="cadangan-lembur-driver-"+new Date().toISOString().slice(0,10)+".json";a.click()};
 $("dv-imp").onchange=e=>{const f=e.target.files[0];e.target.value="";if(!f)return;const r=new FileReader;r.onload=async()=>{try{const d=JSON.parse(r.result);if(!Array.isArray(d.records)||!Array.isArray(d.drivers))throw 0;if(!await ask("Impor akan MENGGANTI seluruh data lembur driver (driver, riwayat, pengaturan). Lanjutkan?"))return;
  DVDB={drivers:d.drivers,records:d.records,settings:{...DV_DEF,...d.settings}};dvSave();dvBuildForm();alert("Impor berhasil.")}catch(x){alert("File cadangan driver tidak valid.")}};r.readAsText(f)};
-/* ===== uji bawaan ===== */
-$("dv-selfTest").onclick=()=>{const T=[],t=(n,c)=>T.push((c?"LULUS ":"GAGAL ")+n);
- const r=dvBuildAll("Driver: Syahrul\nHari/Tanggal: Jumat, 7 Agustus 2026\nPukul: 16.30-21.00 WITA\nTujuan: Antar tim ke GI Barru\nTL: Rahmat",DV_DEF,[]).surat[0];
- t("parser: tanggal, jam, tujuan",r.tanggal==="2026-08-07"&&r.mulai==="16:30"&&r.selesai==="21:00"&&r.tujuan==="Antar tim ke GI Barru");t("parser: 'Driver:' dibaca sebagai nama",r.driver==="Syahrul");t("parser: TL = pemberi perintah",r.pemberiName==="Rahmat");
- t("beberapa driver dipisah",dvNames("Syahrul, Agus & Budi dan Citra").length===4);
- const m=dvBuildAll("Nama: Syahrul\nTanggal: 7 Agustus 2026\nPukul: 16.30-18.00\nTujuan: A\nTL: Rahmat\n\nTanggal: 9 Agustus 2026\nPukul: 16.30-18.00\nTujuan: B\nTL: Rahmat",DV_DEF,[]).surat;
- t("beberapa blok -> 2 surat, nama diwarisi",m.length===2&&m[1].driver==="Syahrul"&&m[1].st.driver.s==="warn");
- t("nama berkas satu surat",dvNamaBerkas([{driver:"Syahrul",tanggal:"2026-08-07"}])==="LEMBUR DRIVER SYAHRUL 07 AGUSTUS 2026.pdf");
- t("tata letak memuat Hari/Tanggal",dvLayout(r,DV_DEF).some(e=>e.t==="Jumat, 07 Agustus 2026"));
- $("dv-testOut").textContent=T.join("\n")+"\nCatatan: uji tata letak A4 dan cetak harus dilakukan manual dengan Cetak/PDF."};
 /* ===== Simpan ke Excel ===== */
 let dxS=null;
 const dxKunci=n=>String(n||"").trim().toLowerCase();

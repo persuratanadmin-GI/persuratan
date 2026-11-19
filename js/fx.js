@@ -6,13 +6,18 @@
 var root=document.documentElement;
 /* Tombol tema terang/gelap (tersimpan di browser) */
 function setTheme(t){root.setAttribute("data-theme",t);try{localStorage.setItem("fx.theme",t)}catch(e){}
-  var m=document.querySelector('meta[name="color-scheme"]');if(m)m.content=t==="dark"?"dark light":"light"}
+  var m=document.querySelector('meta[name="color-scheme"]');if(m)m.content=t==="dark"?"dark light":"light";if(typeof themeTitle==="function")themeTitle()}
+/* Urutan tema: terang -> gelap -> PLN (listrik) -> terang */
+var THEMES=["light","dark","pln"],TNAMA={light:"Terang",dark:"Gelap",pln:"PLN (listrik)"};
+function themeNow(){var t=root.getAttribute("data-theme");return THEMES.indexOf(t)<0?"light":t}
+function themeNext(){return THEMES[(THEMES.indexOf(themeNow())+1)%THEMES.length]}
+function themeTitle(){var b=document.querySelector(".fx-theme");if(b){b.title="Tema: "+TNAMA[themeNow()]+" (klik: "+TNAMA[themeNext()]+")";b.setAttribute("aria-label","Ganti tema. Sekarang "+TNAMA[themeNow()])}}
 var h=document.querySelector(".app-header");
 if(h){
   var b=document.createElement("button");b.type="button";b.className="fx-theme";b.setAttribute("aria-label","Ganti tema terang/gelap");b.title="Ganti tema";
-  b.innerHTML='<svg class="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
-  b.onclick=function(){setTheme(root.getAttribute("data-theme")==="dark"?"light":"dark")};
-  h.appendChild(b);
+  b.innerHTML='<svg class="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><svg class="bolt" viewBox="0 0 24 24"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg>';
+  b.onclick=function(){setTheme(themeNext())};
+  h.appendChild(b);themeTitle();
   var on=function(){h.classList.toggle("fx-scrolled",window.scrollY>4)};
   window.addEventListener("scroll",on,{passive:true});on();
 }

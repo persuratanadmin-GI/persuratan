@@ -16,8 +16,6 @@
 #dv-seForm>p{grid-column:1/-1}
 #dv-peQ,#dv-rQ{padding-left:36px;background-repeat:no-repeat;background-position:11px center;background-size:16px;margin-bottom:var(--sp-2)}
 #dv-tab-ri .row{margin-top:2px}
-#dv-testOut{white-space:pre-wrap;font:12px/1.5 var(--mono);color:var(--c-text);background:var(--c-sunken);border:1px solid var(--c-border);border-radius:var(--r-md);padding:10px 12px;margin:var(--sp-3) 0 0;overflow:auto}
-#dv-testOut:empty{display:none}
 #dv-parseOut{margin-top:var(--sp-3)}
 #dv-tab-se .actbar{margin-top:var(--sp-5)}
 :is(#dv-peList,#dv-rList) table.t,:is(#dv-peList,#dv-rList) table.t tbody{display:block;width:100%}
@@ -44,7 +42,7 @@
 #dv-batchbar button{min-height:32px;padding:4px 12px;font-size:13px}
 #dv-batchbar button.g{min-width:34px;padding:4px 10px}
 #dv-sheets{padding:14px}
-#dv-tabs button[data-t=in]::before,#dv-tabs button[data-t=pe]::before,#dv-tabs button[data-t=ri]::before,#dv-tabs button[data-t=se]::before,#dv-m-man::before,#dv-m-wa::before,#dv-bNew::before,#dv-bDraft::before,#dv-bDone::before,#dv-bPdf::before,#dv-rPdf::before,#dv-bPrint::before,#dv-bXl::before,#dv-rXl::before,#dv-peClear::before,#dv-bTtd::before,#dv-parse::before,#dv-seSave::before,#dv-peSave::before,#dv-selfTest::before,#dv-exp::before,#dv-pdfAktif::before,#dv-hapusAktif::before,#dv-peList button[data-e]::before,#dv-peList button[data-x]::before,#dv-rList button[data-p]::before,#dv-rList button[data-o]::before,#dv-rList button[data-c]::before,#dv-rList button[data-x]::before,#dv-parafDel::before{content:"";flex:none;width:16px;height:16px;background:currentColor;-webkit-mask:center/contain no-repeat;mask:center/contain no-repeat}
+#dv-tabs button[data-t=in]::before,#dv-tabs button[data-t=pe]::before,#dv-tabs button[data-t=ri]::before,#dv-tabs button[data-t=se]::before,#dv-m-man::before,#dv-m-wa::before,#dv-bNew::before,#dv-bDraft::before,#dv-bDone::before,#dv-bPdf::before,#dv-rPdf::before,#dv-bPrint::before,#dv-bXl::before,#dv-rXl::before,#dv-peClear::before,#dv-bTtd::before,#dv-parse::before,#dv-seSave::before,#dv-peSave::before,#dv-exp::before,#dv-pdfAktif::before,#dv-hapusAktif::before,#dv-peList button[data-e]::before,#dv-peList button[data-x]::before,#dv-rList button[data-p]::before,#dv-rList button[data-o]::before,#dv-rList button[data-c]::before,#dv-rList button[data-x]::before,#dv-parafDel::before{content:"";flex:none;width:16px;height:16px;background:currentColor;-webkit-mask:center/contain no-repeat;mask:center/contain no-repeat}
 #dv-parse::before{-webkit-mask-image:var(--i-arrow);mask-image:var(--i-arrow)}
 #dv-bDone::before{-webkit-mask-image:var(--i-check);mask-image:var(--i-check)}
 #dv-tabs button[data-t=ri]::before{-webkit-mask-image:var(--i-clock);mask-image:var(--i-clock)}
@@ -52,7 +50,6 @@
 #dv-bPdf::before,#dv-rPdf::before,#dv-exp::before,#dv-pdfAktif::before{-webkit-mask-image:var(--i-download);mask-image:var(--i-download)}
 #dv-m-man::before,#dv-peList button[data-e]::before{-webkit-mask-image:var(--i-edit);mask-image:var(--i-edit)}
 #dv-tabs button[data-t=in]::before{-webkit-mask-image:var(--i-file);mask-image:var(--i-file)}
-#dv-selfTest::before{-webkit-mask-image:var(--i-flask);mask-image:var(--i-flask)}
 #dv-m-wa::before{-webkit-mask-image:var(--i-message);mask-image:var(--i-message)}
 #dv-rList button[data-o]::before{-webkit-mask-image:var(--i-open);mask-image:var(--i-open)}
 #dv-rList button[data-p]::before{-webkit-mask-image:var(--i-pdf);mask-image:var(--i-pdf)}

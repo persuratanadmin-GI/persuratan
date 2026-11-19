@@ -1,0 +1,47 @@
+/* Logo PLN di header (semua tema) + tema "PLN (listrik)": biru PLN, aksen kuning petir, garis listrik di header.
+   Hanya tampilan layar; lembar surat (.sheet/.pg/.sp-pg/.dv-pg) tidak disentuh. Tema dipilih dengan tombol tema di pojok kanan atas
+   (terang, gelap, PLN). Untuk membatalkan: hapus baris <link ... pln.css> di index.html (logo kembali ke ikon dokumen). */
+@media screen{
+/* ---- Logo PLN menggantikan ikon dokumen ---- */
+.brand-mark{width:78px;height:38px;border-radius:0;background:url(../assets/pln-logo.png) left center/contain no-repeat;
+  box-shadow:none;filter:drop-shadow(0 2px 5px rgba(0,0,0,.35))}
+.brand-mark::before{display:none}
+.brand:hover .brand-mark{transform:scale(1.05)}
+.fx-theme .bolt{display:none}
+
+/* ---- Tema PLN (listrik) ---- */
+html[data-theme="pln"]{
+  color-scheme:light;
+  --c-bg:#edf5fa;--c-workspace:#dbeaf4;--c-border:#d2e3ee;--c-border-strong:#b1cee1;
+  --c-primary:#0a76b4;--c-primary-dark:#075b8c;--c-primary-soft:#e4f2fa;--c-primary-line:#a6d2e9;
+  --c-navy:#08305c;--c-accent:#13a8cf;
+  --ring:0 0 0 4px rgba(10,118,180,.18);--shadow-pop:0 10px 30px -8px rgba(10,118,180,.5);
+}
+html[data-theme="pln"] body{background:
+  radial-gradient(900px 420px at 8% -8%,rgba(255,225,0,.14),transparent 60%),
+  radial-gradient(800px 380px at 96% -4%,rgba(19,168,207,.2),transparent 60%),var(--c-bg)}
+html[data-theme="pln"] ::selection{background:rgba(255,225,0,.5)}
+/* header: biru PLN, petir samar, garis listrik kuning-sian dengan kilatan yang berjalan */
+html[data-theme="pln"] .app-header{border-bottom:0;
+  background:
+   url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23ffe100' fill-opacity='.2' d='M13 2 4 14h6l-1 8 9-12h-6z'/%3E%3C/svg%3E") no-repeat right 300px center/40px,
+   linear-gradient(115deg,#051c3a 0%,#0a4a82 52%,#0f86bd 100%)}
+html[data-theme="pln"] .app-header::before{background:radial-gradient(closest-side,rgba(255,225,0,.34),transparent)}
+html[data-theme="pln"] .app-header::after{content:"";position:absolute;left:0;right:0;bottom:0;height:4px;pointer-events:none;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.95),transparent) no-repeat -220px 0/180px 100%,
+   linear-gradient(90deg,#ffe100 0,#ffe100 130px,#1fb5d6 130px,rgba(31,181,214,.25) 100%);
+  animation:plnZap 5s linear infinite}
+@keyframes plnZap{from{background-position:-220px 0,0 0}to{background-position:calc(100% + 220px) 0,0 0}}
+html[data-theme="pln"] .fx-theme .sun,html[data-theme="pln"] .fx-theme .moon{display:none}
+html[data-theme="pln"] .fx-theme .bolt{display:block;fill:#ffe100;stroke:#ffe100}
+html[data-theme="pln"] .modes button.on,html[data-theme="pln"] .app-header .lem-sub button.on{color:var(--c-navy)}
+/* kartu: garis kuning di sisi atas (tanpa menambah ukuran) */
+html[data-theme="pln"] .card{box-shadow:inset 0 3px 0 #ffe100,var(--shadow-1)}
+/* progres kelengkapan: kuning ke sian */
+html[data-theme="pln"] .fx-m-bar i{background:linear-gradient(90deg,#ffe100,#13a8cf)}
+html[data-theme="pln"] .fx-m-bar{background:#dcebf4}
+/* judul bagian dan tab */
+html[data-theme="pln"] h4.sec{color:#0a5c91}
+html[data-theme="pln"] .legend,html[data-theme="pln"] .fx-meter{border-color:var(--c-border)}
+html[data-theme="pln"] .wa-panel{background:linear-gradient(135deg,#e8f5fc,#fffbd9)}
+}

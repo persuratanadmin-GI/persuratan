@@ -72,7 +72,7 @@ const names = page => page.$$eval("#peList table.t tr td:first-child b", e => e.
     ok("A9 riwayat menampilkan 2 catatan", (await page.$$("#rList table.t tr")).length === 2);
     await page.fill("#rQ", "dewi"); ok("A10 pencarian riwayat", (await page.$$("#rList table.t tr")).length === 1); await page.fill("#rQ", "");
     const isiTgl = (sel, v) => page.evaluate(([s, x]) => { const e = document.querySelector(s); e.value = x; e.dispatchEvent(new Event("input", { bubbles: true })); }, [sel, v]); /* input tanggal asli disembunyikan oleh pemilih Indonesia (js/tanggal-id.js) */
-    await isiTgl("#rA", "2026-08-08"); ok("A11 filter tanggal riwayat", (await page.$$("#rList table.t tr")).length === 1); ok("A11b pemilih tanggal Indonesia ikut terisi (8 Agustus 2026)", await page.evaluate(() => { const w = document.querySelector("#rA").nextElementSibling; const [d, m, y] = w.querySelectorAll("select"); return w.className === "tgl-id" && d.value === "8" && m.selectedOptions[0].textContent === "Agustus" && y.value === "2026" })); await isiTgl("#rA", "");
+    await isiTgl("#rA", "2026-08-08"); ok("A11 filter tanggal riwayat", (await page.$$("#rList table.t tr")).length === 1); ok("A11b pemilih tanggal Indonesia (satu kolom) ikut terisi (08/08/2026)", await page.evaluate(() => { const w = document.querySelector("#rA").nextElementSibling; const t = w.querySelector(".tgl-in"); return w.className === "tgl-id" && !!t && t.value === "08/08/2026" && w.querySelectorAll("select").length === 0 })); await isiTgl("#rA", "");
     const [dl] = await Promise.all([page.waitForEvent("download", { timeout: 15000 }), page.click('#rList button[data-p="r1"]')]);
     ok("A12 PDF satu surat diunduh (.pdf)", /\.pdf$/i.test(dl.suggestedFilename()), dl.suggestedFilename());
     await page.click('#rList button[data-c="r1"]');
@@ -89,8 +89,9 @@ const names = page => page.$$eval("#peList table.t tr td:first-child b", e => e.
     const [ex] = await Promise.all([page.waitForEvent("download"), page.click("#exp")]);
     const bak = JSON.parse(fs.readFileSync(await ex.path(), "utf8"));
     ok("A18 ekspor JSON memuat people/records/sigs", Array.isArray(bak.people) && Array.isArray(bak.records) && Array.isArray(bak.sigs));
-    await page.click("#selfTest"); const so = await page.textContent("#testOut");
-    ok("A19 uji parser & durasi bawaan semua LULUS", /LULUS/.test(so) && !/GAGAL/.test(so), so.split("\n").filter(x => /GAGAL/.test(x)).join(";"));
+    const so = (await page.evaluate("(function(){" + fs.readFileSync(path.join(__dirname, "fixtures", "uji-lembur.js"), "utf8") + "})()")).join("\n");
+    ok("A19 uji logika parser & durasi semua LULUS", /LULUS/.test(so) && !/GAGAL/.test(so), so.split("\n").filter(x => /GAGAL/.test(x)).join(";"));
+    ok("A19b tombol uji parser sudah tidak ada", (await page.locator("#selfTest, #testOut").count()) === 0);
     // impor kembali cadangan
     await page.setInputFiles("#imp", { name: "b.json", mimeType: "application/json", buffer: Buffer.from(JSON.stringify(bak)) });
     await page.click("[data-r='1']");

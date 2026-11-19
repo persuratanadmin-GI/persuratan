@@ -34,11 +34,9 @@ const cek = (nama, ok, info = "") => { console.log((ok ? "LULUS  " : "GAGAL  ") 
   await new Promise(r => w.addEventListener("load", r));
   await new Promise(r => setTimeout(r, 300));
 
-  // 1. uji bawaan aplikasi (parser, durasi, tanggal)
-  d.querySelector("[data-t=se]").click(); d.getElementById("selfTest").click();
-  const baris = d.getElementById("testOut").textContent.split("\n");
-  cek("uji bawaan aplikasi", baris.filter(x => x.startsWith("GAGAL")).length === 0 && baris.filter(x => x.startsWith("LULUS")).length >= 20, baris.filter(x => x.startsWith("GAGAL")).join(";"));
-  d.querySelector("[data-t=in]").click();
+  // 1. uji logika bawaan (parser, durasi, tanggal): dulu tombol "Uji parser" di aplikasi, kini dijalankan dari tests/fixtures
+  const baris = w.eval("(function(){" + require("fs").readFileSync(path.join(__dirname, "fixtures", "uji-lembur.js"), "utf8") + "})()");
+  cek("uji logika lembur (parser, durasi, tanggal)", baris.filter(x => x.startsWith("GAGAL")).length === 0 && baris.filter(x => x.startsWith("LULUS")).length >= 20, baris.filter(x => x.startsWith("GAGAL")).join(";"));
 
   // 2. satu pesan -> tiga surat, nama mengikuti NIP, jam lewat tengah malam
   const hasil = w.eval(`parseMulti(${JSON.stringify(pesan3)})`);
