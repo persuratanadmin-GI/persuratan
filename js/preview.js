@@ -21,7 +21,7 @@ function renderSheet(r){
  <div class="ln" style="margin-top:1.5pt">Demikian Surat Perintah Kerja ini dibuat untuk dilaksanakan dengan penuh tanggung jawab.</div>
  <div class="sg" style="margin-top:19.04pt">${col(place,["Pemberi Perintah,",7.31],V(r.pemberiJab,"jabatan"),SIG(r.sigG,"G",r),V(r.pemberiName,"nama"),7.24,31.04)}${col(place,["Penerima Perintah,",7.31],jabK,SIG(r.sigK,"K1",r),nmK,7.24,31.04)}</div></div>
  <div class="a cutl">${"<i></i>".repeat(23)}</div><div class="a c cutt" style="top:389pt;font-size:6.6pt">✂ Gunting disini  |  Lembar Atas (Arsip PLN) - Lembar Bawah (Arsip PLND) ✂</div>
- <img class="a" src="${LOGO.nd}" alt="" style="left:48.2pt;top:412.4pt;width:57.5pt;height:20.8pt">
+ ${(()=>{const L=logoNdInfo(s);return`<img class="a" src="${L.src}" alt="" style="left:${L.x}pt;top:${+L.y.toFixed(2)}pt;width:${+L.w.toFixed(2)}pt;height:${+L.h.toFixed(2)}pt">`})()}
  ${T(416,10.2,"b",esc(s.ptNd))}${T(433.5,9.6,"b",esc(s.unitNd))}<div class="a c" style="top:449.9pt;font-size:7.4pt;padding-right:12pt;box-sizing:border-box">${esc(s.almNd)}</div>${RL(462.3)}${RL(463.7)}
  ${T(466.4,10.2,"b","SURAT PERINTAH KERJA LEMBUR")}${T(482.6,8,"","Nomor : "+V(r.lemburNo,"..../..../...."))}
  <div class="fl" style="top:508.6pt"><div class="ln">Menindaklanjuti SPK PLN Nomor: ${V(r.spk,"..........")}, maka diperintahkan kepada:</div>

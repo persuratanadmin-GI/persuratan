@@ -43,7 +43,7 @@ async function pdfLetter(pdf,c){
  for(const cx of [186.1,398.2]){const y=392.4;pdf.line(X(cx-3.4),Y(y-2.6),X(cx+3.6),Y(y+2.2));pdf.line(X(cx-3.4),Y(y+2.6),X(cx+3.6),Y(y-2.2));pdf.circle(X(cx-3.4),Y(y-2.6),1.1*S,"S");pdf.circle(X(cx-3.4),Y(y+2.6),1.1*S,"S")}
  pdf.setTextColor(0,0,0);
  /* ---- bagian bawah: SPK Lembur ---- */
- pdf.addImage(LOGO.nd,"PNG",X(48.2),Y(412.4),57.5*S,20.8*S);
+ {const L=logoNdInfo(s);pdf.addImage(L.src,L.fmt,X(L.x),Y(L.y),L.w*S,L.h*S)}
  T(s.ptNd,291.8,416,10.2,"bold","center");T(s.unitNd,291.7,433.5,9.6,"bold","center");T(s.almNd,285.65,449.9,7.4,"normal","center");
  R(48.6,462.3,534.8,463.1);R(48.6,463.7,534.8,464.5);
  T("SURAT PERINTAH KERJA LEMBUR",291.7,466.4,10.2,"bold","center");T("Nomor : "+(c.lemburNo||""),291.7,482.6,8,"normal","center");

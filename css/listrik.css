@@ -1,0 +1,83 @@
+/* Efek bertema listrik/PLN: halus, hanya di layar (tidak menyentuh lembar surat/cetak), memakai transform/opacity saja.
+   Berlaku di semua tema. Dapat dimatikan dengan tombol petir di header (tersimpan di browser) dan otomatis mati bila sistem
+   meminta "kurangi gerakan". Untuk membatalkan seluruhnya: hapus <link listrik.css> dan <script listrik.js> di index.html. */
+@media screen{
+:root{--zap-y:#ffd60a;--zap-c:#38d4ff}
+
+/* ---- Header: denyut gelombang listrik + garis arus yang berjalan ---- */
+.app-header>:where(.brand,.modes,#st,.fx-theme,.fx-zap){position:relative;z-index:1}
+.zap-wave{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:.9}
+.zap-wave path{fill:none;vector-effect:non-scaling-stroke;stroke-linejoin:round;stroke-linecap:round}
+.zap-wave .base{stroke:rgba(255,255,255,.07);stroke-width:1.2}
+.zap-wave .run{stroke:url(#zapGrad);stroke-width:1.8;stroke-dasharray:150 1850;animation:zapDash 11s linear infinite}
+.zap-line{position:absolute;left:0;right:0;bottom:0;height:2px;pointer-events:none;z-index:2;background:rgba(255,255,255,.1);overflow:hidden}
+.zap-line i{position:absolute;top:0;bottom:0;left:0;width:240px;background:linear-gradient(90deg,transparent,var(--zap-y) 38%,#fff 52%,var(--zap-c) 66%,transparent);
+  box-shadow:0 0 12px rgba(56,212,255,.75);transform:translateX(-260px);animation:zapRun 7s cubic-bezier(.45,0,.2,1) .6s infinite}
+html[data-theme="pln"] .zap-line{display:none}
+
+/* ---- Logo PLN: "mengisi daya" dengan cahaya kuning yang menarik napas ---- */
+.brand-mark{animation:zapGlow 5.5s ease-in-out infinite}
+
+/* ---- Meter kelengkapan: aliran energi di dalam bar ---- */
+.fx-m-bar i{position:relative;overflow:hidden}
+.fx-m-bar i::after{content:"";position:absolute;top:0;bottom:0;left:0;width:45%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.65),transparent);
+  transform:translateX(-120%);animation:zapFlow 2.6s ease-in-out infinite}
+.fx-meter.done .fx-m-bar i{box-shadow:0 0 10px rgba(56,212,255,.65),0 0 2px rgba(255,214,10,.9)}
+
+/* ---- Lonjakan arus saat pindah mode (garis tipis di bawah header) ---- */
+.zap-surge{position:fixed;left:0;right:0;top:var(--fx-hh,62px);height:2px;z-index:39;pointer-events:none;overflow:hidden;opacity:0}
+.zap-surge::after{content:"";position:absolute;top:0;bottom:0;left:0;width:34%;background:linear-gradient(90deg,transparent,var(--zap-y),#fff,var(--zap-c),transparent);
+  box-shadow:0 0 14px rgba(56,212,255,.8);transform:translateX(-110%)}
+.zap-surge.on{opacity:1}
+.zap-surge.on::after{animation:zapSurge .95s cubic-bezier(.3,.1,.2,1) both}
+
+/* ---- Bar arus di tepi atas layar saat PDF diproses ---- */
+#zapBar{position:fixed;left:0;right:0;top:0;height:3px;z-index:120;pointer-events:none;overflow:hidden;display:none;background:rgba(56,212,255,.15)}
+#zapBar.on{display:block}
+#zapBar::after{content:"";position:absolute;top:0;bottom:0;left:0;width:38%;background:linear-gradient(90deg,transparent,var(--zap-y),#fff,var(--zap-c));
+  box-shadow:0 0 12px rgba(56,212,255,.8);animation:zapBar 1.15s cubic-bezier(.4,0,.2,1) infinite}
+
+/* ---- Percikan lembut saat tombol utama ditekan ---- */
+.zap-rip{position:absolute;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle,rgba(255,214,10,.6),rgba(56,212,255,.38) 55%,transparent 72%);animation:zapRip .6s ease-out forwards}
+
+/* ---- Tombol petir (aktif/nonaktif) di header ---- */
+.fx-zap{border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.1);color:#fff;width:36px;height:36px;border-radius:11px;cursor:pointer;padding:0;
+  display:inline-flex;align-items:center;justify-content:center;flex:none;transition:background .2s,transform .2s,color .2s}
+.fx-zap:hover{background:rgba(255,255,255,.2)}
+.fx-zap:active{transform:scale(.92)}
+.fx-zap:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.fx-zap svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.fx-zap[aria-pressed="true"]{color:var(--zap-y)}
+.fx-zap[aria-pressed="false"] svg{opacity:.6;stroke-dasharray:2.5 3}
+
+@keyframes zapRun{0%{transform:translateX(-260px)}62%,100%{transform:translateX(100vw)}}
+@keyframes zapDash{from{stroke-dashoffset:150}to{stroke-dashoffset:-1850}}
+@keyframes zapGlow{0%,100%{filter:drop-shadow(0 0 0 rgba(255,214,10,0)) drop-shadow(0 2px 5px rgba(0,0,0,.35))}50%{filter:drop-shadow(0 0 8px rgba(255,214,10,.55)) drop-shadow(0 2px 5px rgba(0,0,0,.35))}}
+@keyframes zapFlow{0%{transform:translateX(-120%)}70%,100%{transform:translateX(260%)}}
+@keyframes zapSurge{from{transform:translateX(-110%)}to{transform:translateX(320%)}}
+@keyframes zapBar{from{transform:translateX(-100%)}to{transform:translateX(280%)}}
+@keyframes zapRip{from{opacity:.9;transform:scale(1)}to{opacity:0;transform:scale(16)}}
+
+/* ---- Dimatikan pengguna / sistem meminta gerakan dikurangi ---- */
+html.zap-off .zap-wave,html.zap-off .zap-line,html.zap-off .zap-surge,html.zap-off #zapBar,html.zap-off .zap-rip{display:none!important}
+html.zap-off .brand-mark{animation:none}
+html.zap-off .fx-m-bar i::after{display:none}
+}
+@media screen and (prefers-reduced-motion:reduce){
+ .zap-wave,.zap-line,.zap-surge,#zapBar,.zap-rip,.fx-zap{display:none!important}
+ .brand-mark{animation:none!important}
+ .fx-m-bar i::after{display:none!important}
+}
+@media print{.zap-wave,.zap-line,.zap-surge,#zapBar,.zap-rip,.fx-zap{display:none!important}}
+
+/* ---- Status "Data tersimpan": ikon disket diganti petir kuning yang menyala-padam pelan (tulisan status tetap) ---- */
+@media screen{
+#st::before{width:16px;height:16px;background:var(--zap-y);
+ -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M13 2 4 14h6l-1 8 9-12h-6z'/%3E%3C/svg%3E");
+ mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M13 2 4 14h6l-1 8 9-12h-6z'/%3E%3C/svg%3E");
+ animation:zapBlink 2.6s ease-in-out infinite}
+@keyframes zapBlink{0%,100%{opacity:.4;filter:none}18%{opacity:.95;filter:drop-shadow(0 0 5px rgba(255,214,10,.9))}26%{opacity:.6;filter:drop-shadow(0 0 2px rgba(255,214,10,.5))}38%,62%{opacity:1;filter:drop-shadow(0 0 6px rgba(255,214,10,.95))}}
+html.zap-off #st::before{animation:none;opacity:1;filter:none}
+}
+@media screen and (prefers-reduced-motion:reduce){#st::before{animation:none!important;opacity:1;filter:none}}

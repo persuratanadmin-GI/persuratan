@@ -283,3 +283,14 @@ Satu pesan WhatsApp (format sama dengan Form SPPD) mengisi tiga surat: **Remburs
 - Blangko: stempel dan pejabat per lokasi didaftarkan sekali di tab **Lokasi**; dicocokkan otomatis dari nama tempat tujuan (kata kunci).
 - Data tersimpan di localStorage `restitusi.v1` (terpisah dari `lembur.v1` dan `sppd.v1`). Aset gambar: `js/rs-assets.js`.
 - Uji: `node tests/rs.test.js`. CSS panel disalin dari aturan SPPD lewat `tools/mirror_css.py`.
+
+## Ganti logo PLN Nusa Daya (surat Lembur HAR)
+
+Di tab **Pengaturan** Lembur HAR, bagian Kop surat, tombol **Unggah foto logo** mengganti logo PLN Nusa Daya di blok bawah surat (pratinjau, cetak, dan PDF). Format PNG, JPG, atau WEBP (maks 3 MB); gambar diperkecil, margin kosong/putih dipotong otomatis, dan proporsinya dijaga. Penggeser **Ukuran** (50-200%) menyesuaikan besarnya, dan **Pakai logo bawaan** mengembalikan logo semula. Logo tersimpan di pengaturan (`logoNd`), jadi ikut Ekspor/Impor JSON. Logo PLN di blok atas tidak berubah.
+
+## Efek bertema listrik/PLN
+
+Lapisan animasi halus bertema listrik (`css/listrik.css` dan `js/listrik.js`) berlaku di semua tema: gelombang denyut dan garis arus yang berjalan pelan di header, logo PLN yang menarik napas dengan cahaya kuning, aliran energi di bar kelengkapan, lonjakan arus tipis saat pindah mode, bar arus di tepi atas layar saat PDF diproses, dan percikan lembut pada tombol utama. Semuanya hanya tampilan layar (tidak menyentuh lembar surat, cetak, atau PDF) dan hanya memakai transform/opacity.
+
+Tombol bergambar gelombang di pojok kanan atas header menyalakan atau mematikan efek (tersimpan di browser). Efek otomatis mati bila sistem meminta "kurangi gerakan". Untuk menghapusnya sepenuhnya, hapus baris `listrik.css` dan `listrik.js` di `index.html`.
+

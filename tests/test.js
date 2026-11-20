@@ -75,6 +75,21 @@ const cek = (nama, ok, info = "") => { console.log((ok ? "LULUS  " : "GAGAL  ") 
   const css = require("fs").readFileSync(path.join(__dirname, "..", "css", "style.css"), "utf8");
   cek("ukuran lembar 210x297 mm & @page A4", /\.sheet\{width:210mm;height:297mm/.test(css) && /@page\{size:A4;margin:0\}/.test(css));
 
+  // logo PLN Nusa Daya yang bisa diganti (unggah foto)
+  const bawaan = w.eval("logoNdInfo({})");
+  cek("logo ND bawaan: posisi dan ukuran asli tidak berubah", !bawaan.custom && bawaan.x === 48.2 && bawaan.y === 412.4 && bawaan.w === 57.5 && bawaan.h === 20.8);
+  const png = "data:image/png;base64,iVBORw0KGgo=";
+  const lebar = w.eval(`logoNdInfo({logoNd:"${png}",logoNdAr:4,logoNdSkala:100})`), tinggi = w.eval(`logoNdInfo({logoNd:"${png}",logoNdAr:0.5,logoNdSkala:100})`);
+  cek("logo ND kustom: muat di kotak asal dan proporsi terjaga", lebar.custom && Math.abs(lebar.w / lebar.h - 4) < 1e-6 && lebar.w <= 57.5 + 1e-6 && tinggi.h <= 20.8 + 1e-6 && Math.abs(tinggi.w / tinggi.h - 0.5) < 1e-6);
+  cek("logo ND kustom: skala dibatasi 50-200% dan lebar maks 110 pt", w.eval(`logoNdInfo({logoNd:"${png}",logoNdAr:1,logoNdSkala:999})`).h <= 41.6 + 1e-6 && w.eval(`logoNdInfo({logoNd:"${png}",logoNdAr:9,logoNdSkala:200})`).w <= 110 + 1e-6);
+  cek("logo ND: data tidak valid kembali ke logo bawaan", !w.eval('logoNdInfo({logoNd:"http://x/y.png",logoNdAr:2})').custom && !w.eval(`logoNdInfo({logoNd:"${png}",logoNdAr:0})`).custom);
+
+  // efek listrik: elemen dekoratif ada, tombol petir bisa mematikan/menyalakan, tidak menyentuh lembar surat
+  const tb = d.querySelector(".fx-zap"), sebelum = d.documentElement.classList.contains("zap-off");
+  tb.click(); const sesudah = d.documentElement.classList.contains("zap-off"); tb.click();
+  cek("efek listrik: elemen dekoratif ada dan tombol petir bergantian aktif/mati", !!d.querySelector(".zap-wave") && !!d.querySelector(".zap-line") && sebelum !== sesudah && d.documentElement.classList.contains("zap-off") === sebelum);
+  cek("efek listrik: tidak ada elemen efek di dalam lembar surat", !d.querySelector(".pg .zap-wave, .pg .zap-line, .sheet .zap-line"));
+
   console.log(gagal ? `\n${gagal} uji GAGAL` : "\nSemua uji lulus");
   process.exit(gagal ? 1 : 0);
 })();

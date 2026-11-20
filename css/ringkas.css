@@ -78,3 +78,14 @@ body:is(.mode-sppd,.mode-rs) .app-header .brand h1{font-size:clamp(9px,calc((100
  .modes :is(#lsH,#lsD,#mdS,#mdR){flex:1 1 auto;padding:7px 5px;font-size:11.5px}
  .modes #lsD{margin-right:4px}
 }
+
+/* 8) Panel unggah logo PLN Nusa Daya (Pengaturan Lembur HAR) */
+.logo-nd{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:6px}
+.logo-nd-pv{flex:none;display:flex;align-items:center;justify-content:center;width:150px;height:64px;background:#fff;border:1px solid var(--line,#d7dfee);border-radius:10px;padding:6px}
+.logo-nd-pv img{max-width:100%;max-height:100%;object-fit:contain}
+.logo-nd-ac{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.logo-nd-sz{display:inline-flex;align-items:center;gap:8px;font-size:12.5px}
+.logo-nd-sz label{margin:0;font-weight:600}
+.logo-nd-sz input[type=range]{width:120px;padding:0}
+.logo-nd button[disabled],.logo-nd input[disabled]{opacity:.45;cursor:not-allowed}
+

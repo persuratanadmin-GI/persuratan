@@ -21,10 +21,9 @@ html[data-theme="pln"] body{background:
   radial-gradient(900px 420px at 8% -8%,rgba(255,225,0,.14),transparent 60%),
   radial-gradient(800px 380px at 96% -4%,rgba(19,168,207,.2),transparent 60%),var(--c-bg)}
 html[data-theme="pln"] ::selection{background:rgba(255,225,0,.5)}
-/* header: biru PLN, petir samar, garis listrik kuning-sian dengan kilatan yang berjalan */
+/* header: biru PLN, garis listrik kuning-sian dengan kilatan yang berjalan (gambar petir samar di latar dihapus karena menimpa ikon) */
 html[data-theme="pln"] .app-header{border-bottom:0;
   background:
-   url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23ffe100' fill-opacity='.2' d='M13 2 4 14h6l-1 8 9-12h-6z'/%3E%3C/svg%3E") no-repeat right 300px center/40px,
    linear-gradient(115deg,#051c3a 0%,#0a4a82 52%,#0f86bd 100%)}
 html[data-theme="pln"] .app-header::before{background:radial-gradient(closest-side,rgba(255,225,0,.34),transparent)}
 html[data-theme="pln"] .app-header::after{content:"";position:absolute;left:0;right:0;bottom:0;height:4px;pointer-events:none;
