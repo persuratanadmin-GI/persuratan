@@ -31,7 +31,7 @@ async function simpanBatch(status){
  idx=keep;cur=batch[keep];persistCur();
  toast(n>1?n+" surat "+(status==="selesai"?"ditandai selesai dan tersimpan.":"tersimpan sebagai draft."):(status==="selesai"?"Ditandai selesai dan tersimpan.":"Draft tersimpan."))}
 function segarTombol(){const s=batch.length>1?" ("+batch.length+")":"";
- [["bDraft","Simpan draft"],["bDone","Tandai selesai"],["bXl","Simpan ke Excel"],["bPdf","Unduh PDF"],["bPrint","Cetak"]].forEach(([id,t])=>{const e=$(id);if(e)e.textContent=t+s})}
+ [["bDraft","Simpan draft"],["bDone","Tandai selesai"],["bXl","Simpan ke Excel"],["bPdf","Unduh PDF"],["bPrint","Cetak"]].forEach(([id,t])=>{const e=$(id);if(e){e.textContent=t;if(s){const k=document.createElement("span");k.className="cnt";k.textContent=s;e.appendChild(k)}e.title=t+s}})}
 $("batchbar").onclick=async e=>{if(e.target.id==="pdfAktif"){exportPdf([cur]);return}if(e.target.id==="hapusAktif"&&batch.length>1&&await ask("Hapus surat "+(idx+1)+" dari daftar? (Riwayat yang sudah tersimpan tidak terhapus.)")){batch.splice(idx,1);idx=Math.min(idx,batch.length-1);cur=batch[idx];buildForm();buildSheets();update();return}const g=e.target.dataset.go;if(g!==undefined){setActive(+g);$("sheets").children[+g].scrollIntoView({behavior:"smooth",block:"start"})}};
 $("sheets").addEventListener("click",e=>{const lw=e.target.closest(".lw");if(!lw)return;const i=+lw.dataset.i;if(i!==idx)setActive(i)});
 async function applyMulti(){if((batch.length>1||cur.name||cur.uraian)&&!await ask("Isi formulir/daftar surat saat ini akan diganti dengan "+lastMulti.length+" surat baru. Lanjutkan?"))return;

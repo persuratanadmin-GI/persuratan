@@ -1,0 +1,67 @@
+/* Perapian tampilan layar (dimuat paling akhir). Hanya CSS; tidak mengubah logika/JS dan tidak memengaruhi cetak/PDF.
+   Untuk membatalkan: hapus baris <link ... konsisten.css> di index.html.
+
+   1) Bar nomor surat di pratinjau ("8 surat | 1 2 3 ... | PDF surat ini | Hapus surat ini") dipadatkan: tombol angka, PDF, dan Hapus
+      jauh lebih kecil, satu baris bila muat, supaya tidak menutupi surat. Berlaku untuk Lembur HAR, Driver, SPPD, dan Restitusi.
+   2) Bar tombol panel input Lembur HAR dan Driver: gaya ringkas satu baris (Surat baru | ikon simpan, ikon selesai | Unduh PDF, ikon cetak, Excel)
+      dipakai SELALU, di semua lebar layar, baik 1 surat maupun banyak surat, sehingga tombol tidak pernah turun baris atau bergeser. */
+@media screen{
+
+/* ===== 1) Bar nomor surat: ringkas ===== */
+:root:not(#_) :is(#batchbar,#sp-batchbar,#rs-batchbar,#dv-batchbar){padding:4px 10px;gap:4px;font-size:12px;line-height:1.2}
+:root:not(#_) :is(#batchbar,#sp-batchbar,#rs-batchbar,#dv-batchbar) b{margin-right:2px;font-size:12px;white-space:nowrap}
+:root:not(#_) :is(#batchbar,#sp-batchbar,#rs-batchbar,#dv-batchbar) button{min-height:0;height:24px;padding:0 9px;font-size:12px;font-weight:600;border-radius:8px;gap:5px;line-height:1;box-shadow:none;white-space:nowrap}
+:root:not(#_) :is(#batchbar,#sp-batchbar,#rs-batchbar,#dv-batchbar) button.g[data-go]{min-width:24px;width:24px;padding:0;justify-content:center;border-radius:7px}
+:root:not(#_) :is(#batchbar,#sp-batchbar,#rs-batchbar,#dv-batchbar) button::before{width:12px;height:12px}
+/* tombol PDF/Hapus sedikit lebih rapat dari deretan angka */
+:root:not(#_) :is(#batchbar,#sp-batchbar,#rs-batchbar,#dv-batchbar) button:is(#pdfAktif,#hapusAktif,#sp-pdfAktif,#sp-hapusAktif,#rs-pdfAktif,#rs-hapusAktif,#dv-pdfAktif,#dv-hapusAktif){margin-left:2px}
+:root:not(#_) :is(#batchbar,#sp-batchbar,#rs-batchbar,#dv-batchbar) button.b{box-shadow:0 1px 2px rgba(10,30,80,.25)}
+/* nomor surat yang aktif tetap jelas, tanpa cincin tebal */
+:root:not(#_) :is(#batchbar,#sp-batchbar,#rs-batchbar,#dv-batchbar) button.g[data-go]:focus-visible{box-shadow:0 0 0 2px var(--c-primary)}
+
+/* ===== 2) Bar tombol panel input (Lembur HAR dan Driver): gaya ringkas satu baris, selalu ===== */
+/* Sama dengan gaya bar sempit bawaan (ringkas.css/tombol.css), tetapi berlaku di semua lebar bar. */
+:root:not(#_) :is(#tab-in,#dv-tab-in) .actbar{display:flex;flex-wrap:nowrap;align-items:center;gap:6px 8px}
+:root:not(#_) :is(#tab-in,#dv-tab-in) .actbar .grp{display:flex;flex-wrap:nowrap;gap:6px;margin:0}
+:root:not(#_) :is(#tab-in,#dv-tab-in) .actbar .grp+.grp{padding-left:8px;border-left:1px solid var(--c-border)}
+:root:not(#_) :is(#tab-in,#dv-tab-in) .actbar button.b{padding-left:12px;padding-right:12px}
+:root:not(#_) :is(#bDraft,#bDone,#bPrint,#dv-bDraft,#dv-bDone,#dv-bPrint){font-size:0;gap:0;padding:0;width:38px;min-width:38px;justify-content:center}
+:root:not(#_) :is(#bXl,#dv-bXl){font-size:0}
+:root:not(#_) :is(#bXl,#dv-bXl)::after,:root:not(#_) :is(#bXl,#dv-bXl):hover::after{content:"Excel";position:static;inset:auto;background:none;transform:none;transition:none;font-size:13px;font-weight:650;pointer-events:none}
+}
+
+/* Jumlah surat "(8)" pada tombol panel input Lembur HAR dan Driver tidak ditampilkan di label (agar tombol tidak membengkak/turun baris);
+   jumlahnya tetap ada di tooltip tombol dan di bar "8 surat" pada pratinjau. Label tidak boleh turun baris. */
+@media screen{
+:root:not(#_) :is(#tab-in,#dv-tab-in) .actbar .cnt{display:none}
+:root:not(#_) :is(#tab-in,#dv-tab-in) .actbar button{white-space:nowrap;flex:none}
+:root:not(#_) :is(#tab-in,#dv-tab-in) .actbar{flex-wrap:nowrap;overflow:hidden}
+:root:not(#_) :is(#tab-in,#dv-tab-in) .actbar :is(button.b#bNew,button.b#dv-bNew,button.b#bPdf,button.b#dv-bPdf,button.b#bXl,button.b#dv-bXl){padding-left:10px;padding-right:10px;gap:6px}
+}
+
+/* Bar sempit: tombol dirapatkan bertahap supaya semua tetap satu baris dan tidak terpotong */
+@media screen{
+:root:not(#_) :is(#tab-in,#dv-tab-in) .actbar{container-type:inline-size}
+@container (max-width:500px){
+ :root:not(#_) :is(#tab-in,#dv-tab-in) .actbar{gap:4px 6px}
+ :root:not(#_) :is(#tab-in,#dv-tab-in) .actbar .grp{gap:4px}
+ :root:not(#_) :is(#tab-in,#dv-tab-in) .actbar .grp+.grp{padding-left:6px}
+ :root:not(#_) :is(#bDraft,#bDone,#bPrint,#dv-bDraft,#dv-bDone,#dv-bPrint){width:32px;min-width:32px}
+ :root:not(#_) :is(#tab-in,#dv-tab-in) .actbar :is(button.b#bNew,button.b#dv-bNew,button.b#bPdf,button.b#dv-bPdf,button.b#bXl,button.b#dv-bXl){padding-left:7px;padding-right:7px;gap:4px}
+ :root:not(#_) :is(#tab-in,#dv-tab-in) .actbar :is(button.b#bNew,button.b#dv-bNew,button.b#bPdf,button.b#dv-bPdf){font-size:12px}
+ :root:not(#_) :is(#bXl,#dv-bXl)::after,:root:not(#_) :is(#bXl,#dv-bXl):hover::after{font-size:12px}
+}
+@container (max-width:420px){
+ :root:not(#_) :is(#tab-in,#dv-tab-in) .actbar :is(button.b#bNew,button.b#dv-bNew,button.b#bPdf,button.b#dv-bPdf,button.b#bXl,button.b#dv-bXl)::before{display:none}
+ :root:not(#_) :is(#bXl,#dv-bXl)::before{display:none}
+}
+}
+
+/* Bar tombol panel input (Lembur HAR dan Driver): tombol berlabel (Surat baru, Unduh PDF, Excel) melebar mengisi sisa ruang,
+   tombol ikon (simpan, selesai, cetak) tetap berukuran tetap, sehingga bar penuh dari kiri ke kanan tanpa ruang kosong di ujung. */
+@media screen{
+:root:not(#_) :is(#tab-in,#dv-tab-in) .actbar .grp{flex:1 1 auto}
+:root:not(#_) :is(#tab-in,#dv-tab-in) .actbar .grp:first-child{flex-grow:1}
+:root:not(#_) :is(#tab-in,#dv-tab-in) .actbar .grp+.grp{flex-grow:2}
+:root:not(#_) :is(#tab-in,#dv-tab-in) .actbar :is(button.b#bNew,button.b#dv-bNew,button.b#bPdf,button.b#dv-bPdf,button.b#bXl,button.b#dv-bXl){flex:1 1 auto;justify-content:center}
+}
