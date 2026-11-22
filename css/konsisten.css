@@ -65,3 +65,20 @@
 :root:not(#_) :is(#tab-in,#dv-tab-in) .actbar .grp+.grp{flex-grow:2}
 :root:not(#_) :is(#tab-in,#dv-tab-in) .actbar :is(button.b#bNew,button.b#dv-bNew,button.b#bPdf,button.b#dv-bPdf,button.b#bXl,button.b#dv-bXl){flex:1 1 auto;justify-content:center}
 }
+
+
+/* Tombol "Dashboard" di header (di dalam kotak merek, jadi posisi bar mode tidak bergeser): kembali ke https://sistem-persuratan-ultg.vercel.app/
+   Tautan biasa; tidak memengaruhi logika aplikasi. Layar < 1300 px: hanya ikon panah agar judul aplikasi tetap muat. */
+@media screen{
+.app-header .brand>.back-dash{position:relative;z-index:1;flex:none;display:inline-flex;align-items:center;justify-content:center;gap:6px;height:36px;width:36px;padding:0;margin:0;border-radius:11px;
+ border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.10);color:#fff;font:600 13px/1 inherit;font-family:inherit;text-decoration:none;white-space:nowrap;cursor:pointer;
+ backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transition:background .2s,transform .2s cubic-bezier(.2,.8,.2,1),border-color .2s}
+.app-header .brand>.back-dash svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s cubic-bezier(.2,.8,.2,1)}
+.app-header .brand>.back-dash span{display:none}
+.app-header .brand>.back-dash:hover{background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.4)}
+.app-header .brand>.back-dash:hover svg{transform:translateX(-2px)}
+.app-header .brand>.back-dash:active{transform:scale(.96)}
+.app-header .brand>.back-dash:focus-visible{outline:2px solid #fff;outline-offset:2px}
+@media(min-width:1300px){.app-header .brand>.back-dash{width:auto;padding:0 14px 0 10px}.app-header .brand>.back-dash span{display:inline}}
+}
+@media print{.back-dash{display:none!important}}
