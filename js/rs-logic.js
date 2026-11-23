@@ -104,6 +104,9 @@ function rsLayoutP(r,x){x=x||rsCtx();const S=x.S,g=k=>rsGet(r,k,x),{it,Tb,Ln,Im}
  Tb(324.1,y+73.9,F,"Yang menyatakan,");it.push({k:"s",key:"P.TTD",src:rsSigOf(r.personName),nama:r.personName,cx:367.9,cy:y+113.1});
  Tb(324.1,y+152.1,F,rsUp(g("pNama")));
  Tb(L,762.7,9,S.almP1);Tb(L,773,9,S.almP2);Tb(L,783.3,9,"W",{b:1});Tb(82,783.3,9,S.web);Tb(148,783.3,9,"T",{b:1});Tb(155,783.3,9,S.telp);
+ /* paraf pejabat di ujung kanan bawah (hanya gambar paraf, tanpa tulisan "Paraf" dan garis); posisi (titik tengah) mengikuti contoh tata letak dari pengguna: x 516,1 pt, y 769,5 pt */
+ if(S.paraf){const ar=+S.parafAr>0?+S.parafAr:0,MW=26,MH=13;let pw=MW,ph=MH;if(ar){pw=ph*ar;if(pw>MW){pw=MW;ph=MW/ar}}
+  it.push({k:"s",key:"P.PF",src:S.paraf,ex:ar?1:0,w:pw,h:ph,cx:516.1,cy:769.5})}
  return it}
 /* ====== 3. Blangko SPPD (Lampiran VII): latar hasil scan yang sudah dibersihkan + isian + stempel/TTD per lokasi. ====== */
 const RS_BLK={y0:[74.5,217.6,340.7,463.8],dots:[188.6,311.9,435,558.1,730.4],lx:159,rx:419,lcx:197,rcx:451};
