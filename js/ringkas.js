@@ -6,7 +6,7 @@
   var sub=document.getElementById("lemSub"),nav=document.getElementById("modes"),st=document.getElementById("st"),h=document.getElementById("lsH"),d=document.getElementById("lsD"),s2=document.getElementById("mdS");
   /* Pilihan Lembur HAR / Lembur Driver digabung ke bar mode di header (tanpa bar sendiri), sehingga empat tombol mode selalu di posisi tetap.
      Tombol lama (mdL) disembunyikan lewat CSS; id dan fungsi semua tombol tidak berubah. */
-  if(nav&&h&&d&&s2){nav.insertBefore(h,s2);nav.insertBefore(d,s2);h.title="Surat Lembur HAR";d.title="Surat Lembur Driver";if(sub)sub.setAttribute("aria-hidden","true")}
+  if(nav&&h&&d&&s2){nav.insertBefore(h,s2);nav.insertBefore(d,s2);h.title="Surat Lembur HAR";d.title="Surat Lembur Driver";var pgb=document.getElementById("lsP");if(pgb){nav.insertBefore(pgb,s2);pgb.title="Surat Lembur Pegawai"}if(sub)sub.setAttribute("aria-hidden","true")}
   if(st&&!st.title)st.title=(st.textContent||"").trim();
   document.querySelectorAll(".fx-meter").forEach(function(m){
    if(m.querySelector(".fx-m-info"))return;

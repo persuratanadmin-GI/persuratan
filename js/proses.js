@@ -89,6 +89,6 @@ setInterval(tick,100);
 /* impor berkas: tampilkan "membaca berkas" sejenak, lalu hasilnya dari toast */
 function listen(id,title,sub,kind){var e=document.getElementById(id);if(!e)return;
  e.addEventListener("change",function(){if(e.files&&e.files.length)pend={kind:kind||"imp",title:title,sub:sub,t:Date.now(),hasToast:false}},true)}
-["imp","sp-imp","rs-imp","dv-imp"].forEach(function(id){listen(id,"Mengimpor cadangan","Membaca berkas JSON...","imp")});
+["imp","sp-imp","rs-imp","dv-imp","pg-imp"].forEach(function(id){listen(id,"Mengimpor cadangan","Membaca berkas JSON...","imp")});
 listen("sp-peImp","Mengimpor dari Excel","Membaca daftar pegawai...","xl");
 })();

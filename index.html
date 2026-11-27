@@ -14,6 +14,7 @@
 <link rel="stylesheet" href="css/tombol.css">
 <link rel="stylesheet" href="css/listrik.css">
 <link rel="stylesheet" href="css/konsisten.css">
+<link rel="stylesheet" href="css/pegawai.css">
 <link rel="stylesheet" href="css/proses.css">
 <link rel="icon" type="image/png" href="assets/pln-logo.png">
 </head><body>
@@ -21,7 +22,7 @@
 <div class="brand"><a class="back-dash" id="backDash" href="https://sistem-persuratan-ultg.vercel.app/" title="Kembali ke Dashboard" aria-label="Kembali ke Dashboard"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg><span>Dashboard</span></a><span class="brand-mark" aria-hidden="true"></span><div><h1>Admin Surat Lembur</h1><p class="brand-sub">SPK Lembur, SPPD dan Restitusi</p></div></div>
 <nav class="modes" id="modes" aria-label="Modul aplikasi"><button id="mdL" class="on">Surat Lembur</button><button id="mdS">SPPD</button><button id="mdR">Restitusi</button></nav>
 <small id="st">Data tersimpan di browser ini</small></header>
-<div class="lem-sub" id="lemSub" role="group" aria-label="Jenis surat lembur"><span>Jenis surat lembur</span><button id="lsH" class="on" type="button">Lembur HAR</button><button id="lsD" type="button">Lembur Driver</button></div>
+<div class="lem-sub" id="lemSub" role="group" aria-label="Jenis surat lembur"><span>Jenis surat lembur</span><button id="lsH" class="on" type="button">Lembur HAR</button><button id="lsD" type="button">Lembur Driver</button><button id="lsP" type="button">Lembur Pegawai</button></div>
 <main>
 <section id="left" class="card">
 <div class="tabs" id="tabs"><button data-t="in" class="on">Input</button><button data-t="pe">Personel</button><button data-t="ri">Riwayat</button><button data-t="tt">Tanda Tangan</button><button data-t="se">Pengaturan</button></div>
@@ -269,6 +270,70 @@
  <div id="dv-batchbar" class="hint" hidden></div>
  <div id="dv-sheets"></div>
 </section>
+
+<section id="pg-left" class="card" hidden>
+<div class="tabs" id="pg-tabs"><button data-t="in" class="on">Input</button><button data-t="pe">Pegawai</button><button data-t="ri">Riwayat</button><button data-t="tt">Tanda Tangan</button><button data-t="se">Pengaturan</button></div>
+
+<div id="pg-tab-in">
+ <div class="tabs"><button id="pg-m-man" class="on">Input manual</button><button id="pg-m-wa">Dari WhatsApp</button></div>
+ <div id="pg-wa" class="wa-panel" hidden>
+  <label>Tempel pesan WhatsApp (lembur pegawai)</label>
+  <textarea id="pg-waText" style="min-height:130px" placeholder="Nama: ...&#10;NIP: ...&#10;Hari/Tanggal: 12/11/2026&#10;Waktu: 16:30 - 21:00&#10;Lokasi: GI ...&#10;Uraian: ..."></textarea>
+  <p class="hint">Beberapa surat dapat ditempel sekaligus, dipisahkan baris kosong. Person grade, position grade, dan jabatan diisi otomatis bila pegawai sudah terdaftar di tab Pegawai.</p>
+  <div class="acts"><button class="b" id="pg-parse">Proses Pesan</button></div>
+  <div id="pg-parseOut"></div>
+ </div>
+ <div class="legend" aria-label="Keterangan warna kolom"><span><b class="rq">*</b> Wajib</span><span><i class="lg lg-ok"></i>Diisi</span><span><i class="lg lg-need"></i>Kosong</span><span><i class="lg lg-warn"></i>Periksa</span></div>
+ <div id="pg-form"></div>
+ <div class="actbar">
+  <div class="grp"><span class="gl">Surat</span><button class="b new" id="pg-bNew">Surat baru</button><button class="g" id="pg-bDraft">Simpan draft</button><button class="g ok" id="pg-bDone">Tandai selesai</button></div>
+  <div class="grp"><span class="gl">Keluaran</span><button class="b nv" id="pg-bPdf">Unduh PDF</button><button class="g" id="pg-bPrint">Cetak</button></div>
+ </div>
+</div>
+
+<div id="pg-tab-pe" hidden>
+ <input id="pg-peQ" placeholder="Cari nama / NIP / jabatan">
+ <div id="pg-peList"></div>
+ <div class="panel">
+ <h4 id="pg-peT" class="ph">Tambah pegawai</h4>
+ <label>Nama pegawai</label><input id="pg-pn">
+ <div class="row"><div><label>NIP</label><input id="pg-pi"></div><div><label>Jabatan</label><input id="pg-pj"></div></div>
+ <div class="row"><div><label>Person Grade</label><input id="pg-pg1"></div><div><label>Position Grade</label><input id="pg-pg2"></div></div>
+ <div class="acts"><button class="b" id="pg-peSave">Simpan pegawai</button><button class="g" id="pg-peReset">Batal</button></div>
+ </div>
+ <div class="panel">
+ <h4 class="ph">Tempel banyak pegawai sekaligus</h4>
+ <p class="hint">Satu pegawai per baris: NIP; Nama; Person Grade; Position Grade; Jabatan (dipisah titik koma atau tab, bisa disalin dari Excel). Pegawai dengan NIP atau nama yang sudah ada diperbarui.</p>
+ <textarea id="pg-peBulkText" style="min-height:90px" placeholder="90162222Z; FULAN 1; 12; 11; TL HAR JAR"></textarea>
+ <div class="acts"><button class="b" id="pg-peBulk">Tambahkan</button></div>
+ </div>
+</div>
+
+<div id="pg-tab-ri" hidden>
+ <div class="acts rbar"><button class="b nv" id="pg-rPdf">Unduh PDF</button><button class="d" id="pg-rDelAll">Hapus semua</button></div>
+ <input id="pg-rQ" placeholder="Cari nama / rincian pekerjaan / lokasi">
+ <div class="row"><div><label>Dari</label><input type="date" id="pg-rA"></div><div><label>Sampai</label><input type="date" id="pg-rB"></div></div>
+ <div id="pg-rList" style="margin-top:10px"></div>
+</div>
+
+<div id="pg-tab-se" hidden>
+ <div id="pg-seForm"></div>
+ <div class="actbar">
+  <div class="grp"><span class="gl">Pegawai</span><button class="b" id="pg-seSave">Simpan pengaturan</button></div>
+  <div class="grp"><span class="gl">Cadangan</span><button class="g" id="pg-exp">Ekspor JSON</button><label class="g imp">Impor JSON<input type="file" id="pg-imp" accept=".json" hidden></label></div>
+ </div>
+</div>
+</section>
+
+<section id="pg-pane" class="card" hidden>
+ <div id="pg-hint" class="hint"></div>
+ <div id="pg-fsel" class="hint pg-fsel"></div>
+ <div id="pg-sgbar" class="hint" hidden>
+  <span id="pg-sgctl" hidden><b id="pg-sgName"></b> · Ukuran <input type="range" id="pg-sgSize" min="20" max="400" step="5" style="width:110px;display:inline;padding:0"> <input type="number" id="pg-sgPct" min="20" max="400" step="5" title="Ketik ukuran (20-400), lalu Enter" style="width:66px;display:inline;padding:2px 4px"> %
+  <button class="g" data-n="l">←</button><button class="g" data-n="r">→</button><button class="g" data-n="u">↑</button><button class="g" data-n="d">↓</button> <button class="g" id="pg-sgReset">Reset</button></span></div>
+ <div id="pg-batchbar" class="hint" hidden></div>
+ <div id="pg-sheets"></div>
+</section>
 </main>
 <footer class="app-foot">© 2026 - Dirancang dan Dikembangkan Oleh Mahasiswa ITH · 231011116</footer>
 <script src="vendor/jspdf.umd.min.js"></script>
@@ -298,6 +363,8 @@
 <script src="js/drv-logic.js"></script>
 <script src="js/drv-excel.js"></script>
 <script src="js/drv.js"></script>
+<script src="js/pg-logic.js"></script>
+<script src="js/pg.js"></script>
 <script src="js/ttd-bar.js"></script>
 <script src="js/fx.js"></script>
 <script src="js/ringkas.js"></script>

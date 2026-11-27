@@ -28,7 +28,7 @@ h.appendChild(btn);apply(enabled());
 /* lonjakan arus saat pindah mode */
 function pulse(){if(root.classList.contains("zap-off"))return;surge.classList.remove("on");void surge.offsetWidth;surge.classList.add("on");
  clearTimeout(pulse.t);pulse.t=setTimeout(function(){surge.classList.remove("on")},1000)}
-["mdS","mdR","lsH","lsD"].forEach(function(id){var e=document.getElementById(id);if(e)e.addEventListener("click",pulse)});
+["mdS","mdR","lsH","lsD","lsP"].forEach(function(id){var e=document.getElementById(id);if(e)e.addEventListener("click",pulse)});
 
 /* bar arus saat PDF diproses (membaca penanda pdfBusy yang sudah ada, tanpa mengubah fungsi PDF) */
 var polling=0;
@@ -38,7 +38,7 @@ function barOn(){if(root.classList.contains("zap-off")||polling)return;polling=1
   var el=Date.now()-t0;
   if((seen&&!busy&&el>700)||(!seen&&el>600)||el>30000){bar.classList.remove("on");polling=0;return}
   setTimeout(tick,120)})()}
-["bPdf","sp-bPdf","rs-bPdf","dv-bPdf"].forEach(function(id){var e=document.getElementById(id);if(e)e.addEventListener("click",barOn)});
+["bPdf","sp-bPdf","rs-bPdf","dv-bPdf","pg-bPdf"].forEach(function(id){var e=document.getElementById(id);if(e)e.addEventListener("click",barOn)});
 
 /* percikan di tombol utama */
 document.addEventListener("pointerdown",function(e){
